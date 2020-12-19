@@ -8,6 +8,7 @@
 
 
         public bool EnablePlentifulItemDrops = true;
+        public bool AllowWeaponDrops = true;
         public int DestroyOnActorDeathPercent = 0; // For most items this is currently set to 80 in vanilla
 
 

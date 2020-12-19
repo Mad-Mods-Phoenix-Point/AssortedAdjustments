@@ -48,7 +48,7 @@ namespace AssortedAdjustments.Patches
     {
         public static bool Prepare()
         {
-            return AssortedAdjustments.Settings.EnablePlentifulItemDrops;
+            return AssortedAdjustments.Settings.EnablePlentifulItemDrops && AssortedAdjustments.Settings.AllowWeaponDrops;
         }
 
         public static bool Prefix(DieAbility __instance)
