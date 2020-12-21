@@ -66,6 +66,8 @@
     <Compile Include="Patches\EnableEconomyAdjustments.cs" />
     <Compile Include="Patches\EnablePlentifulItemDrops.cs" />
     <Compile Include="Patches\EnableMissionAdjustments.cs" />
+    <Compile Include="Patches\EnableReturnFireAdjustments.cs" />
+    <Compile Include="Patches\EnableExperienceToSkillpointConversion.cs" />
     <Compile Include="Patches\SkipIntro.cs" />
     <Compile Include="Patches\EnableVehicleAdjustments.cs" />
     <Compile Include="Patches\EnableSoldierAdjustments.cs" />

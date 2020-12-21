@@ -2,14 +2,28 @@
 {
     internal class Settings
     {
+        public bool EnableExperienceToSkillpointConversion = true;
+        public float XPtoSPConversionRate = 0.01f; // Default is dependent on difficulty setting, this is just a fallback if the setting is unretrievable.
+        public float XPtoSPConversionMultiplier = 2f; // Flat multiplier for the setting above
+
+
+
+        public bool EnableReturnFireAdjustments = true;
+        public int ReturnFireAngle = 225; // Default: 360 (as in not implemented)
+        public int ReturnFireLimit = 2; // Default: Unlimited
+
+
+
         public bool EnableMissionAdjustments = true;
         public int MaxPlayerUnitsAdd = 2; // Adding one to the default of 8 (=> 9, 21)
 
 
 
         public bool EnablePlentifulItemDrops = true;
-        public bool AllowWeaponDrops = true;
-        public int DestroyOnActorDeathPercent = 0; // For most items this is currently set to 80 in vanilla
+        public int ItemDestructionChance = 10; // For most items this is currently set to 80 in vanilla
+        public bool OverrideWeaponDrops = true;
+        public int FlatWeaponDestructionChance = 30;
+        public bool HealthBasedWeaponDestruction = true;
 
 
 

@@ -5,6 +5,7 @@ using Harmony;
 using PhoenixPoint.Common.Entities.Items;
 using PhoenixPoint.Tactical.Entities.Abilities;
 using PhoenixPoint.Tactical.Entities.Equipments;
+using PhoenixPoint.Tactical.Entities.Weapons;
 
 namespace AssortedAdjustments.Patches
 {
@@ -16,33 +17,77 @@ namespace AssortedAdjustments.Patches
             return AssortedAdjustments.Settings.EnablePlentifulItemDrops;
         }
 
-        public static bool Prefix(DieAbility __instance, ref bool __result, TacticalItem item)
+        public static void Prefix(DieAbility __instance, TacticalItem item)
         {
             try
             {
+                Logger.Info($"[DieAbility_ShouldDestroyItem_PREFIX] Item: {item.DisplayName}, DestroyOnActorDeathPerc: {item.TacticalItemDef.DestroyOnActorDeathPerc}");
+
+                if (item.TacticalItemDef is WeaponDef wDef)
+                {
+                    Logger.Info($"[DieAbility_ShouldDestroyItem_PREFIX] {item.DisplayName} is a weapon.");
+
+                    if (!AssortedAdjustments.Settings.OverrideWeaponDrops)
+                    {
+                        Logger.Info($"[DieAbility_ShouldDestroyItem_PREFIX] destructionChance: {item.TacticalItemDef.DestroyOnActorDeathPerc}");
+                        return;
+                    }
+                    else
+                    {
+                        if (AssortedAdjustments.Settings.HealthBasedWeaponDestruction)
+                        {
+                            float currentHealth = item.GetHealth().IntValue;
+                            float maxHealth = item.GetHealth().IntMax;
+                            int healthPercent = (int)((currentHealth / maxHealth) * 100);
+                            int destructionChance = 100 - healthPercent;
+                            Logger.Info($"[DieAbility_ShouldDestroyItem_PREFIX] currentHealth: {currentHealth}");
+                            Logger.Info($"[DieAbility_ShouldDestroyItem_PREFIX] maxHealth: {maxHealth}");
+                            Logger.Info($"[DieAbility_ShouldDestroyItem_PREFIX] healthPercent: {healthPercent}");
+                            Logger.Info($"[DieAbility_ShouldDestroyItem_PREFIX] destructionChance: {destructionChance}");
+
+                            item.TacticalItemDef.DestroyOnActorDeathPerc = destructionChance;
+                        }
+                        else
+                        {
+                            Logger.Info($"[DieAbility_ShouldDestroyItem_PREFIX] destructionChance: {AssortedAdjustments.Settings.FlatWeaponDestructionChance}");
+
+                            item.TacticalItemDef.DestroyOnActorDeathPerc = AssortedAdjustments.Settings.FlatWeaponDestructionChance;
+                        }
+                    }
+                }
+                else
+                {
+                    Logger.Info($"[DieAbility_ShouldDestroyItem_PREFIX] destructionChance: {AssortedAdjustments.Settings.ItemDestructionChance}");
+
+                    item.TacticalItemDef.DestroyOnActorDeathPerc = AssortedAdjustments.Settings.ItemDestructionChance;
+                }
+
                 // If items should NEVER get destroyed by chance, modifiy result to false and skip original method
+                /*
                 if (AssortedAdjustments.Settings.DestroyOnActorDeathPercent <= 0)
                 {
                     __result = false;
                     return false;
                 }
-
-                item.TacticalItemDef.DestroyOnActorDeathPerc = AssortedAdjustments.Settings.DestroyOnActorDeathPercent;
-                Logger.Info($"[DieAbility_ShouldDestroyItem_PREFIX] Item: {item.DisplayName}, DestroyOnActorDeathPerc: {item.TacticalItemDef.DestroyOnActorDeathPerc}");
-
-                return true;
+                */
             }
             catch (Exception e)
             {
                 Logger.Error(e);
-                return true;
             }
+        }
+
+        public static void Postfix(DieAbility __instance, bool __result, TacticalItem item)
+        {
+            string result = __result ? "destroyed" : "dropped";
+            Logger.Info($"[DieAbility_ShouldDestroyItem_POSTFIX] {item.DisplayName} will be {result}.");
         }
     }
 
 
 
-
+    // Reference for later additions
+    /*
     [HarmonyPatch(typeof(DieAbility), "DropItems")]
     public static class DieAbility_DropItems_Patch
     {
@@ -125,4 +170,5 @@ namespace AssortedAdjustments.Patches
             }
         }
     }
+    */
 }
