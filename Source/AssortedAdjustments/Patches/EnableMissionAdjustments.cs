@@ -17,7 +17,12 @@ namespace AssortedAdjustments.Patches
             {
                 def.MaxPlayerUnits += AssortedAdjustments.Settings.MaxPlayerUnitsAdd;
 
-                //Logger.Info($"[MissionAdjustments_Apply] def: {def.name}, GUID: {def.Guid}, MaxPlayerUnits: {def.MaxPlayerUnits}");
+                if (def.DontRecoverItems == true && AssortedAdjustments.Settings.AlwaysRecoverAllItemsFromTacticalMissions)
+                {
+                    def.DontRecoverItems = false;
+                }
+
+                Logger.Info($"[MissionAdjustments_Apply] def: {def.name}, GUID: {def.Guid}, MaxPlayerUnits: {def.MaxPlayerUnits}, DontRecoverItems: {def.DontRecoverItems}");
             }
         }
     }
