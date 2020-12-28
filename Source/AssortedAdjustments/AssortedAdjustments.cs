@@ -14,7 +14,7 @@ namespace AssortedAdjustments
         internal static HarmonyInstance Harmony;
 
         // BEN: DebugLevel (0: nothing, 1: error, 2: debug, 3: info)
-        internal static int DebugLevel = 3;
+        internal static int DebugLevel = 0;
 
 
 
@@ -25,9 +25,15 @@ namespace AssortedAdjustments
 
             ModDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             LogPath = Path.Combine(ModDirectory, "AssortedAdjustments.log");
+            Settings = api("config", null) as Settings ?? new Settings();
+
+            if (Settings.Debug && Settings.DebugLevel > 0)
+            {
+                DebugLevel = Settings.DebugLevel > 3 ? 3 : Settings.DebugLevel;
+            }
             Logger.Initialize(LogPath, DebugLevel, ModDirectory, nameof(AssortedAdjustments));
 
-            Settings = api("config", null) as Settings ?? new Settings();
+
 
             if (Settings.SkipIntroLogos)
             {
@@ -38,6 +44,7 @@ namespace AssortedAdjustments
             {
                 HarmonyHelpers.Patch(Harmony, typeof(PhoenixPoint.Home.View.ViewStates.UIStateHomeScreenCutscene), "EnterState", typeof(SkipIntro), null, "Postfix_UIStateHomeScreenCutscene_EnterState");
             }
+
 
 
             Logger.Info($"Modnix Mad.AssortedAdjustments.SplashMod initialised.");
@@ -53,6 +60,7 @@ namespace AssortedAdjustments
             Harmony.PatchAll();
             ApplyAll();
             DataHelpers.Print();
+
 
 
             Logger.Info($"Modnix Mad.AssortedAdjustments.MainMod initialised.");

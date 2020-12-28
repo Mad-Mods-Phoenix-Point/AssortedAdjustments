@@ -150,7 +150,7 @@ namespace AssortedAdjustments.Patches
                     // No potential return fire from original method
                     if (__result == null || __result.Count == 0)
                     {
-                        Logger.Debug($"[TacticalLevelController_GetReturnFireAbilities_POSTFIX] Original method already canceled return fire.");
+                        Logger.Debug($"[TacticalLevelController_GetReturnFireAbilities_POSTFIX] Original method ruled out return fire.");
                         return;
                     }
 

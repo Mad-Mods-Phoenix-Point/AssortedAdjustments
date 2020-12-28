@@ -22,7 +22,7 @@ namespace AssortedAdjustments.Patches
                     def.DontRecoverItems = false;
                 }
 
-                Logger.Info($"[MissionAdjustments_Apply] def: {def.name}, GUID: {def.Guid}, MaxPlayerUnits: {def.MaxPlayerUnits}, DontRecoverItems: {def.DontRecoverItems}");
+                //Logger.Info($"[MissionAdjustments_Apply] def: {def.name}, GUID: {def.Guid}, MaxPlayerUnits: {def.MaxPlayerUnits}, DontRecoverItems: {def.DontRecoverItems}");
             }
         }
     }

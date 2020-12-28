@@ -16,6 +16,7 @@ namespace AssortedAdjustments.Patches
     {
         public static void Apply()
         {
+            HarmonyInstance harmony = HarmonyInstance.Create(typeof(EconomyAdjustments).Namespace);
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
 
             List<HealFacilityComponentDef> healFacilityComponentDefs = defRepository.DefRepositoryDef.AllDefs.OfType<HealFacilityComponentDef>().Where(hfcDef => hfcDef.name.Contains("MedicalBay")).ToList();
@@ -42,12 +43,15 @@ namespace AssortedAdjustments.Patches
                     ResourceUnit supplies = new ResourceUnit(ResourceType.Production, AssortedAdjustments.Settings.FabricationPlantGenerateProductionAmount);
                     resources.Set(supplies);
 
+                    // When added here they are also affected by general research buffs. This is NOT intended.
+                    /*
                     if(AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount > 0f)
                     {
                         float value = AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount / AssortedAdjustments.Settings.GenerateResourcesBaseDivisor;
                         ResourceUnit materials = new ResourceUnit(ResourceType.Materials, value);
                         resources.AddUnique(materials);
                     }
+                    */
                 }
                 else if (rgfDef.name.Contains("ResearchLab"))
                 {
@@ -55,12 +59,15 @@ namespace AssortedAdjustments.Patches
                     ResourceUnit supplies = new ResourceUnit(ResourceType.Research, AssortedAdjustments.Settings.ResearchLabGenerateResearchAmount);
                     resources.Set(supplies);
 
+                    // When added here they are also affected by general research buffs (Synedrion research). This is NOT intended.
+                    /*
                     if (AssortedAdjustments.Settings.ResearchLabGenerateTechAmount > 0f)
                     {
                         float value = AssortedAdjustments.Settings.ResearchLabGenerateTechAmount / AssortedAdjustments.Settings.GenerateResourcesBaseDivisor;
                         ResourceUnit tech = new ResourceUnit(ResourceType.Tech, value);
                         resources.AddUnique(tech);
                     }
+                    */
                 }
                 else if (rgfDef.name.Contains("FoodProduction"))
                 {
@@ -83,88 +90,111 @@ namespace AssortedAdjustments.Patches
 
                 Logger.Info($"[FacilityAdjustments_Apply] rgfDef: {rgfDef.name}, GUID: {rgfDef.Guid}, BaseResourcesOutput: {rgfDef.BaseResourcesOutput.ToString()}");
             }
+
+
+
+            HarmonyHelpers.Patch(harmony, typeof(ResourceGeneratorFacilityComponent), "UpdateOutput", typeof(FacilityAdjustments), null, "Postfix_ResourceGeneratorFacilityComponent_UpdateOutput");
+
+            // UI
+            HarmonyHelpers.Patch(harmony, typeof(UIFacilityTooltip), "Show", typeof(FacilityAdjustments), null, "Postfix_UIFacilityTooltip_Show");
+            HarmonyHelpers.Patch(harmony, typeof(UIFacilityInfoPopup), "Show", typeof(FacilityAdjustments), null, "Postfix_UIFacilityInfoPopup_Show");
         }
 
 
 
-        // User interface
-        [HarmonyPatch(typeof(UIFacilityTooltip), "Show")]
-        public static class UIFacilityTooltip_Show_Patch
+        // Patches
+        public static void Postfix_ResourceGeneratorFacilityComponent_UpdateOutput(ResourceGeneratorFacilityComponent __instance)
         {
-            public static void Postfix(UIFacilityTooltip __instance, PhoenixFacilityDef facility)
+            try
             {
-                try
+                if (__instance.Def.name.Contains("FabricationPlant"))
                 {
-                    if (facility.name.Contains("MedicalBay"))
-                    {
-                        __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {AssortedAdjustments.Settings.MedicalBayBaseHeal} Hit Points per hour for each medical facility in the base.";
-                    }
-                    else if (facility.name.Contains("VehicleBay"))
-                    {
-                        __instance.Description.text = $"Vehicles and aircraft at the base recover {AssortedAdjustments.Settings.VehicleBayVehicleHealAmount} Hit Points per hour. Allows maintenance of 2 ground vehicles and 2 aircraft.";
-                    }
-                    else if (facility.name.Contains("FabricationPlant"))
-                    {
-                        string org = __instance.Description.text;
-                        string add = $"Every plant generates {AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount} material per hour.";
-                        __instance.Description.text = $"{org}\n{add}";
-                    }
-                    else if (facility.name.Contains("ResearchLab"))
-                    {
-                        string org = __instance.Description.text;
-                        string add = $"Every lab generates {AssortedAdjustments.Settings.ResearchLabGenerateTechAmount} tech per hour.";
-                        __instance.Description.text = $"{org}\n{add}";
-                    }
-                    else if (facility.name.Contains("FoodProduction"))
-                    {
-                        int foodProductionUnits = (int)Math.Round(AssortedAdjustments.Settings.FoodProductionGenerateSuppliesAmount * 24);
-                        __instance.Description.text = $"A food production facility that generates enough food for {foodProductionUnits} soldiers each day.";
-                    }
+                    float value = AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount / AssortedAdjustments.Settings.GenerateResourcesBaseDivisor;
+                    ResourceUnit materials = new ResourceUnit(ResourceType.Materials, value);
+                    __instance.ResourceOutput.AddUnique(materials);
                 }
-                catch (Exception e)
+                else if (__instance.Def.name.Contains("ResearchLab"))
                 {
-                    Logger.Error(e);
+                    float value = AssortedAdjustments.Settings.ResearchLabGenerateTechAmount / AssortedAdjustments.Settings.GenerateResourcesBaseDivisor;
+                    ResourceUnit tech = new ResourceUnit(ResourceType.Tech, value);
+                    __instance.ResourceOutput.AddUnique(tech);
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
-        [HarmonyPatch(typeof(UIFacilityInfoPopup), "Show")]
-        public static class UIFacilityInfoPopup_Show_Patch
+        public static void Postfix_UIFacilityTooltip_Show(UIFacilityTooltip __instance, PhoenixFacilityDef facility)
         {
-            public static void Postfix(UIFacilityInfoPopup __instance, GeoPhoenixFacility facility)
+            try
             {
-                try
+                if (facility.name.Contains("MedicalBay"))
                 {
-                    if (facility.Def.name.Contains("MedicalBay"))
-                    {
-                        __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {AssortedAdjustments.Settings.MedicalBayBaseHeal} Hit Points per hour for each medical facility in the base.";
-                    }
-                    else if (facility.Def.name.Contains("VehicleBay"))
-                    {
-                        __instance.Description.text = $"Vehicles and aircraft at the base recover {AssortedAdjustments.Settings.VehicleBayVehicleHealAmount} Hit Points per hour. Allows maintenance of 2 ground vehicles and 2 aircraft.";
-                    }
-                    else if (facility.Def.name.Contains("FabricationPlant"))
-                    {
-                        string org = __instance.Description.text;
-                        string add = $"Every plant generates {AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount} material per hour.";
-                        __instance.Description.text = $"{org}\n{add}";
-                    }
-                    else if (facility.Def.name.Contains("ResearchLab"))
-                    {
-                        string org = __instance.Description.text;
-                        string add = $"Every lab generates {AssortedAdjustments.Settings.ResearchLabGenerateTechAmount} tech per hour.";
-                        __instance.Description.text = $"{org}\n{add}";
-                    }
-                    else if (facility.Def.name.Contains("FoodProduction"))
-                    {
-                        int foodProductionUnits = (int)Math.Round(AssortedAdjustments.Settings.FoodProductionGenerateSuppliesAmount * 24);
-                        __instance.Description.text = $"A food production facility that generates enough food for {foodProductionUnits} soldiers each day.";
-                    }
+                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {AssortedAdjustments.Settings.MedicalBayBaseHeal} Hit Points per hour for each medical facility in the base.";
                 }
-                catch (Exception e)
+                else if (facility.name.Contains("VehicleBay"))
                 {
-                    Logger.Error(e);
+                    __instance.Description.text = $"Vehicles and aircraft at the base recover {AssortedAdjustments.Settings.VehicleBayVehicleHealAmount} Hit Points per hour. Allows maintenance of 2 ground vehicles and 2 aircraft.";
                 }
+                else if (facility.name.Contains("FabricationPlant"))
+                {
+                    string org = __instance.Description.text;
+                    string add = $"Every plant generates {AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount} material per hour.";
+                    __instance.Description.text = $"{org}\n{add}";
+                }
+                else if (facility.name.Contains("ResearchLab"))
+                {
+                    string org = __instance.Description.text;
+                    string add = $"Every lab generates {AssortedAdjustments.Settings.ResearchLabGenerateTechAmount} tech per hour.";
+                    __instance.Description.text = $"{org}\n{add}";
+                }
+                else if (facility.name.Contains("FoodProduction"))
+                {
+                    int foodProductionUnits = (int)Math.Round(AssortedAdjustments.Settings.FoodProductionGenerateSuppliesAmount * 24);
+                    __instance.Description.text = $"A food production facility that generates enough food for {foodProductionUnits} soldiers each day.";
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
+        public static void Postfix_UIFacilityInfoPopup_Show(UIFacilityInfoPopup __instance, GeoPhoenixFacility facility)
+        {
+            try
+            {
+                if (facility.Def.name.Contains("MedicalBay"))
+                {
+                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {AssortedAdjustments.Settings.MedicalBayBaseHeal} Hit Points per hour for each medical facility in the base.";
+                }
+                else if (facility.Def.name.Contains("VehicleBay"))
+                {
+                    __instance.Description.text = $"Vehicles and aircraft at the base recover {AssortedAdjustments.Settings.VehicleBayVehicleHealAmount} Hit Points per hour. Allows maintenance of 2 ground vehicles and 2 aircraft.";
+                }
+                else if (facility.Def.name.Contains("FabricationPlant"))
+                {
+                    string org = __instance.Description.text;
+                    string add = $"Every plant generates {AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount} material per hour.";
+                    __instance.Description.text = $"{org}\n{add}";
+                }
+                else if (facility.Def.name.Contains("ResearchLab"))
+                {
+                    string org = __instance.Description.text;
+                    string add = $"Every lab generates {AssortedAdjustments.Settings.ResearchLabGenerateTechAmount} tech per hour.";
+                    __instance.Description.text = $"{org}\n{add}";
+                }
+                else if (facility.Def.name.Contains("FoodProduction"))
+                {
+                    int foodProductionUnits = (int)Math.Round(AssortedAdjustments.Settings.FoodProductionGenerateSuppliesAmount * 24);
+                    __instance.Description.text = $"A food production facility that generates enough food for {foodProductionUnits} soldiers each day.";
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
     }

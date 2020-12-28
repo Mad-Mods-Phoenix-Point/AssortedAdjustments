@@ -2,6 +2,13 @@
 {
     internal class Settings
     {
+        public bool EnableUIEnhancements = true;
+        public bool ShowDetailedResearchAndProduction = true;
+        public bool ShowRecruitInfoInsideZoneTooltip = true;
+        public bool ShowTravelAgenda = true;
+
+
+
         public bool EnableExperienceToSkillpointConversion = true;
         public float XPtoSPConversionRate = 0.01f; // Default is dependent on difficulty setting, this is just a fallback if the setting is unretrievable.
         public float XPtoSPConversionMultiplier = 2f; // Flat multiplier for the setting above
@@ -15,7 +22,8 @@
 
 
         public bool EnableMissionAdjustments = true;
-        public int MaxPlayerUnitsAdd = 2; // Adding one to the default of 8 (=> 9, 21)
+        public int MaxPlayerUnitsAdd = 2; // Adds to the default of 8
+        public bool AlwaysRecoverAllItemsFromTacticalMissions = false;
 
 
 
@@ -95,5 +103,10 @@
         public bool PauseOnDestinationSet = true;
         public bool PauseOnHealed = true;
         internal bool CenterOnHealed = true;
+
+
+
+        public bool Debug = true;
+        public int DebugLevel = 2; // 0: nothing, 1: error, 2: debug, 3: info
     }
 }

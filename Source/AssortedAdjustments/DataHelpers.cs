@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Base.Core;
 using Base.Defs;
+using Base.UI;
 using Harmony;
 using PhoenixPoint.Common.Core;
 using PhoenixPoint.Common.Entities;
 using PhoenixPoint.Common.Levels.Missions;
+using PhoenixPoint.Common.UI;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases.FacilityComponents;
 using PhoenixPoint.Geoscape.View.ViewControllers.PhoenixBase;
@@ -60,13 +62,30 @@ namespace AssortedAdjustments
             }
             */
 
+            // TimeRemainingFormatterDef
+            /*
+            var defs = defRepository.DefRepositoryDef.AllDefs.OfType<TimeRemainingFormatterDef>().ToList();
+
+            foreach (var def in defs)
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                Logger.Info($"[DataHelpers_Print] InfiniteText: {def.InfiniteText.Localize(null)}");
+
+                Logger.Info($"[DataHelpers_Print] DaysText: {def.DaysText.Localize(null)}");
+                Logger.Info($"[DataHelpers_Print] HoursText: {def.HoursText.Localize(null)}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
 
 
             /*
             List<PhoenixFacilityDef> phoenixFacilityDefs = defRepository.DefRepositoryDef.AllDefs.OfType<PhoenixFacilityDef>().ToList();
             foreach (PhoenixFacilityDef pfDef in phoenixFacilityDefs)
             {
-                Logger.Info($"[FacilityAdjustments_Apply] pfDef: {pfDef.name}, Type: {pfDef.GetType().Name}, Description: {pfDef.ViewElementDef.Description.LocalizeEnglish()}");
+                Logger.Info($"[DataHelpers_Print] pfDef: {pfDef.name}, Type: {pfDef.GetType().Name}, Description: {pfDef.ViewElementDef.Description.LocalizeEnglish()}");
             }
             */
 
@@ -74,14 +93,14 @@ namespace AssortedAdjustments
             List<GeoFacilityComponentDef> geoFacilityComponentDefs = defRepository.DefRepositoryDef.AllDefs.OfType<GeoFacilityComponentDef>().ToList();
             foreach (GeoFacilityComponentDef gfDef in geoFacilityComponentDefs)
             {
-                Logger.Info($"[FacilityAdjustments_Apply] gfDef: {gfDef.name}, Type: {gfDef.GetType().Name}, ResourcePath: {gfDef.ResourcePath}");
+                Logger.Info($"[DataHelpers_Print] gfDef: {gfDef.name}, Type: {gfDef.GetType().Name}, ResourcePath: {gfDef.ResourcePath}");
             }
             */
 
             /*
             foreach (ResourceGeneratorFacilityComponentDef def in defRepository.DefRepositoryDef.AllDefs.OfType<ResourceGeneratorFacilityComponentDef>().ToList())
             {
-                Logger.Info($"[FacilityAdjustments_Apply] def: {def.name}, GUID: {def.Guid}, BaseResourcesOutput: {def.BaseResourcesOutput.ToString()}");
+                Logger.Info($"[DataHelpers_Print] def: {def.name}, GUID: {def.Guid}, BaseResourcesOutput: {def.BaseResourcesOutput.ToString()}");
             }
             */
 
@@ -89,10 +108,18 @@ namespace AssortedAdjustments
 
             // Get vanilla descriptions
             /*
-            List<ViewElementDef> viewElementDefs = defRepository.DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(veDef => veDef.name.Contains("VehicleBay")).ToList();
-            foreach (ViewElementDef veDef in viewElementDefs)
+            var defs = defRepository.DefRepositoryDef.AllDefs.OfType<ViewElementDef>().ToList();
+            foreach (ViewElementDef def in defs)
             {
-                Logger.Info($"[FacilityAdjustments_Apply] veDef: {veDef.name}, GUID: {veDef.Guid}, Description: {veDef.Description.LocalizeEnglish()}");
+                Logger.Info($"[DataHelpers_Print] def: {def.name}, GUID: {def.Guid}");
+                Logger.Info($"[DataHelpers_Print] DisplayName1: {def.DisplayName1.LocalizeEnglish()}");
+                Logger.Info($"[DataHelpers_Print] DisplayName2: {def.DisplayName2.LocalizeEnglish()}");
+                Logger.Info($"[DataHelpers_Print] Description: {def.Description.LocalizeEnglish()}");
+
+                Logger.Info($"[DataHelpers_Print] SmallIcon: {def.SmallIcon}");
+                Logger.Info($"[DataHelpers_Print] LargeIcon: {def.LargeIcon}");
+                Logger.Info($"[DataHelpers_Print] InventoryIcon: {def.InventoryIcon}");
+                Logger.Info($"[DataHelpers_Print] RosterIcon: {def.RosterIcon}");
             }
             */
         }

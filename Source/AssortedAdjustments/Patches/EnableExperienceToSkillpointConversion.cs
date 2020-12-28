@@ -104,7 +104,7 @@ namespace AssortedAdjustments.Patches
                     {
                         return;
                     }
-                    Logger.Debug($"[LevelProgression_AddExperience_POSTFIX] Capture experience({experience}).");
+                    Logger.Debug($"[LevelProgression_AddExperience_POSTFIX] Capture experience({experience})");
 
                     missionExperience.TryGetValue(__instance, out int xpMission);
                     missionExperience[__instance] = xpMission + experience;
