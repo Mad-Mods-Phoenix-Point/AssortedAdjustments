@@ -8,29 +8,52 @@ using PhoenixPoint.Common.Core;
 using PhoenixPoint.Common.Entities;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases.FacilityComponents;
+using PhoenixPoint.Geoscape.Entities.Sites;
+using PhoenixPoint.Geoscape.Levels.Factions;
 using PhoenixPoint.Geoscape.View.ViewControllers.PhoenixBase;
 
 namespace AssortedAdjustments.Patches
 {
     internal static class FacilityAdjustments
     {
+        internal static float currentHealFacilityHealOutput;
+        internal static float currentHealFacilityStaminaHealOutput;
+        internal static float currentVehicleSlotFacilityAircraftHealOuput;
+        internal static float currentVehicleSlotFacilityVehicleHealOuput;
+        internal static float currentFoodProductionFacilitySuppliesOutput;
+
+
+
         public static void Apply()
         {
             HarmonyInstance harmony = HarmonyInstance.Create(typeof(EconomyAdjustments).Namespace);
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
 
-            List<HealFacilityComponentDef> healFacilityComponentDefs = defRepository.DefRepositoryDef.AllDefs.OfType<HealFacilityComponentDef>().Where(hfcDef => hfcDef.name.Contains("MedicalBay")).ToList();
+            List<HealFacilityComponentDef> healFacilityComponentDefs = defRepository.DefRepositoryDef.AllDefs.OfType<HealFacilityComponentDef>().ToList();
             foreach (HealFacilityComponentDef hfcDef in healFacilityComponentDefs)
             {
-                hfcDef.BaseHeal = AssortedAdjustments.Settings.MedicalBayBaseHeal;
-                Logger.Info($"[FacilityAdjustments_Apply] hfcDef: {hfcDef.name}, GUID: {hfcDef.Guid}, BaseHeal: {hfcDef.BaseHeal}");
+                if (hfcDef.name.Contains("MedicalBay"))
+                {
+                    hfcDef.BaseHeal = AssortedAdjustments.Settings.MedicalBayBaseHeal;
+                    currentHealFacilityHealOutput = hfcDef.BaseHeal;
+                }
+                else if (hfcDef.name.Contains("LivingQuarters"))
+                {
+                    hfcDef.BaseStaminaHeal = AssortedAdjustments.Settings.LivingQuartersBaseStaminaHeal;
+                    currentHealFacilityStaminaHealOutput = hfcDef.BaseStaminaHeal;
+                }
+                Logger.Info($"[FacilityAdjustments_Apply] hfcDef: {hfcDef.name}, GUID: {hfcDef.Guid}, BaseHeal: {hfcDef.BaseHeal}, BaseStaminaHeal: {hfcDef.BaseStaminaHeal}");
             }
 
             List<VehicleSlotFacilityComponentDef> vehicleSlotFacilityComponentDefs = defRepository.DefRepositoryDef.AllDefs.OfType<VehicleSlotFacilityComponentDef>().Where(vsfDef => vsfDef.name.Contains("VehicleBay")).ToList();
             foreach (VehicleSlotFacilityComponentDef vsfDef in vehicleSlotFacilityComponentDefs)
             {
-                vsfDef.AircraftHealAmount = 4; // Default: 2 (not used?)
+                vsfDef.AircraftHealAmount = AssortedAdjustments.Settings.VehicleBayAircraftHealAmount;
                 vsfDef.VehicleHealAmount = AssortedAdjustments.Settings.VehicleBayVehicleHealAmount;
+
+                currentVehicleSlotFacilityAircraftHealOuput = vsfDef.AircraftHealAmount;
+                currentVehicleSlotFacilityVehicleHealOuput = vsfDef.VehicleHealAmount;
+
                 Logger.Info($"[FacilityAdjustments_Apply] vsfDef: {vsfDef.name}, GUID: {vsfDef.Guid}, AircraftHealAmount: {vsfDef.AircraftHealAmount}, VehicleHealAmount: {vsfDef.VehicleHealAmount}");
             }
 
@@ -74,6 +97,8 @@ namespace AssortedAdjustments.Patches
                     ResourcePack resources = rgfDef.BaseResourcesOutput;
                     ResourceUnit supplies = new ResourceUnit(ResourceType.Supplies, AssortedAdjustments.Settings.FoodProductionGenerateSuppliesAmount);
                     resources.Set(supplies);
+
+                    currentFoodProductionFacilitySuppliesOutput = AssortedAdjustments.Settings.FoodProductionGenerateSuppliesAmount;
                 }
                 else if (rgfDef.name.Contains("BionicsLab"))
                 {
@@ -94,6 +119,8 @@ namespace AssortedAdjustments.Patches
 
 
             HarmonyHelpers.Patch(harmony, typeof(ResourceGeneratorFacilityComponent), "UpdateOutput", typeof(FacilityAdjustments), null, "Postfix_ResourceGeneratorFacilityComponent_UpdateOutput");
+            HarmonyHelpers.Patch(harmony, typeof(HealFacilityComponent), "UpdateOutput", typeof(FacilityAdjustments), null, "Postfix_HealFacilityComponent_UpdateOutput");
+            HarmonyHelpers.Patch(harmony, typeof(VehicleSlotFacilityComponent), "UpdateOutput", typeof(FacilityAdjustments), null, "Postfix_VehicleSlotFacilityComponent_UpdateOutput");
 
             // UI
             HarmonyHelpers.Patch(harmony, typeof(UIFacilityTooltip), "Show", typeof(FacilityAdjustments), null, "Postfix_UIFacilityTooltip_Show");
@@ -107,6 +134,30 @@ namespace AssortedAdjustments.Patches
         {
             try
             {
+                if(__instance.Facility.PxBase.Site.Owner is GeoPhoenixFaction)
+                {
+                    string owningFaction = __instance.Facility.PxBase.Site.Owner.Name.Localize();
+                    string facilityName = __instance.Facility.ViewElementDef.DisplayName1.Localize();
+                    string facilityId = __instance.Facility.FacilityId.ToString();
+                    Logger.Info($"[ResourceGeneratorFacilityComponent_UpdateOutput_POSTFIX] owningFaction: {owningFaction}, facilityName: {facilityName}, facilityId: {facilityId}, ResourceOutput: {__instance.ResourceOutput}");
+
+                    if (__instance.Def.name.Contains("FoodProduction"))
+                    {
+                        currentFoodProductionFacilitySuppliesOutput = __instance.ResourceOutput.Values.Where(u => u.Type == ResourceType.Supplies).First().Value;
+
+                        /*
+                        foreach (ResourceUnit resourceUnit in __instance.ResourceOutput.Values)
+                        {
+                            if (resourceUnit.Type == ResourceType.Supplies)
+                            {
+                                currentFoodProductionFacilitySuppliesOutput = resourceUnit.Value;
+                            }
+                        }
+                        */
+                    }
+                }
+
+                // All factions
                 if (__instance.Def.name.Contains("FabricationPlant"))
                 {
                     float value = AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount / AssortedAdjustments.Settings.GenerateResourcesBaseDivisor;
@@ -126,17 +177,78 @@ namespace AssortedAdjustments.Patches
             }
         }
 
-        public static void Postfix_UIFacilityTooltip_Show(UIFacilityTooltip __instance, PhoenixFacilityDef facility)
+        public static void Postfix_HealFacilityComponent_UpdateOutput(HealFacilityComponent __instance)
         {
             try
             {
+                if (__instance.Facility.PxBase.Site.Owner is GeoPhoenixFaction)
+                {
+                    string owningFaction = __instance.Facility.PxBase.Site.Owner.Name.Localize();
+                    string facilityName = __instance.Facility.ViewElementDef.DisplayName1.Localize();
+                    string facilityId = __instance.Facility.FacilityId.ToString();
+                    Logger.Info($"[ResourceGeneratorFacilityComponent_UpdateOutput_POSTFIX] owningFaction: {owningFaction}, facilityName: {facilityName}, facilityId: {facilityId}, HealOutput: {__instance.HealOutput}, StaminaHealOutput: {__instance.StaminaHealOutput}");
+
+                    if (__instance.Def.name.Contains("MedicalBay"))
+                    {
+                        currentHealFacilityHealOutput = __instance.HealOutput;
+                    }
+                    else if (__instance.Def.name.Contains("LivingQuarters"))
+                    {
+                        currentHealFacilityStaminaHealOutput = __instance.StaminaHealOutput;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+        
+        public static void Postfix_VehicleSlotFacilityComponent_UpdateOutput(VehicleSlotFacilityComponent __instance)
+        {
+            try
+            {
+                if (__instance.Facility.PxBase.Site.Owner is GeoPhoenixFaction)
+                {
+                    string owningFaction = __instance.Facility.PxBase.Site.Owner.Name.Localize();
+                    string facilityName = __instance.Facility.ViewElementDef.DisplayName1.Localize();
+                    string facilityId = __instance.Facility.FacilityId.ToString();
+                    Logger.Info($"[ResourceGeneratorFacilityComponent_UpdateOutput_POSTFIX] owningFaction: {owningFaction}, facilityName: {facilityName}, facilityId: {facilityId}, AircraftHealOuput: {__instance.AircraftHealOuput}, VehicletHealOuput: {__instance.VehicletHealOuput}");
+
+                    currentVehicleSlotFacilityAircraftHealOuput = __instance.AircraftHealOuput;
+                    currentVehicleSlotFacilityVehicleHealOuput = __instance.VehicletHealOuput;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
+
+
+        public static void Postfix_UIFacilityTooltip_Show(UIFacilityTooltip __instance, PhoenixFacilityDef facility, GeoPhoenixBase currentBase)
+        {
+            try
+            {
+                if(currentBase == null)
+                {
+                    return;
+                }
+
                 if (facility.name.Contains("MedicalBay"))
                 {
-                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {AssortedAdjustments.Settings.MedicalBayBaseHeal} Hit Points per hour for each medical facility in the base.";
+                    float baseHealOutput = facility.GetComponent<HealFacilityComponentDef>().BaseHeal;
+                    Logger.Info($"[UIFacilityTooltip_Show_POSTFIX] baseHealOutput: {baseHealOutput}, currentHealFacilityHealOutput: {currentHealFacilityHealOutput}");
+                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {currentHealFacilityHealOutput} (Base: {baseHealOutput}) Hit Points per hour for each medical facility in the base.";
+                }
+                else if (facility.name.Contains("LivingQuarters"))
+                {
+                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {currentHealFacilityStaminaHealOutput} Stamina points per hour for each living quarters in the base.";
                 }
                 else if (facility.name.Contains("VehicleBay"))
                 {
-                    __instance.Description.text = $"Vehicles and aircraft at the base recover {AssortedAdjustments.Settings.VehicleBayVehicleHealAmount} Hit Points per hour. Allows maintenance of 2 ground vehicles and 2 aircraft.";
+                    __instance.Description.text = $"Vehicles and aircraft at the base recover {currentVehicleSlotFacilityVehicleHealOuput} Hit Points per hour. Allows maintenance of 2 ground vehicles and 2 aircraft.";
                 }
                 else if (facility.name.Contains("FabricationPlant"))
                 {
@@ -152,7 +264,7 @@ namespace AssortedAdjustments.Patches
                 }
                 else if (facility.name.Contains("FoodProduction"))
                 {
-                    int foodProductionUnits = (int)Math.Round(AssortedAdjustments.Settings.FoodProductionGenerateSuppliesAmount * 24);
+                    int foodProductionUnits = (int)Math.Round(currentFoodProductionFacilitySuppliesOutput * 24);
                     __instance.Description.text = $"A food production facility that generates enough food for {foodProductionUnits} soldiers each day.";
                 }
             }
@@ -168,11 +280,17 @@ namespace AssortedAdjustments.Patches
             {
                 if (facility.Def.name.Contains("MedicalBay"))
                 {
-                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {AssortedAdjustments.Settings.MedicalBayBaseHeal} Hit Points per hour for each medical facility in the base.";
+                    float baseHealOutput = facility.GetComponent<HealFacilityComponent>().Def.BaseHeal;
+                    Logger.Info($"[UIFacilityInfoPopup_Show_POSTFIX] baseHealOutput: {baseHealOutput}, currentHealFacilityHealOutput: {currentHealFacilityHealOutput}");
+                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {currentHealFacilityHealOutput} (Base: {baseHealOutput}) Hit Points per hour for each medical facility in the base.";
+                }
+                else if (facility.Def.name.Contains("LivingQuarters"))
+                {
+                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {currentHealFacilityStaminaHealOutput} Stamina points per hour for each living quarters in the base.";
                 }
                 else if (facility.Def.name.Contains("VehicleBay"))
                 {
-                    __instance.Description.text = $"Vehicles and aircraft at the base recover {AssortedAdjustments.Settings.VehicleBayVehicleHealAmount} Hit Points per hour. Allows maintenance of 2 ground vehicles and 2 aircraft.";
+                    __instance.Description.text = $"Vehicles and aircraft at the base recover {currentVehicleSlotFacilityVehicleHealOuput} Hit Points per hour. Allows maintenance of 2 ground vehicles and 2 aircraft.";
                 }
                 else if (facility.Def.name.Contains("FabricationPlant"))
                 {
@@ -188,7 +306,7 @@ namespace AssortedAdjustments.Patches
                 }
                 else if (facility.Def.name.Contains("FoodProduction"))
                 {
-                    int foodProductionUnits = (int)Math.Round(AssortedAdjustments.Settings.FoodProductionGenerateSuppliesAmount * 24);
+                    int foodProductionUnits = (int)Math.Round(currentFoodProductionFacilitySuppliesOutput * 24);
                     __instance.Description.text = $"A food production facility that generates enough food for {foodProductionUnits} soldiers each day.";
                 }
             }

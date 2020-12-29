@@ -190,10 +190,14 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             {
                 try
                 {
+                    if (!__instance.Enabled || __instance.TipKey == null || string.IsNullOrEmpty(__instance.TipKey.LocalizationKey))
+                    {
+                        return;
+                    }
                     Logger.Debug($"[UITooltipText_OnMouseEnter_POSTFIX] TipKey: {__instance.TipKey.LocalizationKey}");
 
                     // Override some keys
-                    if (__instance.TipKey?.LocalizationKey == "KEY_RESEARCH_TOTAL_TT")
+                    if (__instance.TipKey.LocalizationKey == "KEY_RESEARCH_TOTAL_TT")
                     {
                         Logger.Debug($"[UITooltipText_OnMouseEnter_POSTFIX] TipText: {__instance.TipText}");
 
@@ -209,7 +213,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         }
                         __instance.UpdateText($"{replace}{add}");
                     }
-                    else if (__instance.TipKey?.LocalizationKey == "KEY_PRODUCTION_TOTAL_TT")
+                    else if (__instance.TipKey.LocalizationKey == "KEY_PRODUCTION_TOTAL_TT")
                     {
                         Logger.Debug($"[UITooltipText_OnMouseEnter_POSTFIX] TipText: {__instance.TipText}");
 

@@ -264,13 +264,16 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             {
                 try
                 {
-                    Logger.Debug($"[UITooltipText_OnMouseEnter_POSTFIX] TipText: {__instance.TipText}");
-
-
-
+                    if (!__instance.Enabled)
+                    {
+                        return;
+                    }
+                    
                     // CONTROL TAGS
                     if (__instance.TipText.Contains("<!--") && __instance.TipText.Contains("-->"))
                     {
+                        Logger.Info($"[UITooltipText_OnMouseEnter_POSTFIX] CONTROL TAGS found in TipText: {__instance.TipText}");
+
                         string s = __instance.TipText;
                         int ctrlStart = s.IndexOf("<!--");
                         int ctrlEnd = s.IndexOf("-->") + 3;

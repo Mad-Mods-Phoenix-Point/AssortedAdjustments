@@ -27,8 +27,8 @@
 
 
 #### Facilities
-* Medical bays and vehicle bays have their healing/repair rate doubled.
-* Food production output slightly raised.
+* Medical bays and vehicle bays have their base healing/repair rate doubled.
+* Food production base output slightly raised.
 * Fabrication plants generate 1(one) Material per day.
 * Research labs generate 1(one) Tech per day.
 * Prepared several other values to be changed via settings.
@@ -40,11 +40,16 @@
 ## Settings
 Everything is configurable. I tried to be very clear in naming the settings so everything should be more or less self-explanatory.  
 In the future i hope i can add a detailed table with the Setting, its default value and an extensive description.  
-Feel free to comment if sth. is unclear or add a pull request at https://github.com/Mad-Mods-Phoenix-Point/AssortedAdjustments.
+Feel free to comment if sth. is unclear or add a pull request at: 
+- https://github.com/Mad-Mods-Phoenix-Point/AssortedAdjustments.
+
+If you have problems with finding/applying the settings please see:  
+- https://github.com/Sheep-y/Modnix/wiki/User-Guide
+- https://stackoverflow.com/questions/28339116/not-allowed-to-load-assembly-from-network-location
 
 ## Notes
 Requires Modnix 2.5.3 or higher.  
-Tested with GOG YOE.  
+Tested with GOG Year One Edition (1.9).  
 Some features are derivates of existent mods which are adapted, sometimes fixed to work with the YOE version of the game.  
 If the original mods work for you and/or you just like them better, please disable the corresponding feature in the settings of this mod.
 

@@ -44,6 +44,8 @@
 
         // Healing
         public float MedicalBayBaseHeal = 8f; // Default: 4f
+        public float LivingQuartersBaseStaminaHeal = 4f; // Default: 2f
+        public int VehicleBayAircraftHealAmount = 4; // Default: 2
         public int VehicleBayVehicleHealAmount = 40; // Default: 20
 
         // Resource Generators
@@ -60,10 +62,11 @@
 
 
 
-        public bool EnableSoldierAdjustments = false;
-        public int PersonalAbilitiesCount = 5; // Default: 3
-        public int MaxStrength = 35; // Default: 30
-        public int MaxWill = 25; // Default: 20
+        public bool EnableSoldierAdjustments = true;
+        public int MaxAugmentations = 3; //Default: 2
+        public int PersonalAbilitiesCount = 3; // Default: 3
+        public int MaxStrength = 30; // Default: 30
+        public int MaxWill = 20; // Default: 20
         public int MaxSpeed = 20; // Default: 20
 
 
@@ -107,6 +110,6 @@
 
 
         public bool Debug = true;
-        public int DebugLevel = 2; // 0: nothing, 1: error, 2: debug, 3: info
+        public int DebugLevel = 1; // 0: nothing, 1: error, 2: debug, 3: info
     }
 }
