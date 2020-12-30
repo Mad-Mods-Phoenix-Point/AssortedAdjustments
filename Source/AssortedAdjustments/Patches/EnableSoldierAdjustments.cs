@@ -13,6 +13,7 @@ using PhoenixPoint.Geoscape.Entities;
 using PhoenixPoint.Geoscape.View.ViewControllers.AugmentationScreen;
 using PhoenixPoint.Geoscape.View.ViewModules;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace AssortedAdjustments.Patches
 {
@@ -88,9 +89,13 @@ namespace AssortedAdjustments.Patches
                             }
                         }
                     }
-                    string text = __instance.XoutOfY.Localize(null);
+                    string text = " " + __instance.XoutOfY.Localize(null);
                     text = text.Replace("{0}", ____currentCharacterAugmentsAmount.ToString());
                     text = text.Replace("{1}", MaxAugmentations.ToString());
+
+                    __instance.MutationsAvailableValue.fontSize = 44;
+                    __instance.MutationsAvailableValue.alignment = TextAnchor.MiddleRight;
+
                     __instance.MutationsAvailableValue.text = text;
                     __instance.MutationsAvailableValue.GetComponent<UIColorController>().SetWarningActive(MaxAugmentations <= ____currentCharacterAugmentsAmount, false);
 
@@ -152,9 +157,13 @@ namespace AssortedAdjustments.Patches
                             }
                         }
                     }
-                    string text = __instance.XoutOfY.Localize(null);
+                    string text = " " + __instance.XoutOfY.Localize(null);
                     text = text.Replace("{0}", ____currentCharacterAugmentsAmount.ToString());
                     text = text.Replace("{1}", MaxAugmentations.ToString());
+
+                    __instance.AugmentsAvailableValue.fontSize = 44;
+                    __instance.AugmentsAvailableValue.alignment = TextAnchor.MiddleRight;
+
                     __instance.AugmentsAvailableValue.text = text;
                     __instance.AugmentsAvailableValue.GetComponent<UIColorController>().SetWarningActive(MaxAugmentations <= ____currentCharacterAugmentsAmount, false);
 
@@ -166,6 +175,38 @@ namespace AssortedAdjustments.Patches
                 {
                     Logger.Error(e);
                     return true;
+                }
+            }
+        }
+
+
+
+        [HarmonyPatch(typeof(UIModuleMutationSection), "ResetContainer")]
+        public static class UIModuleMutationSection_ResetContainer_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableSoldierAdjustments;
+            }
+
+            public static void Prefix(UIModuleMutationSection __instance, AugumentSlotState slotState)
+            {
+                try
+                {
+                    if (slotState != AugumentSlotState.Available)
+                    {
+                        Text text = __instance.MutationLockedLoc.gameObject.GetComponent<Text>();
+
+                        if (text != null)
+                        {
+                            text.fontSize = 30;
+                            text.lineSpacing = 1f;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
                 }
             }
         }

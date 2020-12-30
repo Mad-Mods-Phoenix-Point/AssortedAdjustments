@@ -238,9 +238,11 @@ namespace AssortedAdjustments.Patches
 
                 if (facility.name.Contains("MedicalBay"))
                 {
-                    float baseHealOutput = facility.GetComponent<HealFacilityComponentDef>().BaseHeal;
-                    Logger.Info($"[UIFacilityTooltip_Show_POSTFIX] baseHealOutput: {baseHealOutput}, currentHealFacilityHealOutput: {currentHealFacilityHealOutput}");
-                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {currentHealFacilityHealOutput} (Base: {baseHealOutput}) Hit Points per hour for each medical facility in the base.";
+                    //float baseHealOutput = facility.GetComponent<HealFacilityComponentDef>().BaseHeal;
+                    //float currentBonusValue = currentHealFacilityHealOutput > baseHealOutput ? (currentHealFacilityHealOutput - baseHealOutput) : 0;
+                    //string currentBonus = currentBonusValue > 0 ? $"({baseHealOutput} + {currentBonusValue})" : "";
+
+                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {currentHealFacilityHealOutput} Hit Points per hour for each medical facility in the base.";
                 }
                 else if (facility.name.Contains("LivingQuarters"))
                 {
@@ -280,9 +282,7 @@ namespace AssortedAdjustments.Patches
             {
                 if (facility.Def.name.Contains("MedicalBay"))
                 {
-                    float baseHealOutput = facility.GetComponent<HealFacilityComponent>().Def.BaseHeal;
-                    Logger.Info($"[UIFacilityInfoPopup_Show_POSTFIX] baseHealOutput: {baseHealOutput}, currentHealFacilityHealOutput: {currentHealFacilityHealOutput}");
-                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {currentHealFacilityHealOutput} (Base: {baseHealOutput}) Hit Points per hour for each medical facility in the base.";
+                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {currentHealFacilityHealOutput} Hit Points per hour for each medical facility in the base.";
                 }
                 else if (facility.Def.name.Contains("LivingQuarters"))
                 {

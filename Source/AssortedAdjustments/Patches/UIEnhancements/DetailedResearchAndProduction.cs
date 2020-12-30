@@ -152,14 +152,14 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             {
                 try
                 {
-                    Logger.Debug($"[UIModuleInfoBar_UpdateResourceInfo_POSTFIX] faction: {faction.Name.LocalizeEnglish()}");
+                    //Logger.Debug($"[UIModuleInfoBar_UpdateResourceInfo_POSTFIX] faction: {faction.Name.LocalizeEnglish()}");
 
                     ResourcePack totalOutput = faction.ResourceIncome.GetTotalOutput();
                     totalResearch = totalOutput.ByResourceType(ResourceType.Research).Value * 24f;
                     totalProduction = totalOutput.ByResourceType(ResourceType.Production).Value * 24f;
 
-                    Logger.Debug($"[UIModuleInfoBar_UpdateResourceInfo_POSTFIX] totalResearch: {totalResearch}");
-                    Logger.Debug($"[UIModuleInfoBar_UpdateResourceInfo_POSTFIX] totalProduction: {totalProduction}");
+                    //Logger.Info($"[UIModuleInfoBar_UpdateResourceInfo_POSTFIX] totalResearch: {totalResearch}");
+                    //Logger.Info($"[UIModuleInfoBar_UpdateResourceInfo_POSTFIX] totalProduction: {totalProduction}");
 
                     string orgResearchLabel = __instance.ResearchLabel.text;
                     string addResearchLabel = $"[{totalResearch}]";

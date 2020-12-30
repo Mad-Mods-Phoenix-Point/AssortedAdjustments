@@ -6,6 +6,7 @@
         public bool ShowDetailedResearchAndProduction = true;
         public bool ShowRecruitInfoInsideZoneTooltip = true;
         public bool ShowTravelAgenda = true;
+        public bool ShowExtendedBaseInfo = true;
 
 
 

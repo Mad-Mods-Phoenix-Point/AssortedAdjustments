@@ -79,8 +79,10 @@
     <Compile Include="Patches\EnableMouseCameraRotation.cs" />
     <Compile Include="Patches\PauseOnDestinationSet.cs" />
     <Compile Include="Patches\PauseOnHealed.cs" />
+    <Compile Include="Patches\UIEnhancements\ExtendedBaseInfo.cs" />
     <Compile Include="Patches\UIEnhancements\DetailedResearchAndProduction.cs" />
     <Compile Include="Patches\UIEnhancements\RecruitInfoInsideZoneTooltip.cs" />
+    <Compile Include="Patches\UIEnhancements\Shared.cs" />
     <Compile Include="Patches\UIEnhancements\TravelAgenda.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
