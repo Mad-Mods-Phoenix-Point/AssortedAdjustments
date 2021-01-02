@@ -9,6 +9,10 @@
 * The tooltip at recruitment zones in havens now show the personal abilities of the recruit (Adapted from Sheepy's "Recruit Info").
 * The global agenda tracker (or however you call it) now shows travel and exploration times of your aircraft. 
     * The context menu will show expected times behind the action too (Borrowed from Sheepy).
+* Extended information for bases.
+    * Popup on activated Phoenix Bases will show healing and repair capabilities.
+    * Added popup in base overview to show the accumulated healing/resources output, soldiers in treatment and vehicle details.
+    * Added popup in recruitment screen for the selected base with extended info too.
 
 ### Gameplay
 * Maxed out soldiers now gain additional SP for their wasted XP (Rebuilds Sheepy's "Spill Exp to Skill"). Conversion rate and multiplier is configurable.
@@ -23,6 +27,9 @@
 * Disable the annoying "Right Click Move" in tactical missions. God.
 * Disable the rock tiles in bases. 
 * Keep the game paused when ordering vehicles to travel and when a squad is rested (Thx Sheepy).
+* Pause the game when new recruits have arrived at phoenic bases.
+* Allow full mutations AND full augmentations for the soldiers along with UI fixes for the related screens.
+* Recruitment of soldiers with more than 3 personal abilities at phoenix bases now works!
 
 
 

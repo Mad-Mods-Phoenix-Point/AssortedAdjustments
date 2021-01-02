@@ -79,31 +79,15 @@ namespace AssortedAdjustments
             }
             */
 
-
-
+            // HealFacilityComponentDef
             /*
-            List<PhoenixFacilityDef> phoenixFacilityDefs = defRepository.DefRepositoryDef.AllDefs.OfType<PhoenixFacilityDef>().ToList();
-            foreach (PhoenixFacilityDef pfDef in phoenixFacilityDefs)
+            List<HealFacilityComponentDef> defs = defRepository.DefRepositoryDef.AllDefs.OfType<HealFacilityComponentDef>().ToList();
+            foreach (HealFacilityComponentDef def in defs)
             {
-                Logger.Info($"[DataHelpers_Print] pfDef: {pfDef.name}, Type: {pfDef.GetType().Name}, Description: {pfDef.ViewElementDef.Description.LocalizeEnglish()}");
+                Logger.Info($"[DataHelpers_Print] def: {def.name}, Type: {def.GetType().Name}, HealMutog: {def.HealMutog}, HealSoldier: {def.HealSoldier}, BaseHeal: {def.BaseHeal}, BaseStaminaHeal: {def.BaseStaminaHeal}");
             }
             */
-
-            /*
-            List<GeoFacilityComponentDef> geoFacilityComponentDefs = defRepository.DefRepositoryDef.AllDefs.OfType<GeoFacilityComponentDef>().ToList();
-            foreach (GeoFacilityComponentDef gfDef in geoFacilityComponentDefs)
-            {
-                Logger.Info($"[DataHelpers_Print] gfDef: {gfDef.name}, Type: {gfDef.GetType().Name}, ResourcePath: {gfDef.ResourcePath}");
-            }
-            */
-
-            /*
-            foreach (ResourceGeneratorFacilityComponentDef def in defRepository.DefRepositoryDef.AllDefs.OfType<ResourceGeneratorFacilityComponentDef>().ToList())
-            {
-                Logger.Info($"[DataHelpers_Print] def: {def.name}, GUID: {def.Guid}, BaseResourcesOutput: {def.BaseResourcesOutput.ToString()}");
-            }
-            */
-
+            
 
 
             // Get vanilla descriptions

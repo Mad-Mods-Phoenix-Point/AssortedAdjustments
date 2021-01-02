@@ -14,12 +14,18 @@ using PhoenixPoint.Geoscape.View.ViewControllers.AugmentationScreen;
 using PhoenixPoint.Geoscape.View.ViewModules;
 using UnityEngine;
 using UnityEngine.UI;
+using PhoenixPoint.Common.UI;
+using PhoenixPoint.Geoscape.View.ViewControllers.BaseRecruits;
+using PhoenixPoint.Geoscape.View.DataObjects;
 
 namespace AssortedAdjustments.Patches
 {
     internal static class SoldierAdjustments
     {
         internal static int MaxAugmentations = Mathf.Clamp(AssortedAdjustments.Settings.MaxAugmentations, 0, 3);
+        internal static int VanillaAbilityLimit = 3;
+        internal static int ModAbilityLimit = 7;
+        internal static int PersonalAbilitiesCount = Mathf.Clamp(AssortedAdjustments.Settings.PersonalAbilitiesCount, VanillaAbilityLimit, ModAbilityLimit);
 
 
 
@@ -30,7 +36,7 @@ namespace AssortedAdjustments.Patches
             List<BaseStatSheetDef> baseStatSheetDefs = defRepository.DefRepositoryDef.AllDefs.OfType<BaseStatSheetDef>().ToList();
             foreach (BaseStatSheetDef bssDef in baseStatSheetDefs)
             {
-                bssDef.PersonalAbilitiesCount = AssortedAdjustments.Settings.PersonalAbilitiesCount;
+                bssDef.PersonalAbilitiesCount = PersonalAbilitiesCount;
                 bssDef.MaxStrength = AssortedAdjustments.Settings.MaxStrength;
                 bssDef.MaxWill = AssortedAdjustments.Settings.MaxWill;
                 bssDef.MaxSpeed = AssortedAdjustments.Settings.MaxSpeed;
@@ -42,6 +48,132 @@ namespace AssortedAdjustments.Patches
 
 
         // Patches
+        [HarmonyPatch(typeof(RecruitsListElementController), "SetRecruitElement")]
+        public static class RecruitsListElementController_SetRecruitElement_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.EnableSoldierAdjustments;
+            }
+
+            // Prepare UI for more than 3 personal abilities
+            public static void Prefix(RecruitsListElementController __instance, RecruitsListEntryData entryData, List<RowIconTextController> ____abilityIcons)
+            {
+                try
+                {
+                    RowIconTextController[] rowItems = __instance.PersonalTrackRoot.transform.GetComponentsInChildren<RowIconTextController>(true);
+
+                    Logger.Debug($"[RecruitsListElementController_SetRecruitElement_PREFIX] rowItems: {rowItems.Length}");
+                    Logger.Debug($"[RecruitsListElementController_SetRecruitElement_PREFIX] abilities: {entryData.PersonalTrackAbilities.Count()}");
+
+                    // Only add the icon containers if we need them
+                    if (rowItems.Length < ModAbilityLimit)
+                    {
+                        // Clone the first item as often as needed, it's filled with content in the original method by calling RecruitsListElementController.SetAbilityIcons()
+                        RowIconTextController cloneBase = rowItems.FirstOrDefault();
+                        int clonesNeeded = ModAbilityLimit - VanillaAbilityLimit;
+
+                        if (cloneBase == null)
+                        {
+                            throw new NullReferenceException("Object to clone is null");
+                        }
+
+                        for (int i = 0; i < clonesNeeded; i++)
+                        {
+                            UnityEngine.Object.Instantiate<RowIconTextController>(rowItems.FirstOrDefault(), __instance.PersonalTrackRoot.transform, true);
+                        }
+                    }
+
+
+
+                    rowItems = __instance.PersonalTrackRoot.transform.GetComponentsInChildren<RowIconTextController>(true);
+                    Logger.Debug($"[RecruitsListElementController_SetRecruitElement_PREFIX] rowItems: {rowItems.Length}");
+
+                    // Disable textfield and rescale item for more than 3 abilities
+                    if (entryData.PersonalTrackAbilities.Count() > VanillaAbilityLimit) {
+                        foreach (RowIconTextController rowItem in rowItems)
+                        {
+                            rowItem.DisplayText.gameObject.SetActive(false);
+
+                            RectTransform rtRowItem = rowItem.GetComponent<RectTransform>();
+
+                            RectTransform rtText = rowItem.DisplayText.GetComponent<RectTransform>();
+                            rtText.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 0f);
+                            rtRowItem.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 100f);
+
+                            //Rect _rect = (Rect)AccessTools.Property(typeof(RectTransform), "rect").GetValue(rtRowItem, null);
+                            //_rect.width = 100f;
+                        }
+                    }
+
+
+
+                    //HorizontalLayoutGroup layout = __instance.PersonalTrackRoot.GetComponent<HorizontalLayoutGroup>();
+                    //Logger.Info($"{layout.name}");
+                    //layout.childForceExpandWidth = false;
+                    //layout.childScaleWidth = false;
+                    //layout.childControlWidth = false;
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+
+
+
+        [HarmonyPatch(typeof(RecruitsListElementController), "SetAbilityIcons")]
+        public static class RecruitsListElementController_SetAbilityIcons_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.EnableSoldierAdjustments;
+            }
+
+            // Quickfix to make more than 3(three) personal abilities work (ignoring UI)
+            /*
+            public static void Prefix(RecruitsListElementController __instance, ref List<TacticalAbilityViewElementDef> abilities)
+            {
+                try
+                {
+                    // If the list of abilities is bigger than the vanilla limit of 3 it breaks the UI
+                    // So, only grab 3 from the list to display and ignore all others (they work properly but won't be shown)
+
+                    //abilities = abilities.Take(3).ToList();
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+            */
+
+            // Add ability title to tooltips
+            public static void Postfix(RecruitsListElementController __instance, List<TacticalAbilityViewElementDef> abilities, List<RowIconTextController> ____abilityIcons)
+            {
+                try
+                {
+                    Logger.Debug($"[RecruitsListElementController_SetAbilityIcons_POSTFIX] abilities.Count: {abilities.Count()}");
+                    Logger.Debug($"[RecruitsListElementController_SetAbilityIcons_POSTFIX] ____abilityIcons.Count: {____abilityIcons.Count()}");
+
+                    for (int i = 0; i < abilities.Count; i++)
+                    {
+                        TacticalAbilityViewElementDef tacticalAbilityViewElementDef = abilities[i];
+                        ____abilityIcons[i].Tooltip.TipKey = null;
+                        ____abilityIcons[i].Tooltip.TipText = $"{tacticalAbilityViewElementDef.DisplayName1.Localize()} - {tacticalAbilityViewElementDef.Description.Localize()}";
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+
+
+
+        // Mutation limit
         [HarmonyPatch(typeof(UIModuleMutate), "InitCharacterInfo")]
         public static class UIModuleMutate_InitCharacterInfo_Patch
         {
@@ -111,6 +243,7 @@ namespace AssortedAdjustments.Patches
             }
         }
 
+        // Augmentation limit
         [HarmonyPatch(typeof(UIModuleBionics), "InitCharacterInfo")]
         public static class UIModuleBionics_InitCharacterInfo_Patch
         {
@@ -181,6 +314,7 @@ namespace AssortedAdjustments.Patches
 
 
 
+        // Fix UI glitches
         [HarmonyPatch(typeof(UIModuleMutationSection), "ResetContainer")]
         public static class UIModuleMutationSection_ResetContainer_Patch
         {
@@ -189,7 +323,7 @@ namespace AssortedAdjustments.Patches
                 return AssortedAdjustments.Settings.EnableSoldierAdjustments;
             }
 
-            public static void Prefix(UIModuleMutationSection __instance, AugumentSlotState slotState)
+            public static void Postfix(UIModuleMutationSection __instance, AugumentSlotState slotState)
             {
                 try
                 {
@@ -199,6 +333,26 @@ namespace AssortedAdjustments.Patches
 
                         if (text != null)
                         {
+                            string s = text.text;
+                            string[] a = s.Split((char)32);
+                            string r = "\n";
+                            for(int i = 0; i < a.Length; i++)
+                            {
+                                r += a[i];
+                                r += " ";
+
+                                if (i == 0)
+                                {
+                                    continue;
+                                }
+
+                                // Add a break every four words
+                                if (i % 3 == 0)
+                                {
+                                    r += "\n";
+                                }
+                            }
+                            text.text = r;
                             text.fontSize = 30;
                             text.lineSpacing = 1f;
                         }

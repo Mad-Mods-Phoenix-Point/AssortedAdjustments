@@ -20,7 +20,9 @@ namespace AssortedAdjustments.Patches
         internal static float currentHealFacilityStaminaHealOutput;
         internal static float currentVehicleSlotFacilityAircraftHealOuput;
         internal static float currentVehicleSlotFacilityVehicleHealOuput;
+        internal static float currentHealFacilityMutogHealOutput;
         internal static float currentFoodProductionFacilitySuppliesOutput;
+        internal static int currentExperienceFacilityExperienceOutput;
 
 
 
@@ -37,12 +39,28 @@ namespace AssortedAdjustments.Patches
                     hfcDef.BaseHeal = AssortedAdjustments.Settings.MedicalBayBaseHeal;
                     currentHealFacilityHealOutput = hfcDef.BaseHeal;
                 }
+                else if (hfcDef.name.Contains("MutationLab"))
+                {
+                    hfcDef.BaseHeal = AssortedAdjustments.Settings.MutationLabMutogHealAmount;
+                    currentHealFacilityMutogHealOutput = hfcDef.BaseHeal;
+                }
                 else if (hfcDef.name.Contains("LivingQuarters"))
                 {
                     hfcDef.BaseStaminaHeal = AssortedAdjustments.Settings.LivingQuartersBaseStaminaHeal;
                     currentHealFacilityStaminaHealOutput = hfcDef.BaseStaminaHeal;
                 }
                 Logger.Info($"[FacilityAdjustments_Apply] hfcDef: {hfcDef.name}, GUID: {hfcDef.Guid}, BaseHeal: {hfcDef.BaseHeal}, BaseStaminaHeal: {hfcDef.BaseStaminaHeal}");
+            }
+
+            List<ExperienceFacilityComponentDef> experienceFacilityComponentDefs = defRepository.DefRepositoryDef.AllDefs.OfType<ExperienceFacilityComponentDef>().ToList();
+            foreach (ExperienceFacilityComponentDef efcDef in experienceFacilityComponentDefs)
+            {
+                if (efcDef.name.Contains("TrainingFacility"))
+                {
+                    efcDef.ExperiencePerUser = AssortedAdjustments.Settings.TrainingFacilityBaseExperienceAmount;
+                    currentExperienceFacilityExperienceOutput = efcDef.ExperiencePerUser;
+                }
+                Logger.Info($"[FacilityAdjustments_Apply] efcDef: {efcDef.name}, GUID: {efcDef.Guid}, ExperiencePerUser: {efcDef.ExperiencePerUser}, SkillPointsPerDay: {efcDef.SkillPointsPerDay}");
             }
 
             List<VehicleSlotFacilityComponentDef> vehicleSlotFacilityComponentDefs = defRepository.DefRepositoryDef.AllDefs.OfType<VehicleSlotFacilityComponentDef>().Where(vsfDef => vsfDef.name.Contains("VehicleBay")).ToList();
@@ -120,6 +138,7 @@ namespace AssortedAdjustments.Patches
 
             HarmonyHelpers.Patch(harmony, typeof(ResourceGeneratorFacilityComponent), "UpdateOutput", typeof(FacilityAdjustments), null, "Postfix_ResourceGeneratorFacilityComponent_UpdateOutput");
             HarmonyHelpers.Patch(harmony, typeof(HealFacilityComponent), "UpdateOutput", typeof(FacilityAdjustments), null, "Postfix_HealFacilityComponent_UpdateOutput");
+            HarmonyHelpers.Patch(harmony, typeof(ExperienceFacilityComponent), "UpdateOutput", typeof(FacilityAdjustments), null, "Postfix_ExperienceFacilityComponent_UpdateOutput");
             HarmonyHelpers.Patch(harmony, typeof(VehicleSlotFacilityComponent), "UpdateOutput", typeof(FacilityAdjustments), null, "Postfix_VehicleSlotFacilityComponent_UpdateOutput");
 
             // UI
@@ -139,7 +158,7 @@ namespace AssortedAdjustments.Patches
                     string owningFaction = __instance.Facility.PxBase.Site.Owner.Name.Localize();
                     string facilityName = __instance.Facility.ViewElementDef.DisplayName1.Localize();
                     string facilityId = __instance.Facility.FacilityId.ToString();
-                    Logger.Info($"[ResourceGeneratorFacilityComponent_UpdateOutput_POSTFIX] owningFaction: {owningFaction}, facilityName: {facilityName}, facilityId: {facilityId}, ResourceOutput: {__instance.ResourceOutput}");
+                    //Logger.Info($"[ResourceGeneratorFacilityComponent_UpdateOutput_POSTFIX] owningFaction: {owningFaction}, facilityName: {facilityName}, facilityId: {facilityId}, ResourceOutput: {__instance.ResourceOutput}");
 
                     if (__instance.Def.name.Contains("FoodProduction"))
                     {
@@ -186,7 +205,7 @@ namespace AssortedAdjustments.Patches
                     string owningFaction = __instance.Facility.PxBase.Site.Owner.Name.Localize();
                     string facilityName = __instance.Facility.ViewElementDef.DisplayName1.Localize();
                     string facilityId = __instance.Facility.FacilityId.ToString();
-                    Logger.Info($"[ResourceGeneratorFacilityComponent_UpdateOutput_POSTFIX] owningFaction: {owningFaction}, facilityName: {facilityName}, facilityId: {facilityId}, HealOutput: {__instance.HealOutput}, StaminaHealOutput: {__instance.StaminaHealOutput}");
+                    //Logger.Info($"[ResourceGeneratorFacilityComponent_UpdateOutput_POSTFIX] owningFaction: {owningFaction}, facilityName: {facilityName}, facilityId: {facilityId}, HealOutput: {__instance.HealOutput}, StaminaHealOutput: {__instance.StaminaHealOutput}");
 
                     if (__instance.Def.name.Contains("MedicalBay"))
                     {
@@ -196,6 +215,10 @@ namespace AssortedAdjustments.Patches
                     {
                         currentHealFacilityStaminaHealOutput = __instance.StaminaHealOutput;
                     }
+                    else if (__instance.Def.name.Contains("MutationLab"))
+                    {
+                        currentHealFacilityMutogHealOutput = __instance.HealOutput;
+                    }
                 }
             }
             catch (Exception e)
@@ -203,7 +226,30 @@ namespace AssortedAdjustments.Patches
                 Logger.Error(e);
             }
         }
-        
+
+        public static void Postfix_ExperienceFacilityComponent_UpdateOutput(ExperienceFacilityComponent __instance)
+        {
+            try
+            {
+                if (__instance.Facility.PxBase.Site.Owner is GeoPhoenixFaction)
+                {
+                    string owningFaction = __instance.Facility.PxBase.Site.Owner.Name.Localize();
+                    string facilityName = __instance.Facility.ViewElementDef.DisplayName1.Localize();
+                    string facilityId = __instance.Facility.FacilityId.ToString();
+                    //Logger.Info($"[ResourceGeneratorFacilityComponent_UpdateOutput_POSTFIX] owningFaction: {owningFaction}, facilityName: {facilityName}, facilityId: {facilityId}, HealOutput: {__instance.HealOutput}, StaminaHealOutput: {__instance.StaminaHealOutput}");
+
+                    if (__instance.Def.name.Contains("TrainingFacility"))
+                    {
+                        currentExperienceFacilityExperienceOutput = __instance.ExperienceOutput;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
         public static void Postfix_VehicleSlotFacilityComponent_UpdateOutput(VehicleSlotFacilityComponent __instance)
         {
             try
@@ -213,7 +259,7 @@ namespace AssortedAdjustments.Patches
                     string owningFaction = __instance.Facility.PxBase.Site.Owner.Name.Localize();
                     string facilityName = __instance.Facility.ViewElementDef.DisplayName1.Localize();
                     string facilityId = __instance.Facility.FacilityId.ToString();
-                    Logger.Info($"[ResourceGeneratorFacilityComponent_UpdateOutput_POSTFIX] owningFaction: {owningFaction}, facilityName: {facilityName}, facilityId: {facilityId}, AircraftHealOuput: {__instance.AircraftHealOuput}, VehicletHealOuput: {__instance.VehicletHealOuput}");
+                    //Logger.Info($"[ResourceGeneratorFacilityComponent_UpdateOutput_POSTFIX] owningFaction: {owningFaction}, facilityName: {facilityName}, facilityId: {facilityId}, AircraftHealOuput: {__instance.AircraftHealOuput}, VehicletHealOuput: {__instance.VehicletHealOuput}");
 
                     currentVehicleSlotFacilityAircraftHealOuput = __instance.AircraftHealOuput;
                     currentVehicleSlotFacilityVehicleHealOuput = __instance.VehicletHealOuput;
@@ -247,6 +293,16 @@ namespace AssortedAdjustments.Patches
                 else if (facility.name.Contains("LivingQuarters"))
                 {
                     __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {currentHealFacilityStaminaHealOutput} Stamina points per hour for each living quarters in the base.";
+                }
+                else if (facility.name.Contains("TrainingFacility"))
+                {
+                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will gain {currentExperienceFacilityExperienceOutput} Experience Points per hour for each training facility in the base.";
+                }
+                else if (facility.name.Contains("MutationLab"))
+                {
+                    string org = __instance.Description.text;
+                    string add = $"All mutogs at the base (even if assigned to an aircraft) will recover additional {currentHealFacilityMutogHealOutput} Hit Points per hour for each mutation lab in the base.";
+                    __instance.Description.text = $"{org}\n{add}";
                 }
                 else if (facility.name.Contains("VehicleBay"))
                 {
@@ -287,6 +343,16 @@ namespace AssortedAdjustments.Patches
                 else if (facility.Def.name.Contains("LivingQuarters"))
                 {
                     __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will recover {currentHealFacilityStaminaHealOutput} Stamina points per hour for each living quarters in the base.";
+                }
+                else if (facility.Def.name.Contains("TrainingFacility"))
+                {
+                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will gain {currentExperienceFacilityExperienceOutput} Experience Points per hour for each training facility in the base.";
+                }
+                else if (facility.Def.name.Contains("MutationLab"))
+                {
+                    string org = __instance.Description.text;
+                    string add = $"All mutogs at the base (even if assigned to an aircraft) will recover additional {currentHealFacilityMutogHealOutput} Hit Points per hour for each mutation lab in the base.";
+                    __instance.Description.text = $"{org}\n{add}";
                 }
                 else if (facility.Def.name.Contains("VehicleBay"))
                 {

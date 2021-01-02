@@ -72,6 +72,7 @@
     <Compile Include="Patches\EnableMissionAdjustments.cs" />
     <Compile Include="Patches\EnableReturnFireAdjustments.cs" />
     <Compile Include="Patches\EnableExperienceToSkillpointConversion.cs" />
+    <Compile Include="Patches\PauseOnRecruitsGenerated.cs" />
     <Compile Include="Patches\SkipIntro.cs" />
     <Compile Include="Patches\EnableVehicleAdjustments.cs" />
     <Compile Include="Patches\EnableSoldierAdjustments.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Patches\EnableMouseCameraRotation.cs" />
     <Compile Include="Patches\PauseOnDestinationSet.cs" />
     <Compile Include="Patches\PauseOnHealed.cs" />
+    <Compile Include="Patches\EnableCustomRecruitGeneration.cs" />
     <Compile Include="Patches\UIEnhancements\ExtendedBaseInfo.cs" />
     <Compile Include="Patches\UIEnhancements\DetailedResearchAndProduction.cs" />
     <Compile Include="Patches\UIEnhancements\RecruitInfoInsideZoneTooltip.cs" />

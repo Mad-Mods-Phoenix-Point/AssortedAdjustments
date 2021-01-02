@@ -12,6 +12,8 @@ using System.Linq;
 using PhoenixPoint.Tactical.Entities.Equipments;
 using PhoenixPoint.Common.Entities.GameTags;
 using PhoenixPoint.Tactical.Entities.Abilities;
+using Base.Core;
+using PhoenixPoint.Common.Core;
 
 namespace AssortedAdjustments.Patches.UIEnhancements
 {
@@ -22,7 +24,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
         internal class TooltipConfig
         {
-            public string TitleHeaderTags = "<size=52>...</size>";
+            public string TitleHeaderTags = "<size=52><color=#FFFFFF>...</color></size>";
             public string TitleTeaserTags = "";
             public string ItemHeaderTags = "<size=42><color=#ECBA62>...</color></size>";
             public string ItemDescTags = "";
@@ -84,6 +86,9 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
                     if (showAugments)
                     {
+                        SharedData sharedData = GameUtl.GameComponent<SharedData>();
+                        AugmentationInfo.AnuMutation = sharedData.SharedGameTags.AnuMutationTag;
+                        AugmentationInfo.BioAugTag = sharedData.SharedGameTags.BionicalTag;
                         AugmentationInfo augmentationInfo = new AugmentationInfo(recruit);
                         var augmentations = augmentationInfo.GetItemHeaders();
 
