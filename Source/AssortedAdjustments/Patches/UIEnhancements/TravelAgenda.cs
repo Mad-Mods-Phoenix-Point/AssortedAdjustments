@@ -502,71 +502,61 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 {
                     Logger.Debug($"[UIStateVehicleSelected_OnContextualItemSelected_POSTFIX] ability: {ability.AbilityDef.name}");
 
+                    GeoVehicle vehicle = null;
+                    string siteName = "ERR";
+                    string vehicleInfo = "ERR";
+
                     if (ability is MoveVehicleAbility)
                     {
-                        GeoVehicle vehicle = (GeoVehicle)ability.GeoActor;
-                        string siteName = GetSiteName(vehicle.FinalDestination, vehicle.Owner);
-                        string vehicleInfo = $"{vehicle.VehicleID} {actionTraveling} {siteName}";
-
-                        UIModuleFactionAgendaTracker ____factionTracker = (UIModuleFactionAgendaTracker)AccessTools.Property(typeof(UIStateVehicleSelected), "_factionTracker").GetValue(__instance, null);
-                        List<UIFactionDataTrackerElement> ____currentTrackedElements = (List<UIFactionDataTrackerElement>)AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_currentTrackedElements").GetValue(____factionTracker);
-
-
-                        foreach (UIFactionDataTrackerElement trackedElement in ____currentTrackedElements)
-                        {
-                            // Update
-                            if (trackedElement.TrackedObject == vehicle)
-                            {
-                                Logger.Debug($"[UIStateVehicleSelected_OnContextualItemSelected_POSTFIX] {vehicle.Name} already tracked. Updating.");
-
-                                //MethodInfo ___Dispose = typeof(UIModuleFactionAgendaTracker).GetMethod("Dispose", BindingFlags.NonPublic | BindingFlags.Instance);
-                                //___Dispose.Invoke(____factionTracker, new object[] { trackedElement });
-
-                                trackedElement.TrackedName.text = vehicleInfo;
-                                AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_needsRefresh").SetValue(____factionTracker, true);
-                                MethodInfo ___UpdateData = typeof(UIModuleFactionAgendaTracker).GetMethod("UpdateData", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
-                                ___UpdateData.Invoke(____factionTracker, null);
-
-                                return;
-                            }
-                        }
-
-                        // Add
-                        Logger.Debug($"[UIStateVehicleSelected_OnContextualItemSelected_POSTFIX] {vehicle.Name} currently not tracked. Adding to tracker.");
-
-                        MethodInfo ___GetFreeElement = typeof(UIModuleFactionAgendaTracker).GetMethod("GetFreeElement", BindingFlags.NonPublic | BindingFlags.Instance);
-                        MethodInfo ___OnAddedElement = typeof(UIModuleFactionAgendaTracker).GetMethod("OnAddedElement", BindingFlags.NonPublic | BindingFlags.Instance);
-
-                        UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(____factionTracker, null);
-                        freeElement.Init(vehicle, vehicleInfo, vehicle.VehicleDef.ViewElement, false);
-                        //freeElement.Init(vehicle, vehicleInfo, null, false);
-
-                        ___OnAddedElement.Invoke(____factionTracker, new object[] { freeElement });
+                        vehicle = (GeoVehicle)ability.GeoActor;
+                        siteName = GetSiteName(vehicle.FinalDestination, vehicle.Owner);
+                        vehicleInfo = $"{vehicle.VehicleID} {actionTraveling} {siteName}";
                     }
                     else if (ability is ExploreSiteAbility)
                     {
-                        GeoVehicle vehicle = (GeoVehicle)ability.GeoActor;
-                        string siteName = GetSiteName(vehicle.CurrentSite, vehicle.Owner);
-                        string vehicleInfo = $"{vehicle.VehicleID} {actionExploring} {siteName}";
-
-                        UIModuleFactionAgendaTracker ____factionTracker = (UIModuleFactionAgendaTracker)AccessTools.Property(typeof(UIStateVehicleSelected), "_factionTracker").GetValue(__instance, null);
-
-                        // Add
-                        Logger.Debug($"[UIStateVehicleSelected_OnContextualItemSelected_POSTFIX] {vehicle.Name} currently not tracked. Adding to tracker.");
-
-                        MethodInfo ___GetFreeElement = typeof(UIModuleFactionAgendaTracker).GetMethod("GetFreeElement", BindingFlags.NonPublic | BindingFlags.Instance);
-                        MethodInfo ___OnAddedElement = typeof(UIModuleFactionAgendaTracker).GetMethod("OnAddedElement", BindingFlags.NonPublic | BindingFlags.Instance);
-
-                        UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(____factionTracker, null);
-                        freeElement.Init(vehicle, vehicleInfo, vehicle.VehicleDef.ViewElement, false);
-                        //freeElement.Init(vehicle, vehicleInfo, null, false);
-
-                        ___OnAddedElement.Invoke(____factionTracker, new object[] { freeElement });
+                        vehicle = (GeoVehicle)ability.GeoActor;
+                        siteName = GetSiteName(vehicle.CurrentSite, vehicle.Owner);
+                        vehicleInfo = $"{vehicle.VehicleID} {actionExploring} {siteName}";
                     }
-                    else
+                    
+                    if (vehicle == null)
                     {
                         return;
                     }
+
+                    UIModuleFactionAgendaTracker ____factionTracker = (UIModuleFactionAgendaTracker)AccessTools.Property(typeof(UIStateVehicleSelected), "_factionTracker").GetValue(__instance, null);
+                    List<UIFactionDataTrackerElement> ____currentTrackedElements = (List<UIFactionDataTrackerElement>)AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_currentTrackedElements").GetValue(____factionTracker);
+
+                    foreach (UIFactionDataTrackerElement trackedElement in ____currentTrackedElements)
+                    {
+                        // Update
+                        if (trackedElement.TrackedObject == vehicle)
+                        {
+                            Logger.Debug($"[UIStateVehicleSelected_OnContextualItemSelected_POSTFIX] {vehicle.Name} already tracked. Updating.");
+
+                            //MethodInfo ___Dispose = typeof(UIModuleFactionAgendaTracker).GetMethod("Dispose", BindingFlags.NonPublic | BindingFlags.Instance);
+                            //___Dispose.Invoke(____factionTracker, new object[] { trackedElement });
+
+                            trackedElement.TrackedName.text = vehicleInfo;
+                            AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_needsRefresh").SetValue(____factionTracker, true);
+                            MethodInfo ___UpdateData = typeof(UIModuleFactionAgendaTracker).GetMethod("UpdateData", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
+                            ___UpdateData.Invoke(____factionTracker, null);
+
+                            return;
+                        }
+                    }
+
+                    // Add
+                    Logger.Debug($"[UIStateVehicleSelected_OnContextualItemSelected_POSTFIX] {vehicle.Name} currently not tracked. Adding to tracker.");
+
+                    MethodInfo ___GetFreeElement = typeof(UIModuleFactionAgendaTracker).GetMethod("GetFreeElement", BindingFlags.NonPublic | BindingFlags.Instance);
+                    MethodInfo ___OnAddedElement = typeof(UIModuleFactionAgendaTracker).GetMethod("OnAddedElement", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                    UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(____factionTracker, null);
+                    freeElement.Init(vehicle, vehicleInfo, vehicle.VehicleDef.ViewElement, false);
+                    //freeElement.Init(vehicle, vehicleInfo, null, false);
+
+                    ___OnAddedElement.Invoke(____factionTracker, new object[] { freeElement });
                 }
                 catch (Exception e)
                 {

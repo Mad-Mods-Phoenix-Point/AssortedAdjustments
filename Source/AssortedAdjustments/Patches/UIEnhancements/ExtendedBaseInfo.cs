@@ -435,7 +435,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         Logger.Debug($"[UIModuleBaseLayout_SetLeftSideInfo_POSTFIX] Tooltip already exists. Refreshing.");
                         anchorGo.GetComponent<UITooltipText>().MaxWidth = 280; //Default: 140
                         anchorGo.GetComponent<UITooltipText>().TipText = info;
-                        return;
+                        anchorGo.GetComponent<UITooltipText>().UpdateText(info);
                     }
                     else
                     {
@@ -445,6 +445,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         Logger.Debug($"[UIModuleBaseLayout_SetLeftSideInfo_POSTFIX] Tooltip not found. Creating.");
                         anchorGo.GetComponent<UITooltipText>().MaxWidth = 280; //Default: 140
                         anchorGo.GetComponent<UITooltipText>().TipText = info;
+                        anchorGo.GetComponent<UITooltipText>().UpdateText(info);
                     }
                 }
                 catch (Exception e)

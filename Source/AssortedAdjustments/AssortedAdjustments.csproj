@@ -50,6 +50,9 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\_Ref\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>..\..\..\_Ref\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>..\..\..\_Ref\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
@@ -78,9 +81,10 @@
     <Compile Include="Patches\EnableSoldierAdjustments.cs" />
     <Compile Include="Patches\EnableFacilityAdjustments.cs" />
     <Compile Include="Patches\EnableMouseCameraRotation.cs" />
-    <Compile Include="Patches\PauseOnDestinationSet.cs" />
+    <Compile Include="Patches\PauseOnContextSet.cs" />
     <Compile Include="Patches\PauseOnHealed.cs" />
     <Compile Include="Patches\EnableCustomRecruitGeneration.cs" />
+    <Compile Include="Patches\UIEnhancements\SmartBaseSelection.cs" />
     <Compile Include="Patches\UIEnhancements\ExtendedBaseInfo.cs" />
     <Compile Include="Patches\UIEnhancements\DetailedResearchAndProduction.cs" />
     <Compile Include="Patches\UIEnhancements\RecruitInfoInsideZoneTooltip.cs" />

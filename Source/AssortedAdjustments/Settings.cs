@@ -10,13 +10,17 @@
 
 
 
+        public bool EnableSmartBaseSelection = true;
+
+
+
         public bool EnableCustomRecruitGeneration = true;
         public int RecruitGenerationCount = 3; // Default: Random (1-3). Note that more than 3 (three) looks like shit because of the broken UI. Note that the UI cannot handle more than 4 (four) at all.
 
 
 
         public bool EnableExperienceToSkillpointConversion = true;
-        public float XPtoSPConversionRate = 0.01f; // Default is dependent on difficulty setting, this is just a fallback if the setting is unretrievable.
+        internal float XPtoSPConversionRate = 0.01f; // Default is dependent on difficulty setting, this is just a fallback if the setting is unretrievable.
         public float XPtoSPConversionMultiplier = 2f; // Flat multiplier for the setting above
 
 
@@ -114,8 +118,9 @@
 
 
         public bool PauseOnDestinationSet = true;
-        public bool PauseOnHealed = true;
+        public bool PauseOnExplorationSet = true;
         public bool PauseOnRecruitsGenerated = true;
+        public bool PauseOnHealed = true;
         internal bool CenterOnHealed = true;
 
 

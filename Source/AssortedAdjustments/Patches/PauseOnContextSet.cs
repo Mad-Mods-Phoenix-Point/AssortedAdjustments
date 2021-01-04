@@ -61,7 +61,7 @@ namespace AssortedAdjustments.Patches
     {
         public static bool Prepare()
         {
-            return AssortedAdjustments.Settings.PauseOnDestinationSet;
+            return AssortedAdjustments.Settings.PauseOnDestinationSet || AssortedAdjustments.Settings.PauseOnExplorationSet;
         }
 
         public static void Prefix(UIStateVehicleSelected __instance, ref bool __state)
@@ -83,9 +83,7 @@ namespace AssortedAdjustments.Patches
         {
             try
             {
-                Logger.Debug($"[UIStateVehicleSelected_OnContextualItemSelected_POSTFIX] Called.");
-
-                if (!(ability is MoveVehicleAbility))
+                if (!((ability is MoveVehicleAbility && AssortedAdjustments.Settings.PauseOnDestinationSet) || (ability is ExploreSiteAbility && AssortedAdjustments.Settings.PauseOnExplorationSet)))
                 {
                     return;
                 }
@@ -95,7 +93,7 @@ namespace AssortedAdjustments.Patches
 
                 if (craftCount > 1)
                 {
-                    Logger.Debug($"[UIStateVehicleSelected_OnContextualItemSelected_POSTFIX] New vehicle travel plan. Keeping time setting at: {(__state ? "Paused" : "Running")}.");
+                    Logger.Debug($"[UIStateVehicleSelected_OnContextualItemSelected_POSTFIX] Keeping time setting at: {(__state ? "Paused" : "Running")}.");
 
                     GeoscapeViewContext _GeoscapeViewContext = (GeoscapeViewContext)AccessTools.Property(typeof(GeoscapeViewState), "Context").GetValue(__instance, null);
                     _GeoscapeViewContext.Level.Timing.Paused = __state;

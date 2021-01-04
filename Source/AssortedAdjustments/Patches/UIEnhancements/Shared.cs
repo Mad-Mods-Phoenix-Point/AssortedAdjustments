@@ -118,7 +118,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     // @ToDo: Allow multiple commands (ALPHA, BGIMAGE, MINWIDTH)?
                     if (__instance.TipText.Contains("<!--") && __instance.TipText.Contains("-->"))
                     {
-                        Logger.Info($"[UITooltipText_OnMouseEnter_POSTFIX] CONTROL TAGS found in TipText: {__instance.TipText}");
+                        //Logger.Info($"[UITooltipText_OnMouseEnter_POSTFIX] CONTROL TAGS found in TipText: {__instance.TipText}");
 
                         string s = __instance.TipText;
                         int ctrlStart = s.IndexOf("<!--");
@@ -143,6 +143,43 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
                         // Cleanup
                         __instance.UpdateText(s.Remove(ctrlStart, ctrlLength));
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(UITooltipText), "UpdateText")]
+        public static class UITooltipText_UpdateText_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableUIEnhancements;
+            }
+
+            public static void Prefix(UITooltipText __instance, ref string tipText)
+            {
+                try
+                {
+                    if (!__instance.Enabled)
+                    {
+                        return;
+                    }
+
+                    // Remove CONTROL TAGS
+                    if (tipText.Contains("<!--") && tipText.Contains("-->"))
+                    {
+                        //Logger.Info($"[UITooltipText_UpdateText_PREFIX] CONTROL TAGS found in tipText: {tipText}");
+
+                        int ctrlStart = tipText.IndexOf("<!--");
+                        int ctrlEnd = tipText.IndexOf("-->") + 3;
+                        int ctrlLength = ctrlEnd - ctrlStart;
+
+                        // Cleanup
+                        tipText = tipText.Remove(ctrlStart, ctrlLength);
                     }
                 }
                 catch (Exception e)
