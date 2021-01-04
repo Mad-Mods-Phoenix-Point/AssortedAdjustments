@@ -17,6 +17,9 @@ using UnityEngine.UI;
 using PhoenixPoint.Common.UI;
 using PhoenixPoint.Geoscape.View.ViewControllers.BaseRecruits;
 using PhoenixPoint.Geoscape.View.DataObjects;
+using PhoenixPoint.Geoscape.Core;
+using PhoenixPoint.Tactical.Entities.Abilities;
+using Base;
 
 namespace AssortedAdjustments.Patches
 {
@@ -48,6 +51,73 @@ namespace AssortedAdjustments.Patches
 
 
         // Patches
+        [HarmonyPatch(typeof(FactionCharacterGenerator), "GeneratePersonalAbilities")]
+        public static class FactionCharacterGenerator_GeneratePersonalAbilities_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.EnableSoldierAdjustments;
+            }
+
+            // Fix ability generation if vanilla generated less than the expected number of personal abilities
+            public static void Postfix(FactionCharacterGenerator __instance, ref Dictionary<int, TacticalAbilityDef> __result, int abilitiesCount, LevelProgressionDef levelDef, List<TacticalAbilityDef> ____personalAbilityPool)
+            {
+                try
+                {
+                    if (__result.Count < PersonalAbilitiesCount)
+                    {
+                        Logger.Debug($"[FactionCharacterGenerator_GeneratePersonalAbilities_POSTFIX] Vanilla ability generation bugged out ({__result.Count}/{PersonalAbilitiesCount}). Regenerating!");
+
+                        Dictionary<int, TacticalAbilityDef> dictionary = new Dictionary<int, TacticalAbilityDef>();
+                        List<TacticalAbilityDef> tmpList = new List<TacticalAbilityDef>();
+                        List<TacticalAbilityDef> personalAbilityPool = ____personalAbilityPool;
+                        int maxLevel = levelDef.MaxLevel;
+                        List<int> availableSlots = new List<int>();
+                        for (int i = 0; i < maxLevel; i++)
+                        {
+                            availableSlots.Add(i);
+                        }
+
+                        int num = 0;
+                        while (num < abilitiesCount && personalAbilityPool.Count != 0)
+                        {
+                            TacticalAbilityDef randomElement = personalAbilityPool.GetRandomElement();
+                            if (randomElement != null)
+                            {
+                                personalAbilityPool.Remove(randomElement);
+                                tmpList.Add(randomElement);
+                                int slot = availableSlots.GetRandomElement();
+                                Logger.Info($"[FactionCharacterGenerator_GeneratePersonalAbilities_POSTFIX] slot: {slot}");
+                                Logger.Info($"[FactionCharacterGenerator_GeneratePersonalAbilities_POSTFIX] ability: {randomElement.ViewElementDef.DisplayName1.Localize()}");
+
+                                availableSlots.Remove(slot);
+                                Logger.Info($"[FactionCharacterGenerator_GeneratePersonalAbilities_POSTFIX] availableSlots: {availableSlots.Count}");
+
+                                dictionary.Add(slot, randomElement);
+                                num++;
+                            }
+                            else
+                            {
+                                throw new NullReferenceException("Personal ability pool returned no TacticalAbilityDef");
+                            }
+                        }
+                        personalAbilityPool.AddRange(tmpList);
+
+
+
+                        __result = dictionary;
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+
+    
+
         [HarmonyPatch(typeof(RecruitsListElementController), "SetRecruitElement")]
         public static class RecruitsListElementController_SetRecruitElement_Patch
         {
