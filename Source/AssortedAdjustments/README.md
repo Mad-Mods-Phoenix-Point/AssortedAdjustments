@@ -5,6 +5,9 @@
 ## Features
 
 ### UI
+* Smart base selection. Ever wondered why the bases menu didn't show the base your aircraft just arrived at as selected by default?
+    * Before opening the bases gui the most relevant (that is the closest to your screen's center) base is prepared to be shown as default.
+    * Also works when panning around freely and opening the menu while above a base
 * Research and Production points are shown in Info-Bar and the Manufacture/Research-Queues. To make a bit more sense of the required times.
 * The tooltip at recruitment zones in havens now show the personal abilities of the recruit (Adapted from Sheepy's "Recruit Info").
 * The global agenda tracker (or however you call it) now shows travel and exploration times of your aircraft. 
@@ -13,6 +16,11 @@
     * Popup on activated Phoenix Bases will show healing and repair capabilities.
     * Added popup in base overview to show the accumulated healing/resources output, soldiers in treatment and vehicle details.
     * Added popup in recruitment screen for the selected base with extended info too.
+
+### Bugfixes
+* Vanillas broken ability generation sometimes caused soldiers to have less than the expected number of personal skills
+    * This is fixed and supports up to 7 personal abilities for every soldier.
+    * UI fixes and enhancements included.
 
 ### Gameplay
 * Maxed out soldiers now gain additional SP for their wasted XP (Rebuilds Sheepy's "Spill Exp to Skill"). Conversion rate and multiplier is configurable.
