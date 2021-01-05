@@ -106,6 +106,7 @@
 
         public bool DisableAmbushes = true;
         internal bool RetainAmbushesInsideMist = true;
+        public bool DisableNothingFound = true;
 
 
 

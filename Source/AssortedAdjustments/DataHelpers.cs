@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Base.Core;
 using Base.Defs;
+using Base.Entities.Effects;
+using Base.Entities.Statuses;
 using Base.UI;
 using Harmony;
 using PhoenixPoint.Common.Core;
 using PhoenixPoint.Common.Entities;
+using PhoenixPoint.Common.Entities.Items;
 using PhoenixPoint.Common.Levels.Missions;
 using PhoenixPoint.Common.UI;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases.FacilityComponents;
 using PhoenixPoint.Geoscape.View.ViewControllers.PhoenixBase;
+using PhoenixPoint.Tactical.Entities.Abilities;
 using PhoenixPoint.Tactical.Entities.Equipments;
 using PhoenixPoint.Tactical.Entities.Weapons;
 
@@ -22,6 +26,30 @@ namespace AssortedAdjustments
         public static void Print()
         {
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<HealAbilityDef>().ToList())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                Logger.Info($"[DataHelpers_Print] Description: {def.ViewElementDef?.Description?.LocalizeEnglish()}");
+
+                Logger.Info($"[DataHelpers_Print] AdditionalEffectDef: {def.AdditionalEffectDef?.name}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<MultiEffectDef>().ToList())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                //Logger.Info($"[DataHelpers_Print] Description: {def.ViewElementDef?.Description?.LocalizeEnglish()}");
+
+                Logger.Info($"[DataHelpers_Print] EffectDefs: {String.Join(",", def.EffectDefs.Select(e => e.name))}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
 
             // WeaponDefs
             /*
@@ -87,7 +115,7 @@ namespace AssortedAdjustments
                 Logger.Info($"[DataHelpers_Print] def: {def.name}, Type: {def.GetType().Name}, HealMutog: {def.HealMutog}, HealSoldier: {def.HealSoldier}, BaseHeal: {def.BaseHeal}, BaseStaminaHeal: {def.BaseStaminaHeal}");
             }
             */
-            
+
 
 
             // Get vanilla descriptions

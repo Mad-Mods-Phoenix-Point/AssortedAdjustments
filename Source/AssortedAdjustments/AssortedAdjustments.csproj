@@ -68,6 +68,7 @@
     <Compile Include="HarmonyHelpers.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Patches\DisableAmbushes.cs" />
+    <Compile Include="Patches\DisableNothingFound.cs" />
     <Compile Include="Patches\DisableRightClickMove.cs" />
     <Compile Include="Patches\DisableRocksAtBases.cs" />
     <Compile Include="Patches\EnableEconomyAdjustments.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Patches\EnableMissionAdjustments.cs" />
     <Compile Include="Patches\EnableReturnFireAdjustments.cs" />
     <Compile Include="Patches\EnableExperienceToSkillpointConversion.cs" />
+    <Compile Include="Patches\ModifyDamageOverTimeStatus.cs" />
     <Compile Include="Patches\PauseOnRecruitsGenerated.cs" />
     <Compile Include="Patches\SkipIntro.cs" />
     <Compile Include="Patches\EnableVehicleAdjustments.cs" />

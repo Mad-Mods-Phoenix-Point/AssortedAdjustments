@@ -25,13 +25,13 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         internal class TooltipConfig
         {
             public string TitleHeaderTags = "<size=52><color=#FFFFFF>...</color></size>";
-            public string TitleTeaserTags = "";
+            public string TitleTeaserTags = "<size=36>...</size>";
             public string ItemHeaderTags = "<size=42><color=#ECBA62>...</color></size>";
-            public string ItemDescTags = "";
+            public string ItemDescTags = "<size=36>...</size>";
         }
 
         private static readonly TooltipConfig ConfigSkills = new TooltipConfig();
-        private static readonly TooltipConfig ConfigAugmentations = new TooltipConfig { ItemHeaderTags = "<color=blue>...</color>" };
+        private static readonly TooltipConfig ConfigAugmentations = new TooltipConfig { ItemHeaderTags = "<size=36><color=#B836E4>...</color></size>", ItemDescTags = "" };
 
 
 
@@ -67,7 +67,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     string popupOverrideString = "";
 
                     // Custom "commands" to send to the Tooltip via HTML-comment markup
-                    popupOverrideString += "<!--FONTSIZE:36-->";
+                    popupOverrideString += "<!--FONTSIZE:30-->";
 
                     if (showSkills)
                     {
@@ -97,7 +97,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                             augmentationInfo.SetTags();
 
                             //popupOverrideString += "\n\n";
-                            popupOverrideString += new LocalizedTextBind(augmentationInfo.LabelKey).Localize() + "s";
+                            //popupOverrideString += $"<size=36><color=#FFFFFF>{new LocalizedTextBind(augmentationInfo.LabelKey).Localize()}S</color></size>";
                             popupOverrideString += "\n\n";
                             popupOverrideString += augmentationInfo.GetItems().Join(e => BuildItem(e, augmentationInfo.ItemTags), "\n\n");
                         }
