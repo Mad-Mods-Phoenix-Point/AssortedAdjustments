@@ -163,7 +163,7 @@ namespace AssortedAdjustments
                 result += "\n";
             }
 
-            result += "<<<<<<<<< SETTINGS <<<<<<<<<
+            result += "<<<<<<<<< SETTINGS <<<<<<<<<";
             return result;
         }
     }
