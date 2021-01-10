@@ -7,52 +7,12 @@ using PhoenixPoint.Geoscape.View.ViewControllers.BaseRecruits;
 using PhoenixPoint.Geoscape.View.DataObjects;
 using System.Collections.Generic;
 using System.Linq;
-using PhoenixPoint.Geoscape.View.ViewModules;
-using PhoenixPoint.Common.Entities.GameTagsTypes;
-using System.Reflection;
 
 namespace AssortedAdjustments.Patches.UIEnhancements
 {
     internal static class Shared
     {
-        // Disable the manufacturing class filter buttons by default
-        [HarmonyPatch(typeof(UIModuleManufacturing), "SetClassFilters")]
-        public static class UIModuleManufacturing_SetClassFilters_Patch
-        {
-            public static bool Prepare()
-            {
-                return AssortedAdjustments.Settings.EnableUIEnhancements;
-            }
-
-            public static void Postfix(UIModuleManufacturing __instance, List<ClassTagDef> ____availableClassTags, List<ToggleButton> ____classFilterButtons, List<ClassTagDef> ____classFilter)
-            {
-                try
-                {
-                    MethodInfo ___DoFilter = typeof(UIModuleManufacturing).GetMethod("DoFilter", BindingFlags.NonPublic | BindingFlags.Instance);
-
-                    for (int i = 0; i < ____availableClassTags.Count; i++)
-                    {
-                        ClassTagDef item = ____availableClassTags[i];
-                        ToggleButton toggleButton = ____classFilterButtons[i];
-                        if (toggleButton.IsOn)
-                        {
-                            ____classFilter.Remove(item);
-                            toggleButton.Toggle();
-                        }
-                    }
-
-                    ___DoFilter.Invoke(__instance, new object[] { null, null });
-                    __instance.ClassFiltersNavHolder.RefreshInteractableList();
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e);
-                }
-            }
-        }
-
-
-
+        // Add class tooltip to RecruitsListElements and beautify the perk titles
         [HarmonyPatch(typeof(RecruitsListElementController), "SetRecruitElement")]
         public static class RecruitsListElementController_SetRecruitElement_Patch
         {
@@ -61,7 +21,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 return AssortedAdjustments.Settings.EnableUIEnhancements;
             }
 
-            // Add class tooltip to RecruitsListElements and beautify the perk titles
+            
             public static void Postfix(RecruitsListElementController __instance, RecruitsListEntryData entryData, List<RowIconTextController> ____abilityIcons)
             {
                 try
@@ -193,6 +153,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             }
         }
 
+        // Strip string commands if called by update
         [HarmonyPatch(typeof(UITooltipText), "UpdateText")]
         public static class UITooltipText_UpdateText_Patch
         {
