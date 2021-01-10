@@ -87,11 +87,11 @@ namespace AssortedAdjustments.Patches
                                 personalAbilityPool.Remove(randomElement);
                                 tmpList.Add(randomElement);
                                 int slot = availableSlots.GetRandomElement();
-                                Logger.Info($"[FactionCharacterGenerator_GeneratePersonalAbilities_POSTFIX] slot: {slot}");
-                                Logger.Info($"[FactionCharacterGenerator_GeneratePersonalAbilities_POSTFIX] ability: {randomElement.ViewElementDef.DisplayName1.Localize()}");
+                                //Logger.Info($"[FactionCharacterGenerator_GeneratePersonalAbilities_POSTFIX] slot: {slot}");
+                                //Logger.Info($"[FactionCharacterGenerator_GeneratePersonalAbilities_POSTFIX] ability: {randomElement.ViewElementDef.DisplayName1.Localize()}");
 
                                 availableSlots.Remove(slot);
-                                Logger.Info($"[FactionCharacterGenerator_GeneratePersonalAbilities_POSTFIX] availableSlots: {availableSlots.Count}");
+                                //Logger.Info($"[FactionCharacterGenerator_GeneratePersonalAbilities_POSTFIX] availableSlots: {availableSlots.Count}");
 
                                 dictionary.Add(slot, randomElement);
                                 num++;
@@ -133,8 +133,8 @@ namespace AssortedAdjustments.Patches
                 {
                     RowIconTextController[] rowItems = __instance.PersonalTrackRoot.transform.GetComponentsInChildren<RowIconTextController>(true);
 
-                    Logger.Debug($"[RecruitsListElementController_SetRecruitElement_PREFIX] rowItems: {rowItems.Length}");
-                    Logger.Debug($"[RecruitsListElementController_SetRecruitElement_PREFIX] abilities: {entryData.PersonalTrackAbilities.Count()}");
+                    //Logger.Debug($"[RecruitsListElementController_SetRecruitElement_PREFIX] rowItems: {rowItems.Length}");
+                    //Logger.Debug($"[RecruitsListElementController_SetRecruitElement_PREFIX] abilities: {entryData.PersonalTrackAbilities.Count()}");
 
                     // Only add the icon containers if we need them
                     if (rowItems.Length < ModAbilityLimit)
@@ -157,7 +157,7 @@ namespace AssortedAdjustments.Patches
 
 
                     rowItems = __instance.PersonalTrackRoot.transform.GetComponentsInChildren<RowIconTextController>(true);
-                    Logger.Debug($"[RecruitsListElementController_SetRecruitElement_PREFIX] rowItems: {rowItems.Length}");
+                    //Logger.Debug($"[RecruitsListElementController_SetRecruitElement_PREFIX] rowItems: {rowItems.Length}");
 
                     // Disable textfield and rescale item for more than 3 abilities
                     if (entryData.PersonalTrackAbilities.Count() > VanillaAbilityLimit) {
@@ -224,8 +224,8 @@ namespace AssortedAdjustments.Patches
             {
                 try
                 {
-                    Logger.Debug($"[RecruitsListElementController_SetAbilityIcons_POSTFIX] abilities.Count: {abilities.Count()}");
-                    Logger.Debug($"[RecruitsListElementController_SetAbilityIcons_POSTFIX] ____abilityIcons.Count: {____abilityIcons.Count()}");
+                    //Logger.Debug($"[RecruitsListElementController_SetAbilityIcons_POSTFIX] abilities.Count: {abilities.Count()}");
+                    //Logger.Debug($"[RecruitsListElementController_SetAbilityIcons_POSTFIX] ____abilityIcons.Count: {____abilityIcons.Count()}");
 
                     for (int i = 0; i < abilities.Count; i++)
                     {
