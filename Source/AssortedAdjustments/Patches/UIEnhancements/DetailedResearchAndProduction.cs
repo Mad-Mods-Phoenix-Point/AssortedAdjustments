@@ -113,15 +113,21 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             {
                 try
                 {
+                    if (mode != UIModuleManufacturing.UIMode.Manufacture)
+                    {
+                        return;
+                    }
+
                     ManufacturableItem manufacturableItem = faction.Manufacture.GetManufacturableItemByDef(__instance.ItemDef);
                     TimeUnit totalTime = faction.Manufacture.GetTotalTime(manufacturableItem);
-                    if (mode != UIModuleManufacturing.UIMode.Manufacture || manufacturableItem == null || totalTime == TimeUnit.Zero)
+
+                    if (manufacturableItem == null || totalTime == TimeUnit.Zero)
                     {
                         return;
                     }
 
                     int itemManufactureCost = manufacturableItem.CostInManufacturePoints;
-                    Logger.Debug($"[GeoManufactureItem_Init_POSTFIX] itemManufactureCost:  {itemManufactureCost}");
+                    //Logger.Info($"[GeoManufactureItem_Init_POSTFIX] itemManufactureCost:  {itemManufactureCost}");
 
                     if (itemManufactureCost > 0)
                     {
