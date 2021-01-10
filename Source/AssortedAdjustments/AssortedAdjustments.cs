@@ -27,11 +27,21 @@ namespace AssortedAdjustments
             LogPath = Path.Combine(ModDirectory, "AssortedAdjustments.log");
             Settings = api("config", null) as Settings ?? new Settings();
 
+            // Apply my own custom settings that differ from "popular demands"
+            if (!String.IsNullOrEmpty(Settings.DebugDevKey) && Settings.DebugDevKey == "mad")
+            {
+                Settings.PersistentClassFilterInitDisabled = true;
+                Settings.EnableAutoEvacuation = true;
+                Settings.MaxWill = 25;
+                Settings.DebugLevel = 3;
+            }
+
             if (Settings.Debug && Settings.DebugLevel > 0)
             {
                 DebugLevel = Settings.DebugLevel > 3 ? 3 : Settings.DebugLevel;
             }
             Logger.Initialize(LogPath, DebugLevel, ModDirectory, nameof(AssortedAdjustments));
+            Logger.Info($"{Settings}");
 
 
 

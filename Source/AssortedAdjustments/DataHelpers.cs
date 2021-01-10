@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Base;
 using Base.Core;
 using Base.Defs;
 using Base.Entities.Effects;
@@ -15,6 +16,7 @@ using PhoenixPoint.Common.UI;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases.FacilityComponents;
 using PhoenixPoint.Geoscape.View.ViewControllers.PhoenixBase;
+using PhoenixPoint.Tactical.Entities;
 using PhoenixPoint.Tactical.Entities.Abilities;
 using PhoenixPoint.Tactical.Entities.Equipments;
 using PhoenixPoint.Tactical.Entities.Weapons;
@@ -26,6 +28,21 @@ namespace AssortedAdjustments
         public static void Print()
         {
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TacCharacterDef>().Where(d => d.IsHuman))
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                Logger.Info($"[DataHelpers_Print] BonusStats: {def.Data.BonusStats}");
+                Logger.Info($"[DataHelpers_Print] Armor: {String.Join(",", def.Data.BodypartItems.Select(i => i.name))}");
+                Logger.Info($"[DataHelpers_Print] Equipment: {String.Join(",", def.Data.EquipmentItems.Select(i => i.name))}");
+                Logger.Info($"[DataHelpers_Print] Inventory: {String.Join(",", def.Data.InventoryItems.Select(i => i.name))}");
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
+
 
             /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<HealAbilityDef>().ToList())
@@ -51,11 +68,8 @@ namespace AssortedAdjustments
             }
             */
 
-            // WeaponDefs
             /*
-            var defs = defRepository.DefRepositoryDef.AllDefs.OfType<WeaponDef>().ToList();
-
-            foreach (var def in defs)
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<WeaponDef>())
             {
                 Logger.Info($"[DataHelpers_Print] Def: {def.name}");
                 Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
@@ -71,11 +85,8 @@ namespace AssortedAdjustments
             }
             */
 
-            // TacMissionTypeDef
             /*
-            var defs = defRepository.DefRepositoryDef.AllDefs.OfType<TacMissionTypeDef>().ToList();
-
-            foreach (var def in defs)
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TacMissionTypeDef>())
             {
                 Logger.Info($"[DataHelpers_Print] Def: {def.name}");
                 Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
@@ -90,11 +101,8 @@ namespace AssortedAdjustments
             }
             */
 
-            // TimeRemainingFormatterDef
             /*
-            var defs = defRepository.DefRepositoryDef.AllDefs.OfType<TimeRemainingFormatterDef>().ToList();
-
-            foreach (var def in defs)
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TimeRemainingFormatterDef>())
             {
                 Logger.Info($"[DataHelpers_Print] Def: {def.name}");
                 Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
@@ -107,33 +115,53 @@ namespace AssortedAdjustments
             }
             */
 
-            // HealFacilityComponentDef
             /*
-            List<HealFacilityComponentDef> defs = defRepository.DefRepositoryDef.AllDefs.OfType<HealFacilityComponentDef>().ToList();
-            foreach (HealFacilityComponentDef def in defs)
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<HealFacilityComponentDef>())
             {
                 Logger.Info($"[DataHelpers_Print] def: {def.name}, Type: {def.GetType().Name}, HealMutog: {def.HealMutog}, HealSoldier: {def.HealSoldier}, BaseHeal: {def.BaseHeal}, BaseStaminaHeal: {def.BaseStaminaHeal}");
             }
             */
 
-
-
-            // Get vanilla descriptions
             /*
-            var defs = defRepository.DefRepositoryDef.AllDefs.OfType<ViewElementDef>().ToList();
-            foreach (ViewElementDef def in defs)
+            // Get vanilla descriptions
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<ViewElementDef>())
             {
                 Logger.Info($"[DataHelpers_Print] def: {def.name}, GUID: {def.Guid}");
                 Logger.Info($"[DataHelpers_Print] DisplayName1: {def.DisplayName1.LocalizeEnglish()}");
                 Logger.Info($"[DataHelpers_Print] DisplayName2: {def.DisplayName2.LocalizeEnglish()}");
                 Logger.Info($"[DataHelpers_Print] Description: {def.Description.LocalizeEnglish()}");
 
-                Logger.Info($"[DataHelpers_Print] SmallIcon: {def.SmallIcon}");
-                Logger.Info($"[DataHelpers_Print] LargeIcon: {def.LargeIcon}");
-                Logger.Info($"[DataHelpers_Print] InventoryIcon: {def.InventoryIcon}");
-                Logger.Info($"[DataHelpers_Print] RosterIcon: {def.RosterIcon}");
+                //Logger.Info($"[DataHelpers_Print] SmallIcon: {def.SmallIcon}");
+                //Logger.Info($"[DataHelpers_Print] LargeIcon: {def.LargeIcon}");
+                //Logger.Info($"[DataHelpers_Print] InventoryIcon: {def.InventoryIcon}");
+                //Logger.Info($"[DataHelpers_Print] RosterIcon: {def.RosterIcon}");
             }
             */
+        }
+
+
+
+        // Get localization keys to use them elsewhere
+        [HarmonyPatch(typeof(LocalizedTextBind), "Localize")]
+        public static class LocalizedTextBind_Localize_Patch
+        {
+            public static bool Prepare()
+            {
+                return false;
+            }
+
+            public static void Postfix(LocalizedTextBind __instance, string __result)
+            {
+                try
+                {
+                    Logger.Info($"[DataHelpers][LocalizedTextBind_Localize_POSTFIX] LocalizationKey: {__instance.LocalizationKey}");
+                    Logger.Info($"[DataHelpers][LocalizedTextBind_Localize_POSTFIX] Localization: {__result}");
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
         }
     }
 }

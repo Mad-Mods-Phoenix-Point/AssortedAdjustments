@@ -47,6 +47,9 @@
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\_Ref\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>..\..\..\_Ref\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\_Ref\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
@@ -67,10 +70,12 @@
     <Compile Include="DataHelpers.cs" />
     <Compile Include="HarmonyHelpers.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="Patches\CenterOnHavenRevealed.cs" />
     <Compile Include="Patches\DisableAmbushes.cs" />
     <Compile Include="Patches\DisableNothingFound.cs" />
     <Compile Include="Patches\DisableRightClickMove.cs" />
     <Compile Include="Patches\DisableRocksAtBases.cs" />
+    <Compile Include="Patches\EnableAutoEvacuation.cs" />
     <Compile Include="Patches\EnableEconomyAdjustments.cs" />
     <Compile Include="Patches\EnablePlentifulItemDrops.cs" />
     <Compile Include="Patches\EnableMissionAdjustments.cs" />
@@ -86,6 +91,8 @@
     <Compile Include="Patches\PauseOnContextSet.cs" />
     <Compile Include="Patches\PauseOnHealed.cs" />
     <Compile Include="Patches\EnableCustomRecruitGeneration.cs" />
+    <Compile Include="Patches\UIEnhancements\PersistentClassFilter.cs" />
+    <Compile Include="Patches\UIEnhancements\ToDo.cs" />
     <Compile Include="Patches\UIEnhancements\SmartBaseSelection.cs" />
     <Compile Include="Patches\UIEnhancements\ExtendedBaseInfo.cs" />
     <Compile Include="Patches\UIEnhancements\DetailedResearchAndProduction.cs" />

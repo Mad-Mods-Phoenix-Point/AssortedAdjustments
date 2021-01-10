@@ -1,4 +1,7 @@
-﻿namespace AssortedAdjustments
+﻿using System;
+using System.Reflection;
+
+namespace AssortedAdjustments
 {
     internal class Settings
     {
@@ -7,6 +10,12 @@
         public bool ShowRecruitInfoInsideZoneTooltip = true;
         public bool ShowTravelAgenda = true;
         public bool ShowExtendedBaseInfo = true;
+        public bool PersistentClassFilter = true;
+        public bool PersistentClassFilterInitDisabled = false;
+
+
+
+        public bool EnableAutoEvacuation = false;
 
 
 
@@ -16,7 +25,11 @@
 
         public bool EnableCustomRecruitGeneration = true;
         public int RecruitGenerationCount = 3; // Default: Random (1-3). Note that more than 3 (three) looks like shit because of the broken UI. Note that the UI cannot handle more than 4 (four) at all.
-
+        public bool RecruitGenerationHasArmor = true;
+        public bool RecruitGenerationHasWeapons = true;
+        public bool RecruitGenerationHasConsumableItems = true;
+        public bool RecruitGenerationHasInventoryItems = true;
+        public bool RecruitGenerationCanHaveAugmentations = false;
 
 
         public bool EnableExperienceToSkillpointConversion = true;
@@ -78,7 +91,7 @@
 
         public bool EnableSoldierAdjustments = true;
         public int MaxAugmentations = 3; //Default: 2
-        public int PersonalAbilitiesCount = 3; // Default: 3
+        public int PersonalAbilitiesCount = 5; // Default: 3
         public int MaxStrength = 30; // Default: 30
         public int MaxWill = 20; // Default: 20
         public int MaxSpeed = 20; // Default: 20
@@ -90,7 +103,7 @@
         public float AircraftThunderbirdSpeed = 400f; // Default: 380
         public float AircraftManticoreSpeed = 550f; // Default: 500
         public float AircraftHeliosSpeed = 700f; // Default: 650
-        public int AircraftBlimpSpace = 9; // Default: 8
+        public int AircraftBlimpSpace = 10; // Default: 8
         public int AircraftThunderbirdSpace = 8; // Default: 7
         public int AircraftManticoreSpace = 7; // Default: 6
         public int AircraftHeliosSpace = 6; // Default: 5
@@ -119,14 +132,39 @@
 
 
         public bool PauseOnDestinationSet = true;
-        public bool PauseOnExplorationSet = true;
+        public bool PauseOnExplorationSet = false;
         public bool PauseOnRecruitsGenerated = true;
         public bool PauseOnHealed = true;
         internal bool CenterOnHealed = true;
+        public bool CenterOnHavenRevealed = true;
 
 
 
         public bool Debug = true;
-        public int DebugLevel = 1; // 0: nothing, 1: error, 2: debug, 3: info
+        internal int DebugLevel = 1; // 0: nothing, 1: error, 2: debug, 3: info
+        public string DebugDevKey = "";
+
+
+
+        public override string ToString()
+        {
+            string result = "\n";
+            result += ">>>>>>>>> SETTINGS >>>>>>>>>";
+
+            Type t = this.GetType();
+            FieldInfo[] fields = t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+            foreach (FieldInfo fi in fields)
+            {
+                result += "\n";
+                result += fi.Name;
+                result += ": ";
+                result += fi.GetValue(this).ToString();
+                result += "\n";
+            }
+
+            result += "<<<<<<<<< SETTINGS <<<<<<<<<
+            return result;
+        }
     }
 }
