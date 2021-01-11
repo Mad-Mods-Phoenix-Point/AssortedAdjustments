@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Harmony;
+using PhoenixPoint.Common.Core;
+using PhoenixPoint.Common.Entities.GameTags;
+using PhoenixPoint.Common.Entities.GameTagsSharedData;
 using PhoenixPoint.Common.Entities.Items;
+using PhoenixPoint.Geoscape.Entities;
+using PhoenixPoint.Tactical.Entities;
 using PhoenixPoint.Tactical.Entities.Abilities;
 using PhoenixPoint.Tactical.Entities.Equipments;
 using PhoenixPoint.Tactical.Entities.Weapons;
@@ -27,7 +33,7 @@ namespace AssortedAdjustments.Patches
                 {
                     Logger.Info($"[DieAbility_ShouldDestroyItem_PREFIX] {item.DisplayName} is a weapon.");
 
-                    if (!AssortedAdjustments.Settings.OverrideWeaponDrops)
+                    if (!AssortedAdjustments.Settings.AllowWeaponDrops)
                     {
                         Logger.Info($"[DieAbility_ShouldDestroyItem_PREFIX] destructionChance: {item.TacticalItemDef.DestroyOnActorDeathPerc}");
                         return;
@@ -86,80 +92,77 @@ namespace AssortedAdjustments.Patches
 
 
 
-    // Reference for later additions
-    /*
+    // Drop armor too
     [HarmonyPatch(typeof(DieAbility), "DropItems")]
     public static class DieAbility_DropItems_Patch
     {
         public static bool Prepare()
         {
-            return AssortedAdjustments.Settings.EnablePlentifulItemDrops && AssortedAdjustments.Settings.AllowWeaponDrops;
+            return AssortedAdjustments.Settings.EnablePlentifulItemDrops && AssortedAdjustments.Settings.AllowArmorDrops;
         }
 
-        public static bool Prefix(DieAbility __instance)
+        public static void Postfix(DieAbility __instance)
         {
             try
             {
-                Logger.Debug($"[DieAbility_DropItems_PREFIX] TacticalActorBase: {__instance.TacticalActorBase.DisplayName}");
-                Logger.Debug($"[DieAbility_DropItems_PREFIX] DieAbilityDef.DestroyItems: {__instance.DieAbilityDef.DestroyItems}");
-
-                MethodInfo ___GetDroppableItems = typeof(DieAbility).GetMethod("GetDroppableItems", BindingFlags.NonPublic | BindingFlags.Instance);
-                MethodInfo ___ShouldDestroyItem = typeof(DieAbility).GetMethod("ShouldDestroyItem", BindingFlags.NonPublic | BindingFlags.Instance);
-
-                foreach (TacticalItem item in (IEnumerable<TacticalItem>)___GetDroppableItems.Invoke(__instance, null))
+                TacticalActor actor = __instance.TacticalActor;
+                IEnumerable<TacticalItem> items = actor?.BodyState?.GetArmourItems();
+                if (items?.Any() != true)
                 {
-                    Logger.Debug($"[DieAbility_DropItems_PREFIX] TacticalItem: {item.DisplayName}");
+                    return;
                 }
 
-                if (__instance.DieAbilityDef.DestroyItems)
+                Logger.Debug($"[DieAbility_DropItems_POSTFIX] Try to drop armor of {actor.ViewElementDef?.Name}");
+
+                SharedData sharedData = SharedData.GetSharedDataFromGame();
+                SharedGameTagsDataDef sharedGameTags = sharedData.SharedGameTags;
+                GameTagDef armor = sharedGameTags.ArmorTag, manufacturable = sharedGameTags.ManufacturableTag, mounted = sharedGameTags.MountedTag;
+
+                int count = 0;
+                foreach (TacticalItem item in items)
                 {
-                    foreach (TacticalItem item in (IEnumerable<TacticalItem>)___GetDroppableItems.Invoke(__instance, null))
+                    TacticalItemDef def = item.ItemDef as TacticalItemDef;
+                    GameTagsList tags = def?.Tags;
+                    if (tags == null || tags.Count == 0 || !tags.Contains(manufacturable) || def.IsPermanentAugment)
                     {
-                        Logger.Debug($"[DieAbility_DropItems_PREFIX] Destroy: {item.DisplayName}");
-                        item.InventoryComponent.RemoveItem(item);
-                        item.Destroy();
+                        continue;
                     }
-                    return false;
-                }
-
-
-
-                InventoryComponent inventoryComponent = __instance.TacticalActorBase.Mount == null ? null : __instance.TacticalActorBase.Mount.TacticalActorBase?.Inventory;
-
-                if (inventoryComponent != null)
-                {
-                    foreach (TacticalItem item in (IEnumerable<TacticalItem>)___GetDroppableItems.Invoke(__instance, null))
+                    if (tags.Contains(armor) || tags.Contains(mounted))
                     {
-                        if (!item.IsBodyPart && !(item.InventoryComponent == null))
-                        {
-                            item.InventoryComponent.RemoveItem(item);
-                            if ((bool)___ShouldDestroyItem.Invoke(__instance, new object[] { item }))
-                            {
-                                item.Destroy();
-                            }
-                            else
-                            {
-                                inventoryComponent.AddItem(item, null);
-                            }
-                        }
+                        Logger.Info($"[DieAbility_DropItems_POSTFIX] Dropping {def.ViewElementDef.Name}");
+                        item.Drop(sharedData.FallDownItemContainerDef, actor);
+                        count++;
                     }
                 }
 
-                foreach (TacticalItem item in (IEnumerable<TacticalItem>)___GetDroppableItems.Invoke(__instance, null))
+                if (count > 0)
                 {
-                    Logger.Info($"[DieAbility_DropItems_PREFIX] Item: {item.DisplayName}, DestroyOnActorDeathPerc: {item.TacticalItemDef.DestroyOnActorDeathPerc}");
-
-                    if ((bool)___ShouldDestroyItem.Invoke(__instance, new object[] { item }))
-                    {
-                        item.InventoryComponent.RemoveItem(item);
-                        item.Destroy();
-                    }
-                    else
-                    {
-                        Logger.Info($"[DieAbility_DropItems_PREFIX] Drop: {item.DisplayName}");
-                        item.Drop(__instance.TacticalActorBase.TacticalLevel.SharedData.FallDownItemContainerDef, __instance.TacticalActor);
-                    }
+                    Logger.Info($"[DieAbility_DropItems_POSTFIX] Dropped {count} pieces from {actor.ViewElementDef?.Name} of {actor.TacticalFaction?.Faction?.FactionDef?.GetName()}");
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+    }
+
+    // Prevent dupes from squad member deaths
+    [HarmonyPatch(typeof(GeoMission), "GetDeadSquadMembersArmour")]
+    public static class GeoMission_GetDeadSquadMembersArmour_Patch
+    {
+        public static bool Prepare()
+        {
+            return AssortedAdjustments.Settings.EnablePlentifulItemDrops && AssortedAdjustments.Settings.AllowArmorDrops;
+        }
+
+        // Override!
+        public static bool Prefix(GeoMission __instance, ref IEnumerable<GeoItem> __result)
+        {
+            try
+            {
+                Logger.Debug($"[GeoMission_GetDeadSquadMembersArmour_PREFIX] Discard armor of dead squaddies as it should already have been added when they died...");
+                __result = Enumerable.Empty<GeoItem>();
 
                 return false;
             }
@@ -170,5 +173,4 @@ namespace AssortedAdjustments.Patches
             }
         }
     }
-    */
 }
