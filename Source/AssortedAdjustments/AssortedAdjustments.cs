@@ -27,6 +27,8 @@ namespace AssortedAdjustments
             LogPath = Path.Combine(ModDirectory, "AssortedAdjustments.log");
             Settings = api("config", null) as Settings ?? new Settings();
 
+
+
             // Apply my own custom settings that differ from "popular demands"
             if (!String.IsNullOrEmpty(Settings.DebugDevKey) && Settings.DebugDevKey == "mad")
             {
@@ -41,23 +43,37 @@ namespace AssortedAdjustments
                 DebugLevel = Settings.DebugLevel > 3 ? 3 : Settings.DebugLevel;
             }
             Logger.Initialize(LogPath, DebugLevel, ModDirectory, nameof(AssortedAdjustments));
-            Logger.Info($"{Settings}");
 
 
 
             if (Settings.SkipIntroLogos)
             {
-                //HarmonyHelpers.Patch(harmony, typeof(PhoenixGame), "BootCrt", typeof(SkipIntro), "Prefix_PhoenixGame_BootCrt");
                 HarmonyHelpers.Patch(Harmony, typeof(PhoenixPoint.Common.Game.PhoenixGame), "RunGameLevel", typeof(SkipIntro), "Prefix_PhoenixGame_RunGameLevel");
             }
             if (Settings.SkipIntroMovie)
             {
                 HarmonyHelpers.Patch(Harmony, typeof(PhoenixPoint.Home.View.ViewStates.UIStateHomeScreenCutscene), "EnterState", typeof(SkipIntro), null, "Postfix_UIStateHomeScreenCutscene_EnterState");
             }
+            if (Settings.SkipLandingSequences)
+            {
+                HarmonyHelpers.Patch(Harmony, typeof(PhoenixPoint.Tactical.View.ViewStates.UIStateTacticalCutscene), "EnterState", typeof(SkipIntro), null, "Postfix_UIStateTacticalCutscene_EnterState");
+            }
 
 
 
-            Logger.Info($"Modnix Mad.AssortedAdjustments.SplashMod initialised.");
+            Logger.Always($"Modnix Mad.AssortedAdjustments.SplashMod initialised.");
+            Logger.Always($"Settings: {Settings}");
+
+
+            try
+            {
+                Settings.ToMarkdownFile(Path.Combine(ModDirectory, "settings-reference.md"));
+                Settings.ToHtmlFile(Path.Combine(ModDirectory, "settings-reference.htm"));
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
         public static void MainMod(Func<string, object, object> api)
@@ -73,7 +89,7 @@ namespace AssortedAdjustments
 
 
 
-            Logger.Info($"Modnix Mad.AssortedAdjustments.MainMod initialised.");
+            Logger.Always($"Modnix Mad.AssortedAdjustments.MainMod initialised.");
         }
 
 

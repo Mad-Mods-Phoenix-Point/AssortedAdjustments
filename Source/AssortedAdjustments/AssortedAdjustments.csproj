@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnnotationHelpers.cs" />
     <Compile Include="DataHelpers.cs" />
     <Compile Include="HarmonyHelpers.cs" />
     <Compile Include="Logger.cs" />
@@ -91,8 +92,9 @@
     <Compile Include="Patches\PauseOnContextSet.cs" />
     <Compile Include="Patches\PauseOnHealed.cs" />
     <Compile Include="Patches\EnableCustomRecruitGeneration.cs" />
+    <Compile Include="Patches\UIEnhancements\SiteAddons.cs" />
     <Compile Include="Patches\UIEnhancements\PersistentClassFilter.cs" />
-    <Compile Include="Patches\UIEnhancements\ToDo.cs" />
+    <Compile Include="Patches\UIEnhancements\ExtendedHavenInfo.cs" />
     <Compile Include="Patches\UIEnhancements\SmartBaseSelection.cs" />
     <Compile Include="Patches\UIEnhancements\ExtendedBaseInfo.cs" />
     <Compile Include="Patches\UIEnhancements\DetailedResearchAndProduction.cs" />
