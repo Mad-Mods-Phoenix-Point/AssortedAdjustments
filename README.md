@@ -4,6 +4,9 @@
 
 ## Features
 
+Please refer to the settings-reference in the mods folder for further information about the settings.  
+Please note that this reference will be generated at runtime, so you'll need to at least once load up the game with the mod activated.
+
 ### UI
 * Smart base selection. Ever wondered why the bases menu didn't show the base your aircraft just arrived at as selected by default?
     * Before opening the bases gui the most relevant (that is the closest to your screen's center) base is prepared to be shown as default.
@@ -33,6 +36,7 @@
 * Aircraft speeds and space slightly raised. You can configure that too.
 * Reduced manufacturing times and resource costs for all items. Raised their scrap values.
 * Disable ambushes but retained them if inside the mist (Thx Sheepy).
+* Disable the "Nothing found" event.
 * Disable the annoying "Right Click Move" in tactical missions. God.
 * Disable the rock tiles in bases. 
 * Keep the game paused when ordering vehicles to travel and when a squad is rested (Thx Sheepy).
