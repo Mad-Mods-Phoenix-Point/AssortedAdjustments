@@ -16,6 +16,7 @@
     * Popup on activated Phoenix Bases will show healing and repair capabilities.
     * Added popup in base overview to show the accumulated healing/resources output, soldiers in treatment and vehicle details.
     * Added popup in recruitment screen for the selected base with extended info too.
+* Added trade information to haven popups along with the recruits class (if any).
 
 ### Bugfixes
 * Vanillas broken ability generation sometimes caused soldiers to have less than the expected number of personal skills
@@ -38,8 +39,8 @@
 * Pause the game when new recruits have arrived at phoenic bases.
 * Allow full mutations AND full augmentations for the soldiers along with UI fixes for the related screens.
 * Recruitment of soldiers with more than 3 personal abilities at phoenix bases now works!
-
-
+* Recruits at Phoenic bases now come with armor and equipment by default.
+* The evacuation prompt in tactical missions will now only show if the whole squad is ready to exit the mission.
 
 #### Facilities
 * Medical bays and vehicle bays have their base healing/repair rate doubled.
@@ -54,12 +55,17 @@
 
 ## Settings
 Everything is configurable. I tried to be very clear in naming the settings so everything should be more or less self-explanatory.  
-In the future i hope i can add a detailed table with the Setting, its default value and an extensive description.  
+<strike>In the future i hope i can add a detailed table with the Setting, its default value and an extensive description.</strike>  
+Every time the mod is loaded it will generate a markdown-file AND a html-file in the mod-folder. There you can see all settings explained along with thir default values.  
+Where appropiate i added a hint to the vanilla default value.  
+Furthermore, all values marked <b>bold</b> differ from the mods default and thus reflect all changes you made in the configuration of this mod.
 Feel free to comment if sth. is unclear or add a pull request at: 
 - https://github.com/Mad-Mods-Phoenix-Point/AssortedAdjustments.
 
 If you have problems with finding/applying the settings please see:  
 - https://github.com/Sheep-y/Modnix/wiki/User-Guide
+    - Especially: https://github.com/Sheep-y/Modnix/wiki/Add-Mod
+    - Preferred way of adding: Use the "Add Mod" Button in Modnix and select the .zip 
 - https://stackoverflow.com/questions/28339116/not-allowed-to-load-assembly-from-network-location
 
 ## Notes

@@ -76,7 +76,7 @@
     <Compile Include="Patches\DisableNothingFound.cs" />
     <Compile Include="Patches\DisableRightClickMove.cs" />
     <Compile Include="Patches\DisableRocksAtBases.cs" />
-    <Compile Include="Patches\EnableAutoEvacuation.cs" />
+    <Compile Include="Patches\EnableSmartEvacuation.cs" />
     <Compile Include="Patches\EnableEconomyAdjustments.cs" />
     <Compile Include="Patches\EnablePlentifulItemDrops.cs" />
     <Compile Include="Patches\EnableMissionAdjustments.cs" />
