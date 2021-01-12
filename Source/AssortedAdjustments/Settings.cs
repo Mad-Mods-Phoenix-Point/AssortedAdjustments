@@ -9,8 +9,8 @@ namespace AssortedAdjustments
         public bool DisableRightClickMove = true;
         [Annotation("Disables the rock tiles in phoenix bases completely.", "True")]
         public bool DisableRocksAtBases = true;
-        [Annotation("Will circumvent the confirmation popup when moving a unit to the evacuation zone.", "False")]
-        public bool EnableAutoEvacuation = false;
+        [Annotation("Will only show the confirmation popup when moving a unit to the evacuation zone if the whole squad is ready to evacuate. You can still evacuate single units by using the ability bar.", "True")]
+        public bool EnableSmartEvacuation = true;
         [Annotation("Will preselect the closest phoenix base to the screen's center when entering the bases menu at the bottom.", "True")]
         public bool EnableSmartBaseSelection = true;
 

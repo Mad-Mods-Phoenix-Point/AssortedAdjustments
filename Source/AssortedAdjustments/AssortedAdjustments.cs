@@ -33,7 +33,6 @@ namespace AssortedAdjustments
             if (!String.IsNullOrEmpty(Settings.DebugDevKey) && Settings.DebugDevKey == "mad")
             {
                 Settings.PersistentClassFilterInitDisabled = true;
-                Settings.EnableAutoEvacuation = true;
                 Settings.MaxWill = 25;
                 Settings.DebugLevel = 3;
             }
