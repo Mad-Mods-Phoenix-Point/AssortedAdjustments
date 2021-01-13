@@ -48,6 +48,8 @@ namespace AssortedAdjustments.Patches
                     {
                         TacticalAbility tAbility = tActor.GetAbility<ExitMissionAbility>() as TacticalAbility;
                         TacticalAbilityTarget taTarget = tAbility?.GetTargets().FirstOrDefault<TacticalAbilityTarget>();
+                        //Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] ActorGridPosition: {taTarget.ActorGridPosition}");
+
                         if (taTarget != null)
                         {
                             tAbility.Activate(taTarget);
@@ -70,15 +72,13 @@ namespace AssortedAdjustments.Patches
                     foreach(TacticalActor tActor in allActiveSquadmembers)
                     {
                         TacticalAbility tAbility = tActor.GetAbility<ExitMissionAbility>() as TacticalAbility;
-                        Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] tAbility.HasValidTargets: {tAbility.HasValidTargets}");
-
-                        TacticalAbilityTarget taTarget = tAbility?.GetTargets().FirstOrDefault<TacticalAbilityTarget>();
-                        //Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] taTarget.ActorGridPosition: {taTarget.ActorGridPosition}");
+                        Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] actor: {tActor.DisplayName}, canEvacuate: {tAbility.HasValidTargets}");
 
                         if (!tAbility.HasValidTargets)
                         {
                             isSquadInExitZone = false;
-                            break;
+                            // Don't break to test for a while
+                            //break;
                         }
                     }
                     Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] isSquadInExitZone: {isSquadInExitZone}");

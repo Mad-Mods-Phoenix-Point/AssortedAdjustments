@@ -2,10 +2,39 @@
 
 [Phoenix Point Mod][Modnix] Various little tweaks to adjust the game to your liking.
 
-## Features
+## Installation and Configuration
+[tl;dr:] Download .zip, open Modnix 2.5.5+, click "Add Mod", select .zip, open "Config-Tab", configure, save, run game.
 
-Please refer to the settings-reference in the mods folder for further information about the settings.  
+### Installation
+1. Make sure you have Modnix installed, Version 2.5.5 and up are recommended
+    - https://github.com/Sheep-y/Modnix/releases/tag/v2.5.5
+    - https://www.nexusmods.com/phoenixpoint/mods/43
+2. Download this mod
+    - https://github.com/Mad-Mods-Phoenix-Point/AssortedAdjustments/releases
+    - https://www.nexusmods.com/phoenixpoint/mods/53
+3. Follow this guide
+    - https://github.com/Sheep-y/Modnix/wiki/Add-Mod
+4. With the mod installed and selected in Modnix, have a look in the lower left section 
+    - There should be a "Config"-Tab, open it
+    - Feel overwhelmed by the wall of text, breathe and set a few configuration options that are self-explanatory
+    - Click "Save" and lauch the game
+
+### Configuration
+Some options are probably hard to understand for new players or just badly named (sry).  
+In that case, <b>after</b> you launched the game with the mod activated for the first time, you can have a look at the <b>reference</b>.  
+- Open `%UserProfile%\Documents\My Games\Phoenix Point\Mods\AssortedAdjustments\`
+- Open `settings-reference.htm` or `settings-reference.md`, whatever format you like more
+- Read about the settings that you don't understand, understand them, and change them in <b>Modnix's Config</b>
+- If some values in the reference are marked <b>bold</b> it means that your currently set value is different from the mod's default
+    - Just to help you keep track of yourself.
+
+### Settings reference
+
+Please refer to the settings-reference in `%UserProfile%\Documents\My Games\Phoenix Point\Mods\AssortedAdjustments\` for further information about the settings.  
 Please note that this reference will be generated at runtime, so you'll need to at least once load up the game with the mod activated.
+Please note that it is A REFERENCE only, changing settings still needs to be done in Modnix.
+
+## Features (may not be complete)
 
 ### UI
 * Smart base selection. Ever wondered why the bases menu didn't show the base your aircraft just arrived at as selected by default?
@@ -27,7 +56,7 @@ Please note that this reference will be generated at runtime, so you'll need to 
     * UI fixes and enhancements included.
 
 ### Gameplay
-* Maxed out soldiers now gain additional SP for their wasted XP (Rebuilds Sheepy's "Spill Exp to Skill"). Conversion rate and multiplier is configurable.
+* Maxed out soldiers now gain additional SP for their wasted XP (Rebuilds Sheepy's "Spill Exp to Skill").
 * Return Fire has a (configurable) maximum reaction angle and a (configurable) shot limit per turn (Thx pantolomin for the inspiration).
 * Squad limit in missions can be configured (Vanilla: 8, Default: 10).
 * All missions can be set to always collect any dropped items (Default: off).
@@ -66,6 +95,7 @@ Furthermore, all values marked <b>bold</b> differ from the mods default and thus
 Feel free to comment if sth. is unclear or add a pull request at: 
 - https://github.com/Mad-Mods-Phoenix-Point/AssortedAdjustments.
 
+### Obsolete with Modnix 2.5.5 and up
 If you have problems with finding/applying the settings please see:  
 - https://github.com/Sheep-y/Modnix/wiki/User-Guide
     - Especially: https://github.com/Sheep-y/Modnix/wiki/Add-Mod
@@ -73,7 +103,7 @@ If you have problems with finding/applying the settings please see:
 - https://stackoverflow.com/questions/28339116/not-allowed-to-load-assembly-from-network-location
 
 ## Notes
-Requires Modnix 2.5.3 or higher.  
+Requires Modnix 2.5.5 or higher.  
 Tested with GOG Year One Edition (1.9).  
 Some features are derivates of existent mods which are adapted, sometimes fixed to work with the YOE version of the game.  
 If the original mods work for you and/or you just like them better, please disable the corresponding feature in the settings of this mod.
