@@ -6,6 +6,6 @@
     Lang: "en",
     Author: "Mad",
     Contact: "#mods on phoenix point discord",
-	Requires : { Id: "Modnix", Min: "2.5.5" },
+	Requires : { Id: "Modnix", Min: "2.0" },
 	ConfigType : "AssortedAdjustments.Settings"
 }

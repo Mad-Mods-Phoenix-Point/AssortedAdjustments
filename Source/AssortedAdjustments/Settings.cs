@@ -178,8 +178,8 @@ namespace AssortedAdjustments
         public bool EnableEconomyAdjustments = true;
         [Annotation("General multiplier for manufacturing costs.", "0.75")]
         public float ResourceMultiplier = 0.75f;
-        [Annotation("General multiplier for scrapping costs, vanilla default is 0.5", "0.75")]
-        public float ScrapMultiplier = 0.75f;
+        [Annotation("General multiplier for scrapping costs, vanilla default is 0.5", "0.5")]
+        public float ScrapMultiplier = 0.5f;
         [Annotation("General multiplier for manufacturing times.", "0.5")]
         public float CostMultiplier = 0.5f;
 
