@@ -8,6 +8,7 @@ using PhoenixPoint.Geoscape.Entities;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases.FacilityComponents;
 using PhoenixPoint.Geoscape.Entities.Sites;
 using PhoenixPoint.Geoscape.View.DataObjects;
+using PhoenixPoint.Geoscape.View.ViewControllers;
 using PhoenixPoint.Geoscape.View.ViewControllers.BaseRecruits;
 using PhoenixPoint.Geoscape.View.ViewModules;
 using PhoenixPoint.Geoscape.View.ViewStates;
@@ -27,6 +28,126 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             public static new string ToString()
             {
                 return $"[PhoenixBaseExtendedInfoData] {HealOutput}, {StaminaOutput}, {ExperienceOutput}, {SkillpointOutput}";
+            }
+        }
+
+
+
+        [HarmonyPatch(typeof(UIModuleGeoAssetDeployment), "SetBaseButtonElement")]
+        public static class UIModuleGeoAssetDeployment_SetBaseButtonElement_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowExtendedBaseInfo;
+            }
+
+            public static void Postfix(UIModuleGeoAssetDeployment __instance, GeoDeployAssetBaseElementController element, GeoSite site)
+            {
+                try
+                {
+                    GeoPhoenixBase phoenixBase = site.GetComponent<GeoPhoenixBase>();
+                    if(phoenixBase == null)
+                    {
+                        return;
+                    }
+
+                    Transform anchor = element.PhoenixBaseDetailsRoot.transform?.parent?.parent;
+                    if (anchor == null)
+                    {
+                        throw new InvalidOperationException("Anchor not found. Cannot attach tooltip.");
+                    }
+
+                    //Logger.Debug($"{anchor.name}");
+                    //Logger.Debug($"{anchor.parent.name}");
+                    //Logger.Debug($"{anchor.parent.parent.name}");
+
+                    string tipText = "<!--FONTSIZE:30-->";
+                    tipText += $"<size=42><color=#ECBA62>{phoenixBase.Site.Name}</color></size>";
+                    tipText += "\n";
+                    tipText += $"Healing: {phoenixBase.Stats.HealSoldiersHP} ({phoenixBase.Stats.HealMutogHP}) HP/h";
+                    tipText += "\n";
+                    tipText += $"Recreation: {phoenixBase.Stats.HealSoldiersStamina} ST/h";
+                    tipText += "\n";
+                    tipText += $"Training: {phoenixBase.Stats.TrainSoldiersXP} XP/h";
+
+                    List<GeoCharacter> soldiers = phoenixBase.SoldiersInBase.Where(c => c.TemplateDef.IsHuman).ToList();
+                    if (soldiers.Count > 0)
+                    {
+                        tipText += "\n";
+                        tipText += "\n";
+                        tipText += $"<size=36><color=#ECBA62>SOLDIERS</color></size>";
+                        foreach (GeoCharacter soldier in soldiers)
+                        {
+                            tipText += "\n";
+                            tipText += $"{soldier.DisplayName.Split((char)32).First()} ({soldier.GetClassViewElementDefs().FirstOrDefault().DisplayName1.Localize()}, Level {soldier.Progression.LevelProgression.Level})";
+                        }
+                    }
+
+                    // Mutogs
+                    List<GeoCharacter> mutogs = phoenixBase.SoldiersInBase.Where(c => c.TemplateDef.IsMutog).ToList();
+                    if (mutogs.Count > 0)
+                    {
+                        tipText += "\n";
+                        tipText += "\n";
+                        tipText += $"<size=36><color=#ECBA62>MUTOGS</color></size>";
+                        foreach (GeoCharacter mutog in mutogs)
+                        {
+                            tipText += "\n";
+                            tipText += $"{mutog.DisplayName}";
+                        }
+                    }
+
+                    // Vehicles
+                    List<GeoCharacter> vehicles = phoenixBase.SoldiersInBase.Where(c => c.TemplateDef.IsVehicle).ToList();
+                    if (vehicles.Count > 0)
+                    {
+                        tipText += "\n";
+                        tipText += "\n";
+                        tipText += $"<size=36><color=#ECBA62>VEHICLES</color></size>";
+                        foreach (GeoCharacter vehicle in vehicles)
+                        {
+                            tipText += "\n";
+                            tipText += $"{vehicle.DisplayName}";
+                        }
+                    }
+
+                    // Aircraft
+                    List<GeoVehicle> aircrafts = phoenixBase.VehiclesAtBase.ToList();
+                    if (aircrafts.Count > 0)
+                    {
+                        tipText += "\n";
+                        tipText += "\n";
+                        tipText += $"<size=36><color=#ECBA62>AIRCRAFT</color></size>";
+                        foreach (GeoVehicle aircraft in aircrafts)
+                        {
+                            tipText += "\n";
+                            tipText += $"{aircraft.Name} ({aircraft.UsedCharacterSpace}/{aircraft.MaxCharacterSpace})";
+                        }
+                    }
+
+                    // Attach tooltip
+                    GameObject anchorGo = anchor.gameObject;
+                    if (anchorGo.GetComponent<UITooltipText>() != null)
+                    {
+                        Logger.Debug($"[UIModuleGeoAssetDeployment_SetBaseButtonElement_POSTFIX] Tooltip already exists. Refreshing.");
+                        anchorGo.GetComponent<UITooltipText>().TipText = tipText;
+                        return;
+                    }
+                    else
+                    {
+                        anchorGo.AddComponent<UITooltipText>();
+                        //anchorGo.AddComponent<CanvasRenderer>();
+
+                        Logger.Debug($"[UIModuleGeoAssetDeployment_SetBaseButtonElement_POSTFIX] Tooltip not found. Creating.");
+                        anchorGo.GetComponent<UITooltipText>().MaxWidth = 280; // Doesn't seem to work
+                        anchorGo.GetComponent<UITooltipText>().Position = UITooltip.Position.RightMiddle;
+                        anchorGo.GetComponent<UITooltipText>().TipText = tipText;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
             }
         }
 
