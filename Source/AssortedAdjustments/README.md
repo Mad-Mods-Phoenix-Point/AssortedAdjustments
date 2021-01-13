@@ -19,7 +19,7 @@
     - Feel overwhelmed by the wall of text, breathe and set a few configuration options that are self-explanatory
     - Click "Save" and lauch the game
 
-### Configuration
+### Settings
 Some options are probably hard to understand for new players or just badly named (sry).  
 In that case, <b>after</b> you launched the game with the mod activated for the first time, you can have a look at the <b>reference</b>.  
 - Open `%UserProfile%\Documents\My Games\Phoenix Point\Mods\AssortedAdjustments\`
@@ -28,7 +28,7 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
 - If some values in the reference are marked <b>bold</b> it means that your currently set value is different from the mod's default
     - Just to help you keep track of yourself.
 
-### Settings reference
+### Reference
 
 Please refer to the settings-reference in `%UserProfile%\Documents\My Games\Phoenix Point\Mods\AssortedAdjustments\` for further information about the settings.  
 Please note that this reference will be generated at runtime, so you'll need to at least once load up the game with the mod activated.
@@ -86,7 +86,7 @@ Please note that it is A REFERENCE only, changing settings still needs to be don
 ### QOL
 * Intro logos and introductary movie will get skipped (Sheepy's "Skip Intro" can do even more, if you want to use that, please disable these via settings).
 
-## Settings
+## Settings (again)
 Everything is configurable. I tried to be very clear in naming the settings so everything should be more or less self-explanatory.  
 <strike>In the future i hope i can add a detailed table with the Setting, its default value and an extensive description.</strike>  
 Every time the mod is loaded it will generate a markdown-file AND a html-file in the mod-folder. There you can see all settings explained along with thir default values.  
