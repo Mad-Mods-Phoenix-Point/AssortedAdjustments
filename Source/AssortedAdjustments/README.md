@@ -25,14 +25,9 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
 - Open `%UserProfile%\Documents\My Games\Phoenix Point\Mods\AssortedAdjustments\`
 - Open `settings-reference.htm` or `settings-reference.md`, whatever format you like more
 - Read about the settings that you don't understand, understand them, and change them in <b>Modnix's Config</b>
+    - The file is <b>just a source of information</b>, not a configuration file!
 - If some values in the reference are marked <b>bold</b> it means that your currently set value is different from the mod's default
     - Just to help you keep track of yourself.
-
-### Reference
-
-Please refer to the settings-reference in `%UserProfile%\Documents\My Games\Phoenix Point\Mods\AssortedAdjustments\` for further information about the settings.  
-Please note that this reference will be generated at runtime, so you'll need to at least once load up the game with the mod activated.
-Please note that it is A REFERENCE only, changing settings still needs to be done in Modnix.
 
 ## Features (may not be complete)
 
@@ -94,6 +89,12 @@ Where appropiate i added a hint to the vanilla default value.
 Furthermore, all values marked <b>bold</b> differ from the mods default and thus reflect all changes you made in the configuration of this mod.
 Feel free to comment if sth. is unclear or add a pull request at: 
 - https://github.com/Mad-Mods-Phoenix-Point/AssortedAdjustments.
+
+### Reference
+
+Please refer to the settings-reference in `%UserProfile%\Documents\My Games\Phoenix Point\Mods\AssortedAdjustments\` for further information about the settings.  
+Please note that this reference will be generated at runtime, so you'll need to at least once load up the game with the mod activated.
+Please note that it is A REFERENCE only, changing settings still needs to be done in Modnix.
 
 ### Obsolete with Modnix 2.5.5 and up
 If you have problems with finding/applying the settings please see:  
