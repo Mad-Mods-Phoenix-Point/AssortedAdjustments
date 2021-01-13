@@ -17,6 +17,7 @@
 4. With the mod installed and selected in Modnix, have a look in the lower left section 
     - There should be a "Config"-Tab, open it
     - Feel overwhelmed by the wall of text, breathe and set a few configuration options that are self-explanatory
+    - Sneak peak at https://github.com/Mad-Mods-Phoenix-Point/AssortedAdjustments/blob/main/Source/AssortedAdjustments/Settings.cs
     - Click "Save" and lauch the game
 
 ### Settings
@@ -115,3 +116,4 @@ If the original mods work for you and/or you just like them better, please disab
 * pantolomin
 * pardeike
 * Snapshot Games
+* Sheepy (again, because once is not enough)
