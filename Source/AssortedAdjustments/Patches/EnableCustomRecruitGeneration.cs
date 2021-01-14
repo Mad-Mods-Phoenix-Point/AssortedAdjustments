@@ -18,40 +18,46 @@ namespace AssortedAdjustments.Patches
 {
     internal static class CustomRecruitGeneration
     {
-        /*
-        // Utility patch to spawn haven recruits on game load
-        [HarmonyPatch(typeof(GeoFaction), "OnAfterFactionsLevelStart")]
-        public static class GeoFaction_OnAfterFactionsLevelStart_Patch
+        public static void Apply()
         {
-            public static void Postfix(GeoFaction __instance, GeoLevelController ____level)
+            HarmonyInstance harmony = HarmonyInstance.Create(typeof(EconomyAdjustments).Namespace);
+            DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
+
+            List<GameDifficultyLevelDef> gameDifficultyLevelDefDefs = defRepository.DefRepositoryDef.AllDefs.OfType<GameDifficultyLevelDef>().ToList();
+            foreach (GameDifficultyLevelDef gdlDef in gameDifficultyLevelDefDefs)
             {
-                try
-                {
-                    if(__instance.Name.Localize() != "Disciples of Anu")
-                    {
-                        return;
-                    }
+                gdlDef.RecruitsGenerationParams.HasArmor = AssortedAdjustments.Settings.RecruitGenerationHasArmor;
+                gdlDef.RecruitsGenerationParams.HasWeapons = AssortedAdjustments.Settings.RecruitGenerationHasWeapons;
+                gdlDef.RecruitsGenerationParams.HasConsumableItems = AssortedAdjustments.Settings.RecruitGenerationHasConsumableItems;
+                gdlDef.RecruitsGenerationParams.HasInventoryItems = AssortedAdjustments.Settings.RecruitGenerationHasInventoryItems;
+                gdlDef.RecruitsGenerationParams.CanHaveAugmentations = AssortedAdjustments.Settings.RecruitGenerationCanHaveAugmentations;
 
-                    Logger.Debug($"[GeoFaction_OnAfterFactionsLevelStart_POSTFIX] Respawning recruits for faction: {__instance.Name.Localize()}");
-
-                    foreach (GeoHaven geoHaven in __instance.Havens)
-                    {
-                        Logger.Debug($"[GeoFaction_OnAfterFactionsLevelStart_POSTFIX] geoHaven.Site: {geoHaven.Site.Name}");
-                        Logger.Debug($"[GeoFaction_OnAfterFactionsLevelStart_POSTFIX] geoHaven.IsRecruitmentEnabled: {geoHaven.IsRecruitmentEnabled}");
-                        Logger.Debug($"[GeoFaction_OnAfterFactionsLevelStart_POSTFIX] geoHaven.AvailableRecruit: {geoHaven.AvailableRecruit?.GetName()}");
-
-                        geoHaven.KillRecruit();
-                        CharacterGenerationContext context = ____level.CharacterGenerator.GenerateCharacterGeneratorContext(__instance);
-                        geoHaven.SpawnNewRecruit(context, null);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e);
-                }
+                /*
+                Logger.Info($"[CustomRecruitGeneration_Apply] gdlDef: {gdlDef.Name.Localize()}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] StartingSquadGenerationParams:");
+                Logger.Info($"[CustomRecruitGeneration_Apply] HasArmor: {gdlDef.StartingSquadGenerationParams.HasArmor}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] HasWeapons: {gdlDef.StartingSquadGenerationParams.HasWeapons}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] HasConsumableItems: {gdlDef.StartingSquadGenerationParams.HasConsumableItems}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] HasInventoryItems: {gdlDef.StartingSquadGenerationParams.HasInventoryItems}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] CanHaveAugmentations: {gdlDef.StartingSquadGenerationParams.CanHaveAugmentations}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] EnduranceBonus: {gdlDef.StartingSquadGenerationParams.EnduranceBonus}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] WillBonus: {gdlDef.StartingSquadGenerationParams.WillBonus}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] SpeedBonus: {gdlDef.StartingSquadGenerationParams.SpeedBonus}");
+                Logger.Info("---");
+                Logger.Info($"[CustomRecruitGeneration_Apply] gdlDef: {gdlDef.Name.Localize()}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] RecruitsGenerationParams:");
+                Logger.Info($"[CustomRecruitGeneration_Apply] HasArmor: {gdlDef.RecruitsGenerationParams.HasArmor}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] HasWeapons: {gdlDef.RecruitsGenerationParams.HasWeapons}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] HasConsumableItems: {gdlDef.RecruitsGenerationParams.HasConsumableItems}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] HasInventoryItems: {gdlDef.RecruitsGenerationParams.HasInventoryItems}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] CanHaveAugmentations: {gdlDef.RecruitsGenerationParams.CanHaveAugmentations}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] EnduranceBonus: {gdlDef.RecruitsGenerationParams.EnduranceBonus}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] WillBonus: {gdlDef.RecruitsGenerationParams.WillBonus}");
+                Logger.Info($"[CustomRecruitGeneration_Apply] SpeedBonus: {gdlDef.RecruitsGenerationParams.SpeedBonus}");
+                Logger.Info("---");
+                */
             }
         }
-        */
 
 
 
@@ -226,7 +232,62 @@ namespace AssortedAdjustments.Patches
 
 
 
-        // Applied for *all* recruits
+        // Override to always spawn a fixed number of recruits
+        [HarmonyPatch(typeof(GeoPhoenixFaction), "RegenerateNakedRecruits")]
+        public static class GeoPhoenixFaction_RegenerateNakedRecruits_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableCustomRecruitGeneration;
+            }
+
+            // Override!
+            // @ToDo: Learn to use transpiler, it's just one value to change here
+            public static bool Prefix(GeoPhoenixFaction __instance, Dictionary<GeoUnitDescriptor, ResourcePack> ____nakedRecruits, GeoLevelController ____level, TimeUnit ____lastNakedRecruitRefresh)
+            {
+                try
+                {
+                    Logger.Debug($"[GeoPhoenixFaction_RegenerateNakedRecruits_PREFIX] Generate a custom amount of new recruits. Potentially edit their parameters.");
+
+                    ____nakedRecruits.Clear();
+
+                    // MAD:
+                    //int num = __instance.FactionDef.MaxNakedRecruitsAvailability.RandomValue();
+                    int num = Mathf.Clamp(AssortedAdjustments.Settings.RecruitGenerationCount, 1, 4); // UI cannot handle more than four
+                    //:DAM
+
+                    CharacterGenerationContext context = ____level.CharacterGenerator.GenerateCharacterGeneratorContext(__instance);
+                    for (int i = 0; i < num; i++)
+                    {
+                        GeoUnitDescriptor geoUnitDescriptor = ____level.CharacterGenerator.GenerateRandomUnit(context);
+                        ____level.CharacterGenerator.ApplyRecruitDifficultyParameters(geoUnitDescriptor);
+                        ResourcePack value = __instance.GenerateNakedRecruitsCost();
+                        ____nakedRecruits.Add(geoUnitDescriptor, value);
+                    }
+                    ____lastNakedRecruitRefresh = ____level.Timing.Now;
+                    __instance.SpawnedRecruitNotification = true;
+                    Action<IEnumerable<GeoUnitDescriptor>> recruitsRegenerated = __instance.RecruitsRegenerated;
+                    if (recruitsRegenerated == null)
+                    {
+                        return false;
+                    }
+                    recruitsRegenerated(__instance.NakedRecruits.Keys);
+
+
+                    return false;
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                    return true;
+                }
+            }
+        }
+
+
+
+        /*
+        // Applied for *all* recruits (Now called on the difficulty level def in Apply() to not strip the initial squad of their equipment...)
         [HarmonyPatch(typeof(FactionCharacterGenerator), "ApplyGenerationParameters")]
         public static class FactionCharacterGenerator_ApplyGenerationParameters_Patch
         {
@@ -287,59 +348,43 @@ namespace AssortedAdjustments.Patches
                 }
             }
         }
+        */
 
 
 
-        // Override to always spawn a fixed number of recruits
-        [HarmonyPatch(typeof(GeoPhoenixFaction), "RegenerateNakedRecruits")]
-        public static class GeoPhoenixFaction_RegenerateNakedRecruits_Patch
+        /*
+        // Utility patch to spawn haven recruits on game load
+        [HarmonyPatch(typeof(GeoFaction), "OnAfterFactionsLevelStart")]
+        public static class GeoFaction_OnAfterFactionsLevelStart_Patch
         {
-            public static bool Prepare()
-            {
-                return AssortedAdjustments.Settings.EnableCustomRecruitGeneration;
-            }
-
-            // Override!
-            // @ToDo: Learn to use transpiler, it's just one value to change here
-            public static bool Prefix(GeoPhoenixFaction __instance, Dictionary<GeoUnitDescriptor, ResourcePack> ____nakedRecruits, GeoLevelController ____level, TimeUnit ____lastNakedRecruitRefresh)
+            public static void Postfix(GeoFaction __instance, GeoLevelController ____level)
             {
                 try
                 {
-                    Logger.Debug($"[GeoPhoenixFaction_RegenerateNakedRecruits_PREFIX] Generate a custom amount of new recruits. Potentially edit their parameters.");
-
-                    ____nakedRecruits.Clear();
-
-                    // MAD:
-                    //int num = __instance.FactionDef.MaxNakedRecruitsAvailability.RandomValue();
-                    int num = Mathf.Clamp(AssortedAdjustments.Settings.RecruitGenerationCount, 1, 4); // UI cannot handle more than four
-                    //:DAM
-
-                    CharacterGenerationContext context = ____level.CharacterGenerator.GenerateCharacterGeneratorContext(__instance);
-                    for (int i = 0; i < num; i++)
+                    if(__instance.Name.Localize() != "Disciples of Anu")
                     {
-                        GeoUnitDescriptor geoUnitDescriptor = ____level.CharacterGenerator.GenerateRandomUnit(context);
-                        ____level.CharacterGenerator.ApplyRecruitDifficultyParameters(geoUnitDescriptor);
-                        ResourcePack value = __instance.GenerateNakedRecruitsCost();
-                        ____nakedRecruits.Add(geoUnitDescriptor, value);
+                        return;
                     }
-                    ____lastNakedRecruitRefresh = ____level.Timing.Now;
-                    __instance.SpawnedRecruitNotification = true;
-                    Action<IEnumerable<GeoUnitDescriptor>> recruitsRegenerated = __instance.RecruitsRegenerated;
-                    if (recruitsRegenerated == null)
+
+                    Logger.Debug($"[GeoFaction_OnAfterFactionsLevelStart_POSTFIX] Respawning recruits for faction: {__instance.Name.Localize()}");
+
+                    foreach (GeoHaven geoHaven in __instance.Havens)
                     {
-                        return false;
+                        Logger.Debug($"[GeoFaction_OnAfterFactionsLevelStart_POSTFIX] geoHaven.Site: {geoHaven.Site.Name}");
+                        Logger.Debug($"[GeoFaction_OnAfterFactionsLevelStart_POSTFIX] geoHaven.IsRecruitmentEnabled: {geoHaven.IsRecruitmentEnabled}");
+                        Logger.Debug($"[GeoFaction_OnAfterFactionsLevelStart_POSTFIX] geoHaven.AvailableRecruit: {geoHaven.AvailableRecruit?.GetName()}");
+
+                        geoHaven.KillRecruit();
+                        CharacterGenerationContext context = ____level.CharacterGenerator.GenerateCharacterGeneratorContext(__instance);
+                        geoHaven.SpawnNewRecruit(context, null);
                     }
-                    recruitsRegenerated(__instance.NakedRecruits.Keys);
-
-
-                    return false;
                 }
                 catch (Exception e)
                 {
                     Logger.Error(e);
-                    return true;
                 }
             }
         }
+        */
     }
 }

@@ -47,6 +47,10 @@ namespace AssortedAdjustments.Patches
                     foreach (TacticalActor tActor in allActiveSquadmembers)
                     {
                         TacticalAbility tAbility = tActor.GetAbility<ExitMissionAbility>() as TacticalAbility;
+                        if (tAbility == null)
+                        {
+                            tAbility = tActor.GetAbility<EvacuateMountedActorsAbility>() as TacticalAbility;
+                        }
                         TacticalAbilityTarget taTarget = tAbility?.GetTargets().FirstOrDefault<TacticalAbilityTarget>();
                         //Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] ActorGridPosition: {taTarget.ActorGridPosition}");
 
@@ -72,7 +76,11 @@ namespace AssortedAdjustments.Patches
                     foreach(TacticalActor tActor in allActiveSquadmembers)
                     {
                         TacticalAbility tAbility = tActor.GetAbility<ExitMissionAbility>() as TacticalAbility;
-                        Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] actor: {tActor.DisplayName}, canEvacuate: {tAbility.HasValidTargets}");
+                        if (tAbility == null)
+                        { 
+                            tAbility = tActor.GetAbility<EvacuateMountedActorsAbility>() as TacticalAbility;
+                        }
+                        Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] actor: {tActor.DisplayName}, canEvacuate: {tAbility?.HasValidTargets}");
 
                         if (!tAbility.HasValidTargets)
                         {

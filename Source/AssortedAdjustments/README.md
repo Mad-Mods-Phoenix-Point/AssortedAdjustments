@@ -18,7 +18,7 @@
     - There should be a "Config"-Tab, open it
     - Feel overwhelmed by the wall of text, breathe and set a few configuration options that are self-explanatory
     - Sneak peak at https://github.com/Mad-Mods-Phoenix-Point/AssortedAdjustments/blob/main/Source/AssortedAdjustments/Settings.cs
-    - Click "Save" and lauch the game
+    - Click "Save" and launch the game
 
 ### Settings
 Some options are probably hard to understand for new players or just badly named (sry).  

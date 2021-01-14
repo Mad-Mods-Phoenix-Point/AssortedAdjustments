@@ -34,6 +34,7 @@ namespace AssortedAdjustments
             {
                 Settings.PersistentClassFilterInitDisabled = true;
                 Settings.MaxWill = 25;
+                Settings.PauseOnExplorationSet = true;
                 Settings.DebugLevel = 3;
             }
 
@@ -118,6 +119,11 @@ namespace AssortedAdjustments
             if (Settings.EnableMissionAdjustments)
             {
                 MissionAdjustments.Apply();
+            }
+
+            if (Settings.EnableCustomRecruitGeneration)
+            {
+                CustomRecruitGeneration.Apply();
             }
         }
     }
