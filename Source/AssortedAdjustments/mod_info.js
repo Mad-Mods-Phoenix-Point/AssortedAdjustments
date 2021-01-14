@@ -1,7 +1,7 @@
 {
 	Id : "Mad.AssortedAdjustments",
 	Name : "AssortedAdjustments",
-    Version: "1.9-007R",
+    Version: "1.9-008R",
 	Description : "Various little tweaks to adjust the game to your liking.",
     Lang: "en",
     Author: "Mad",
