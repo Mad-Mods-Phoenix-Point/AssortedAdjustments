@@ -13,6 +13,8 @@ namespace AssortedAdjustments
         public bool EnableSmartEvacuation = true;
         [Annotation("Will preselect the closest phoenix base to the screen's center when entering the bases menu at the bottom.", "True")]
         public bool EnableSmartBaseSelection = true;
+        [Annotation("If an aircraft is completely empty you can scrap it from the roster list.", "True")]
+        public bool EnableScrapAircraft = true;
 
 
         [Annotation("General switch to enable the related subfeatures.", "True", true, "UI Enhancements")]
