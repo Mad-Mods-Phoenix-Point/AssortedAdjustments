@@ -70,6 +70,9 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
 * Recruitment of soldiers with more than 3 personal abilities at phoenix bases now works!
 * Recruits at Phoenic bases now come with armor and equipment by default.
 * The evacuation prompt in tactical missions will now only show if the whole squad is ready to exit the mission.
+* You can now scrap aircraft from the roster list.
+    * If you move all units out of the aircraft the formerly "Empty"-Slot will now trigger the option to scrap the vehicle.
+    * You can't scrap your last aircraft because the game bugs out totally in geoscape without any vehicle to select.
 
 #### Facilities
 * Medical bays and vehicle bays have their base healing/repair rate doubled.
