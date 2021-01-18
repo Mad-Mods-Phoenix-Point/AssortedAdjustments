@@ -122,8 +122,9 @@ namespace AssortedAdjustments
             }
             */
 
-            /*
+            
             // Get vanilla descriptions
+            /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<ViewElementDef>())
             {
                 Logger.Info($"[DataHelpers_Print] def: {def.name}, GUID: {def.Guid}");
@@ -131,10 +132,10 @@ namespace AssortedAdjustments
                 Logger.Info($"[DataHelpers_Print] DisplayName2: {def.DisplayName2.LocalizeEnglish()}");
                 Logger.Info($"[DataHelpers_Print] Description: {def.Description.LocalizeEnglish()}");
 
-                //Logger.Info($"[DataHelpers_Print] SmallIcon: {def.SmallIcon}");
-                //Logger.Info($"[DataHelpers_Print] LargeIcon: {def.LargeIcon}");
-                //Logger.Info($"[DataHelpers_Print] InventoryIcon: {def.InventoryIcon}");
-                //Logger.Info($"[DataHelpers_Print] RosterIcon: {def.RosterIcon}");
+                Logger.Info($"[DataHelpers_Print] SmallIcon: {def.SmallIcon}");
+                Logger.Info($"[DataHelpers_Print] LargeIcon: {def.LargeIcon}");
+                Logger.Info($"[DataHelpers_Print] InventoryIcon: {def.InventoryIcon}");
+                Logger.Info($"[DataHelpers_Print] RosterIcon: {def.RosterIcon}");
             }
             */
         }

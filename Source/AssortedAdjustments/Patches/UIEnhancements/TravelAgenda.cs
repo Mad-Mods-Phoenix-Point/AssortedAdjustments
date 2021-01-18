@@ -23,6 +23,8 @@ using PhoenixPoint.Geoscape.Entities.Sites;
 using PhoenixPoint.Geoscape.View.DataObjects;
 using PhoenixPoint.Geoscape.View;
 using PhoenixPoint.Geoscape.Levels.Factions.Archeology;
+using Base.Defs;
+using UnityEngine.EventSystems;
 
 namespace AssortedAdjustments.Patches.UIEnhancements
 {
@@ -37,13 +39,16 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         internal static string actionExploring = "INVESTIGATES";
         internal static string actionTraveling = "TRAVELS TO";
         internal static string actionRepairing = "REPAIRING:";
+        internal static string actionExcavating = "EXCAVATING:";
 
         internal static Image aircraftIcon = null;
         internal static Image excavateIcon = null;
+        //internal static Sprite excavateSprite = null;
 
         internal static Color vehicleTrackerColor = new Color32(251, 191, 31, 255);
         internal static Color manufactureTrackerColor = new Color32(235, 110, 42, 255);
         internal static Color researchTrackerColor = new Color32(42, 245, 252, 255);
+        internal static Color excavationTrackerColor = new Color32(93, 153, 106, 255);
         internal static Color facilityTrackerColor = new Color32(185, 185, 185, 255);
         internal static Color defaultTrackerColor = new Color32(155, 155, 155, 255);
         internal static UIFactionDataTrackerElement trackerElementDefault = null;
@@ -51,6 +56,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         // Cache reflected methods
         internal static MethodInfo ___GetFreeElement = typeof(UIModuleFactionAgendaTracker).GetMethod("GetFreeElement", BindingFlags.NonPublic | BindingFlags.Instance);
         internal static MethodInfo ___OnAddedElement = typeof(UIModuleFactionAgendaTracker).GetMethod("OnAddedElement", BindingFlags.NonPublic | BindingFlags.Instance);
+        internal static MethodInfo ___OrderElements = typeof(UIModuleFactionAgendaTracker).GetMethod("OrderElements", BindingFlags.NonPublic | BindingFlags.Instance);
         internal static MethodInfo ___UpdateData = typeof(UIModuleFactionAgendaTracker).GetMethod("UpdateData", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
         internal static MethodInfo ___Dispose = typeof(UIModuleFactionAgendaTracker).GetMethod("Dispose", BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -188,6 +194,26 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
 
         // Patches
+        [HarmonyPatch(typeof(UIModuleStatusBarMessages), "Update")]
+        public static class UIModuleStatusBarMessages_Update_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+            }
+
+            public static void Postfix(UIModuleStatusBarMessages __instance)
+            {
+                try
+                {
+                    __instance.TimedEventRoot.gameObject.SetActive(false);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
 
         [HarmonyPatch(typeof(UIModuleStatusBarMessages), "DisplayTimedEventMessage")]
         public static class UIModuleStatusBarMessages_DisplayTimedEventMessage_Patch
@@ -205,52 +231,44 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     {
                         return;
                     }
+                    Logger.Info($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] geoSite: {geoSite.Name}");
+                    Logger.Debug($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] __instance.Context.View.CurrentViewState: {__instance.Context?.View?.CurrentViewState}");
 
-
-
-                        Logger.Info($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] geoSite: {geoSite.Name}");
-                        Logger.Debug($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] __instance.Context.View.CurrentViewState: {__instance.Context?.View?.CurrentViewState}");
-
-
-
-                        if (__instance.Context?.View?.CurrentViewState is UIStateVehicleSelected uiStateVehicleSelected)
-                        {
+                    if (__instance.Context?.View?.CurrentViewState is UIStateVehicleSelected uiStateVehicleSelected)
+                    {
+                        string siteName = geoSite.LocalizedSiteName;
+                        string excavationInfo = $"{actionExcavating} {siteName}";
 
                         UIModuleFactionAgendaTracker ____factionTracker = (UIModuleFactionAgendaTracker)AccessTools.Property(typeof(UIStateVehicleSelected), "_factionTracker").GetValue(uiStateVehicleSelected, null);
-
-                        //UIModuleFactionAgendaTracker ____factionTracker = __instance.Context.View.GeoscapeModules.FactionDataTracker.;
-
                         List<UIFactionDataTrackerElement> ____currentTrackedElements = (List<UIFactionDataTrackerElement>)AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_currentTrackedElements").GetValue(____factionTracker);
 
-                            foreach (UIFactionDataTrackerElement trackedElement in ____currentTrackedElements)
+                        foreach (UIFactionDataTrackerElement trackedElement in ____currentTrackedElements)
+                        {
+                            // Update
+                            if (trackedElement.TrackedObject == geoSite)
                             {
-                                // Update
-                                if (trackedElement.TrackedObject == geoSite)
-                                {
-                                    Logger.Debug($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] {geoSite.Name} already tracked. Updating.");
+                                Logger.Debug($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] {geoSite.Name} already tracked. Updating.");
 
-                                    trackedElement.TrackedName.text = "Blablubb";
+                                trackedElement.TrackedName.text = excavationInfo;
 
-                                    AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_needsRefresh").SetValue(____factionTracker, true);
-                                    //MethodInfo ___UpdateData = typeof(UIModuleFactionAgendaTracker).GetMethod("UpdateData", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
-                                    ___UpdateData.Invoke(____factionTracker, null);
+                                //AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_needsRefresh").SetValue(____factionTracker, true);
+                                ___UpdateData.Invoke(____factionTracker, null);
+                                //___OrderElements.Invoke(____factionTracker, null);
 
-                                    return;
-                                }
+                                // Return early as the first match is always the visible one
+                                return;
                             }
-
-                            // Add
-                            Logger.Debug($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] {geoSite.Name} currently not tracked. Adding to tracker.");
-
-                            //MethodInfo ___GetFreeElement = typeof(UIModuleFactionAgendaTracker).GetMethod("GetFreeElement", BindingFlags.NonPublic | BindingFlags.Instance);
-                            //MethodInfo ___OnAddedElement = typeof(UIModuleFactionAgendaTracker).GetMethod("OnAddedElement", BindingFlags.NonPublic | BindingFlags.Instance);
-
-                            UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(____factionTracker, null);
-                            freeElement.Init(geoSite, "Blublabb", null, false);
-
-                            ___OnAddedElement.Invoke(____factionTracker, new object[] { freeElement });
-
                         }
+
+                        // Add
+                        Logger.Debug($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] {geoSite.Name} currently not tracked. Adding to tracker.");
+
+                        ViewElementDef borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("ArcheologyLab_PhoenixFacilityDef")).FirstOrDefault();
+                        UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(____factionTracker, null);
+                        freeElement.Init(geoSite, excavationInfo, borrowedViewElementDef, false);
+
+                        ___OnAddedElement.Invoke(____factionTracker, new object[] { freeElement });
+                    }
                 }
                 catch (Exception e)
                 {
@@ -319,10 +337,16 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         aircraftIcon = __instance.AirVehiclesLabel.transform.parent.gameObject.GetComponentInChildren<Image>(true);
                     }
 
-                    if (excavateIcon == null)
-                    {
-                        excavateIcon = __instance.GroundVehiclesLabel.transform.parent.gameObject.GetComponentInChildren<Image>(true);
-                    }
+                    //if (excavateSprite == null)
+                    //{
+                    //    //Sprite excavateSprite = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("AncientSiteProbeAbilityDef")).FirstOrDefault().SmallIcon;
+                    //    excavateSprite = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("ArcheologyLab_PhoenixFacilityDef")).FirstOrDefault().SmallIcon;
+                    //}
+
+                    //if (excavateIcon == null)
+                    //{
+                    //    excavateIcon = __instance.SoldiersLabel.transform.parent.gameObject.GetComponentInChildren<Image>(true);
+                    //}
                 }
                 catch (Exception e)
                 {
@@ -345,11 +369,6 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             {
                 try
                 {
-                    if (def == null)
-                    {
-                        __instance.TrackedName.text = text;
-                    }
-
                     //Logger.Debug($"[UIFactionDataTrackerElement_Init_POSTFIX] objToTrack: {objToTrack}, text: {text}");
 
                     __instance.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f);
@@ -375,56 +394,47 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
                     if (__instance.TrackedObject is GeoVehicle vehicle)
                     {
-                        //Logger.Info($"[UIFactionDataTrackerElement_Init_POSTFIX] TrackedObject is VEHICLE ({vehicle.Name}). Setting colors...");
-
+                        __instance.TrackedName.text = text; // Always use passed text for non-default elements as def disturbs it
                         __instance.TrackedName.color = vehicleTrackerColor;
                         __instance.TrackedTime.color = vehicleTrackerColor;
                         __instance.Icon.color = vehicleTrackerColor;
-                        //__instance.Icon.sprite = def.InventoryIcon; // SmallIcon, LargeIcon, InventoryIcon, RosterIcon
 
                         // Borrowed from UIModuleInfoBar, fetched at UIModuleInfoBar.Init()
                         __instance.Icon.sprite = aircraftIcon.sprite;
                     }
                     else if(__instance.TrackedObject is ResearchElement re)
                     {
-                        //Logger.Info($"[UIFactionDataTrackerElement_Init_POSTFIX] TrackedObject is ResearchElement ({re.GetLocalizedName()}). Setting colors...");
-
                         __instance.TrackedName.color = researchTrackerColor;
                         __instance.TrackedTime.color = researchTrackerColor;
                         __instance.Icon.color = researchTrackerColor;
                     }
                     else if (__instance.TrackedObject is ItemManufacturing.ManufactureQueueItem mqi)
                     {
-                        //Logger.Info($"[UIFactionDataTrackerElement_Init_POSTFIX] TrackedObject is ItemManufacturing.ManufactureQueueItem ({mqi.ManufacturableItem.Name}). Setting colors...");
-
                         __instance.TrackedName.color = manufactureTrackerColor;
                         __instance.TrackedTime.color = manufactureTrackerColor;
                         __instance.Icon.color = manufactureTrackerColor;
                     }
                     else if (__instance.TrackedObject is GeoPhoenixFacility gpf)
                     {
-                        //Logger.Info($"[UIFactionDataTrackerElement_Init_POSTFIX] TrackedObject is GeoPhoenixFacility ({gpf.PxBase.Site.Name}). Setting colors...");
-
                         if (gpf.IsRepairing)
                         {
-                            __instance.TrackedName.text = text; // Overriding viewdef
+                            __instance.TrackedName.text = text; // Always use passed text for non-default elements as def disturbs it
                         }
-                        
+
                         //__instance.TrackedName.color = facilityTrackerColor;
                         //__instance.TrackedTime.color = facilityTrackerColor;
                         //__instance.Icon.color = facilityTrackerColor;
                     }
                     else if (__instance.TrackedObject is GeoSite gs)
                     {
-                        //Logger.Info($"[UIFactionDataTrackerElement_Init_POSTFIX] TrackedObject is GeoSite ({gs.Name}). Setting colors...");
-
-                        __instance.TrackedName.color = Color.red;
-                        __instance.TrackedTime.color = Color.red;
-                        __instance.Icon.color = Color.red;
-                        //__instance.Icon.sprite = def.InventoryIcon; // SmallIcon, LargeIcon, InventoryIcon, RosterIcon
+                        __instance.TrackedName.text = text; // Always use passed text for non-default elements as def disturbs it
+                        __instance.TrackedName.color = excavationTrackerColor;
+                        __instance.TrackedTime.color = excavationTrackerColor;
+                        __instance.Icon.color = excavationTrackerColor;
 
                         // Borrowed from UIModuleInfoBar, fetched at UIModuleInfoBar.Init()
-                        __instance.Icon.sprite = excavateIcon.sprite;
+                        //__instance.Icon.sprite = excavateIcon.sprite;
+                        //__instance.Icon.sprite = excavateSprite;
                     }
                 }
                 catch (Exception e)
@@ -462,6 +472,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
 
 
+        // NOTE that this is EXCLUSIVELY called from UIStateVehicleSelected.OnRightClickSelection()
         [HarmonyPatch(typeof(UIStateVehicleSelected), "AddTravelSite")]
         public static class UIStateVehicleSelected_AddTravelSite_Patch
         {
@@ -489,7 +500,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
                     GeoVehicle vehicle = ___SelectedVehicle;
                     string siteName = GetSiteName(vehicle.FinalDestination, vehicle.Owner);
-                    string vehicleInfo = $"{vehicle.VehicleID} {actionTraveling} {siteName}";
+                    string vehicleInfo = $"{vehicle.Name} {actionTraveling} {siteName}";
 
                     UIModuleFactionAgendaTracker ____factionTracker = (UIModuleFactionAgendaTracker)AccessTools.Property(typeof(UIStateVehicleSelected), "_factionTracker").GetValue(__instance, null);
                     List<UIFactionDataTrackerElement> ____currentTrackedElements = (List<UIFactionDataTrackerElement>)AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_currentTrackedElements").GetValue(____factionTracker);
@@ -503,10 +514,12 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
                             trackedElement.TrackedName.text = vehicleInfo;
 
-                            AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_needsRefresh").SetValue(____factionTracker, true);
+                            //AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_needsRefresh").SetValue(____factionTracker, true);
                             //MethodInfo ___UpdateData = typeof(UIModuleFactionAgendaTracker).GetMethod("UpdateData", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
                             ___UpdateData.Invoke(____factionTracker, null);
+                            ___OrderElements.Invoke(____factionTracker, null);
 
+                            // Return early as the first match is always the visible one
                             return;
                         }
                     }
@@ -548,11 +561,11 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     }
 
                     // Special update is only needed if the currently selected vehicle arrives at some POI (switching vehicles refreshes the tracker)
-                    GeoVehicle ___SelectedVehicle = (GeoVehicle)AccessTools.Property(typeof(UIStateVehicleSelected), "SelectedVehicle").GetValue(__instance, null);
-                    if (vehicle != ___SelectedVehicle)
-                    {
-                        return;
-                    }
+                    //GeoVehicle ___SelectedVehicle = (GeoVehicle)AccessTools.Property(typeof(UIStateVehicleSelected), "SelectedVehicle").GetValue(__instance, null);
+                    //if (vehicle != ___SelectedVehicle)
+                    //{
+                    //    return;
+                    //}
 
                     UIModuleFactionAgendaTracker ____factionTracker = (UIModuleFactionAgendaTracker)AccessTools.Property(typeof(UIStateVehicleSelected), "_factionTracker").GetValue(__instance, null);
                     List<UIFactionDataTrackerElement> ____currentTrackedElements = (List<UIFactionDataTrackerElement>)AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_currentTrackedElements").GetValue(____factionTracker);
@@ -566,15 +579,16 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
                             // Dispose
                             //MethodInfo ___Dispose = typeof(UIModuleFactionAgendaTracker).GetMethod("Dispose", BindingFlags.NonPublic | BindingFlags.Instance);
+
+
+
                             ___Dispose.Invoke(____factionTracker, new object[] { trackedElement });
 
                             // And immediately request an update (which sometimes doesn't trigger automatically because of paused state)
-                            //MethodInfo ___UpdateData = typeof(UIModuleFactionAgendaTracker).GetMethod("UpdateData", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
-                            ___UpdateData.Invoke(____factionTracker, null);
-
-                            return;
+                           
                         }
                     }
+                    ___UpdateData.Invoke(____factionTracker, null);
                 }
                 catch (Exception e)
                 {
@@ -607,13 +621,13 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     {
                         vehicle = (GeoVehicle)ability.GeoActor;
                         siteName = GetSiteName(vehicle.FinalDestination, vehicle.Owner);
-                        vehicleInfo = $"{vehicle.VehicleID} {actionTraveling} {siteName}";
+                        vehicleInfo = $"{vehicle.Name} {actionTraveling} {siteName}";
                     }
                     else if (ability is ExploreSiteAbility)
                     {
                         vehicle = (GeoVehicle)ability.GeoActor;
                         siteName = GetSiteName(vehicle.CurrentSite, vehicle.Owner);
-                        vehicleInfo = $"{vehicle.VehicleID} {actionExploring} {siteName}";
+                        vehicleInfo = $"{vehicle.Name} {actionExploring} {siteName}";
                     }
                     
                     if (vehicle == null)
@@ -633,10 +647,12 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
                             trackedElement.TrackedName.text = vehicleInfo;
 
-                            AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_needsRefresh").SetValue(____factionTracker, true);
+                            //AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_needsRefresh").SetValue(____factionTracker, true);
                             //MethodInfo ___UpdateData = typeof(UIModuleFactionAgendaTracker).GetMethod("UpdateData", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
                             ___UpdateData.Invoke(____factionTracker, null);
+                            ___OrderElements.Invoke(____factionTracker, null);
 
+                            // Return early as the first match is always the visible one
                             return;
                         }
                     }
@@ -682,7 +698,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         // Remove
                         if (trackedElement.TrackedObject == vehicle)
                         {
-                            Logger.Debug($"[UIStateVehicleSelected_OnVehicleArrived_POSTFIX] {vehicle.Name} is tracked. Removing.");
+                            Logger.Debug($"[UIStateVehicleSelected_OnVehicleSiteExplored_POSTFIX] {vehicle.Name} is tracked. Removing.");
 
                             // Dispose
                             //MethodInfo ___Dispose = typeof(UIModuleFactionAgendaTracker).GetMethod("Dispose", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -691,10 +707,36 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                             // And immediately request an update (which sometimes doesn't trigger automatically because of paused state)
                             //MethodInfo ___UpdateData = typeof(UIModuleFactionAgendaTracker).GetMethod("UpdateData", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
                             ___UpdateData.Invoke(____factionTracker, null);
-
-                            return;
                         }
                     }
+                    ___UpdateData.Invoke(____factionTracker, null);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+
+
+
+
+        [HarmonyPatch(typeof(UIModuleFactionAgendaTracker), "Dispose")]
+        public static class UIModuleFactionAgendaTracker_Dispose_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+            }
+
+            public static void Prefix(UIModuleFactionAgendaTracker __instance, ref UIFactionDataTrackerElement element)
+            {
+                try
+                {
+                    Logger.Info($"[UIModuleFactionAgendaTracker_Dispose_PREFIX] element.TrackedObject: {element.TrackedObject}");
+
+                    //object ___TrackedObject = (object)AccessTools.Property(typeof(UIFactionDataTrackerElement), "TrackedObject").GetValue(element, null);
+                    //___TrackedObject = null;
                 }
                 catch (Exception e)
                 {
@@ -719,6 +761,24 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 {
                     if (element.TrackedObject is GeoVehicle vehicle)
                     {
+                        // Test chasing
+                        GameObject go = element.gameObject;
+                        if (!go.GetComponent<EventTrigger>())
+                        {
+                            go.AddComponent<EventTrigger>();
+                        }
+                        EventTrigger eventTrigger = go.GetComponent<EventTrigger>();
+                        EventTrigger.Entry click = new EventTrigger.Entry();
+                        click.eventID = EventTriggerType.PointerClick;
+                        click.callback.AddListener((eventData) => { OnElementClick(); });
+                        eventTrigger.triggers.Add(click);
+
+                        void OnElementClick()
+                        {
+                            ____context.View.ChaseTarget(vehicle, false);
+                        }
+
+
                         if (vehicle.Travelling && GetTravelTime(vehicle, out float travelTime))
                         {
 
@@ -731,7 +791,6 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         else if (vehicle.IsExploringSite)
                         {
                             float explorationTimeHours = GetExplorationTime(vehicle, (float)vehicle.CurrentSite.ExplorationTime.TimeSpan.TotalHours);
-                            Logger.Info($"explorationTimeHours: {explorationTimeHours}");
                             TimeUnit explorationTimeEnd = TimeUnit.FromHours(explorationTimeHours);
                             //Logger.Info($"[UIModuleFactionAgendaTracker_UpdateData_PREFIX] element.TrackedObject: {element.TrackedObject}, explorationTimeEnd: {explorationTimeEnd}");
 
@@ -740,18 +799,56 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         }
                         return false;
                     }
-                    else if (element.TrackedObject is GeoPhoenixFacility facility && facility.IsRepairing)
+                    else if (element.TrackedObject is GeoPhoenixFacility facility)
                     {
-                        TimeUnit repairsCarriedOut = facility.GetTimeLeftToUpdate();
-                        //Logger.Info($"[UIModuleFactionAgendaTracker_UpdateData_PREFIX] element.TrackedObject: {element.TrackedObject}, repairsCarriedOut: {repairsCarriedOut}");
+                        // Test chasing
+                        GameObject go = element.gameObject;
+                        if (!go.GetComponent<EventTrigger>())
+                        {
+                            go.AddComponent<EventTrigger>();
+                        }
+                        EventTrigger eventTrigger = go.GetComponent<EventTrigger>();
+                        EventTrigger.Entry click = new EventTrigger.Entry();
+                        click.eventID = EventTriggerType.PointerClick;
+                        click.callback.AddListener((eventData) => { OnElementClick(); });
+                        eventTrigger.triggers.Add(click);
 
-                        element.UpdateData(repairsCarriedOut, true, null);
-                        __result = repairsCarriedOut <= TimeUnit.Zero;
+                        void OnElementClick()
+                        {
+                            ____context.View.ChaseTarget(facility.PxBase.Site, false);
+                        }
 
-                        return false;
+                        if (facility.IsRepairing) {
+                            TimeUnit repairsCarriedOut = facility.GetTimeLeftToUpdate();
+                            //Logger.Info($"[UIModuleFactionAgendaTracker_UpdateData_PREFIX] element.TrackedObject: {element.TrackedObject}, repairsCarriedOut: {repairsCarriedOut}");
+
+                            element.UpdateData(repairsCarriedOut, true, null);
+                            __result = repairsCarriedOut <= TimeUnit.Zero;
+
+                            return false;
+                        }
                     }
                     else if (element.TrackedObject is GeoSite geoSite)
                     {
+                        // Test chasing
+                        GameObject go = element.gameObject;
+                        if (!go.GetComponent<EventTrigger>())
+                        {
+                            go.AddComponent<EventTrigger>();
+                        }
+                        EventTrigger eventTrigger = go.GetComponent<EventTrigger>();
+                        EventTrigger.Entry click = new EventTrigger.Entry();
+                        click.eventID = EventTriggerType.PointerClick;
+                        click.callback.AddListener((eventData) => { OnElementClick(); });
+                        eventTrigger.triggers.Add(click);
+
+                        void OnElementClick()
+                        {
+                            ____context.View.ChaseTarget(geoSite, false);
+                        }
+
+
+
                         SiteExcavationState siteExcavationState = geoSite.GeoLevel.PhoenixFaction.ExcavatingSites.FirstOrDefault((SiteExcavationState s) => s.Site == geoSite);
                         TimeUnit excavationTimeEnd = TimeUnit.FromHours((float)(siteExcavationState.ExcavationEndDate - ____context.Level.Timing.Now).TimeSpan.TotalHours);
                         //Logger.Info($"[UIModuleFactionAgendaTracker_UpdateData_PREFIX] element.TrackedObject: {element.TrackedObject}, excavationTimeEnd: {excavationTimeEnd}");
@@ -798,7 +895,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     // Vehicles
                     foreach (GeoVehicle vehicle in geoPhoenixFaction.Vehicles.Where(v => v.Travelling || v.IsExploringSite))
                     {
-                        //Logger.Debug($"[UIModuleFactionAgendaTracker_InitialSetup_POSTFIX] Adding/Reapplying vehicle related tracker elements.");
+                        Logger.Debug($"[UIModuleFactionAgendaTracker_InitialSetup_POSTFIX] Adding/Reapplying vehicle related tracker elements.");
 
                         UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
 
@@ -807,12 +904,12 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         if (vehicle.Travelling)
                         {
                             siteName = GetSiteName(vehicle.FinalDestination, vehicle.Owner);
-                            vehicleInfo = $"{vehicle.VehicleID} {actionTraveling} {siteName}";
+                            vehicleInfo = $"{vehicle.Name} {actionTraveling} {siteName}";
                         }
                         else if (vehicle.IsExploringSite)
                         {
                             siteName = GetSiteName(vehicle.CurrentSite, vehicle.Owner);
-                            vehicleInfo = $"{vehicle.VehicleID} {actionExploring} {siteName}";
+                            vehicleInfo = $"{vehicle.Name} {actionExploring} {siteName}";
                         }
 
                         freeElement.Init(vehicle, vehicleInfo, vehicle.VehicleDef.ViewElement, false);
@@ -840,7 +937,10 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     {
                         UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
 
-                        freeElement.Init(excavatingSite.Site, $"PP is excavating at {excavatingSite.Site.Name}", null, false);
+                        string siteName = excavatingSite.Site.Name;
+                        string excavationInfo = $"{actionExcavating} {siteName}";
+                        ViewElementDef borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("ArcheologyLab_PhoenixFacilityDef")).FirstOrDefault();
+                        freeElement.Init(excavatingSite.Site, excavationInfo, borrowedViewElementDef, false);
 
                         ___OnAddedElement.Invoke(__instance, new object[] { freeElement });
                     }
