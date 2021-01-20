@@ -71,6 +71,8 @@
     <Compile Include="DataHelpers.cs" />
     <Compile Include="HarmonyHelpers.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="Patches\CenterOnVehicleArrived.cs" />
+    <Compile Include="Patches\CenterOnExcavationComplete.cs" />
     <Compile Include="Patches\CenterOnHavenRevealed.cs" />
     <Compile Include="Patches\DisableAmbushes.cs" />
     <Compile Include="Patches\DisableNothingFound.cs" />

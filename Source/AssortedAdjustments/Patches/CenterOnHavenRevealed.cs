@@ -3,7 +3,6 @@ using System.Reflection;
 using Harmony;
 using PhoenixPoint.Common.Core;
 using PhoenixPoint.Geoscape.Entities;
-using PhoenixPoint.Geoscape.Levels;
 using PhoenixPoint.Geoscape.View;
 using PhoenixPoint.Geoscape.View.ViewStates;
 

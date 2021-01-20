@@ -15,6 +15,7 @@ using PhoenixPoint.Common.Levels.Missions;
 using PhoenixPoint.Common.UI;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases.FacilityComponents;
+using PhoenixPoint.Geoscape.Entities.Research.Reward;
 using PhoenixPoint.Geoscape.View.ViewControllers.PhoenixBase;
 using PhoenixPoint.Tactical.Entities;
 using PhoenixPoint.Tactical.Entities.Abilities;
@@ -29,6 +30,23 @@ namespace AssortedAdjustments
         {
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
 
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<AircraftBuffResearchRewardDef>())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                Logger.Info($"[DataHelpers_Print] VehicleDef: {def.VehicleDef.name}");
+                Logger.Info($"[DataHelpers_Print] ModData.SpeedMultiplier: {def.ModData.SpeedMultiplier}");
+                Logger.Info($"[DataHelpers_Print] ModData.SpaceForUnits: {def.ModData.SpaceForUnits}");
+                Logger.Info($"[DataHelpers_Print] ModData.RangeMultiplier: {def.ModData.RangeMultiplier}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
+
+
             /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TacCharacterDef>().Where(d => d.IsHuman))
             {
@@ -41,8 +59,6 @@ namespace AssortedAdjustments
                 Logger.Info($"[DataHelpers_Print] ---");
             }
             */
-
-
 
             /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<HealAbilityDef>().ToList())
@@ -122,7 +138,7 @@ namespace AssortedAdjustments
             }
             */
 
-            
+
             // Get vanilla descriptions
             /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<ViewElementDef>())

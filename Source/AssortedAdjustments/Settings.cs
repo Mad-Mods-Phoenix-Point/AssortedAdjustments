@@ -57,9 +57,13 @@ namespace AssortedAdjustments
 
         [Annotation("Fully leveled soldiers will convert some experience to skill points. Base rate is dependent on difficulty setting, somewhere between 1 and 3 percent.", "True", true, "Progression")]
         public bool EnableExperienceToSkillpointConversion = true;
-        internal float XPtoSPConversionRate = 0.01f; // Default is dependent on difficulty setting, this is just a fallback if the setting is unretrievable.
+        [Annotation("Will add the converted skill points to the soldier's pool.", "True")]
+        public bool XPtoSPAddToPersonalPool = true;
+        [Annotation("Will add the converted skill points to the faction's pool.", "True")]
+        public bool XPtoSPAddToFactionPool = true;
         [Annotation("Will multiply the converted skill points by its value.", "2")]
         public float XPtoSPConversionMultiplier = 2f;
+        internal float XPtoSPConversionRate = 0.01f; // Default is dependent on difficulty setting, this is just a fallback if the setting is unretrievable.
 
 
 
@@ -165,6 +169,7 @@ namespace AssortedAdjustments
         public float AircraftManticoreSpeed = 550f;
         [Annotation("Maximum speed for the Helios, vanilla default is 650", "700")]
         public float AircraftHeliosSpeed = 700f;
+
         [Annotation("Maximum soldier capacity for the Tiamat, vanilla default is 8", "10")]
         public int AircraftBlimpSpace = 10;
         [Annotation("Maximum soldier capacity for the Thunderbird, vanilla default is 7", "8")]
@@ -173,6 +178,15 @@ namespace AssortedAdjustments
         public int AircraftManticoreSpace = 7;
         [Annotation("Maximum soldier capacity for the Helios, vanilla default is 5", "6")]
         public int AircraftHeliosSpace = 6;
+
+        [Annotation("Maximum range for the Tiamat, vanilla default is 4000", "4000")]
+        public float AircraftBlimpRange = 4000f;
+        [Annotation("Maximum range for the Thunderbird, vanilla default is 3000", "3000")]
+        public float AircraftThunderbirdRange = 3000f;
+        [Annotation("Maximum range for the Manticore, vanilla default is 2500", "2500")]
+        public float AircraftManticoreRange = 2500f;
+        [Annotation("Maximum range for the Helios, vanilla default is 3500", "3500")]
+        public float AircraftHeliosRange = 3500f;
 
 
 
@@ -190,7 +204,7 @@ namespace AssortedAdjustments
         [Annotation("Disables ambushes when exploring sites.", "True", true, "Events")]
         public bool DisableAmbushes = true;
         [Annotation("When sites are inside the mist ambushes are still a possibility.", "True")]
-        internal bool RetainAmbushesInsideMist = true;
+        public bool RetainAmbushesInsideMist = true;
         [Annotation("Suppresses the 'Nothing found' event when exploring sites.", "True")]
         public bool DisableNothingFound = true;
 
@@ -207,6 +221,9 @@ namespace AssortedAdjustments
         internal bool CenterOnHealed = true;
         [Annotation("Centers view on the haven that was just discovered.", "True")]
         public bool CenterOnHavenRevealed = true;
+        [Annotation("Centers view on the ancient site that was just excavated.", "True")]
+        public bool CenterOnExcavationComplete = true;
+        internal bool CenterOnVehicleArrived = true;
 
 
 
