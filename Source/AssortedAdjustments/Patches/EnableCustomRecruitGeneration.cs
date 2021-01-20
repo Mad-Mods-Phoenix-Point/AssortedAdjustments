@@ -127,8 +127,8 @@ namespace AssortedAdjustments.Patches
                         { "Sniper", "" },
                         { "Infiltrator", "PX_SniperStarting_CharacterTemplateDef" },
                         { "Berserker", "PX_AssaultStarting_CharacterTemplateDef" },
-                        { "Technician", "PX_SniperStarting_CharacterTemplateDef" },
-                        { "Priest", "PX_HeavyStarting_CharacterTemplateDef" }
+                        { "Technician", "PX_HeavyStarting_CharacterTemplateDef" },
+                        { "Priest", "PX_SniperStarting_CharacterTemplateDef" }
                     };
                     Dictionary<string, string> equipmentSources = new Dictionary<string, string>
                     {
