@@ -234,7 +234,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker;
             }
 
             public static void Postfix(UIStateVehicleSelected __instance)
@@ -266,7 +266,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker;
             }
 
             public static void Postfix(UIModuleInfoBar __instance)
@@ -308,14 +308,15 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker && AssortedAdjustments.Settings.AgendaTrackerHideStatusBar;
             }
 
             public static void Postfix(UIModuleStatusBarMessages __instance)
             {
                 try
                 {
-                    //__instance.TimedEventRoot.gameObject.SetActive(false);
+                    // @ToDo: Put somewhere else? Destroy completely?
+                    __instance.TimedEventRoot.gameObject.SetActive(false);
                 }
                 catch (Exception e)
                 {
@@ -330,7 +331,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker && AssortedAdjustments.Settings.AgendaTrackerShowExcavations && AssortedAdjustments.Settings.AgendaTrackerAddMissionObjective;
             }
 
             public static void Prefix(GeoObjectiveElementController __instance, ref Sprite icon, ref Color iconColor)
@@ -359,7 +360,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker;
             }
 
             public static void Postfix(UIFactionDataTrackerElement __instance)
@@ -384,7 +385,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker;
             }
 
             public static void Prefix(UIModuleFactionAgendaTracker __instance, ref UIFactionDataTrackerElement element)
@@ -407,7 +408,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker;
             }
 
             public static void Postfix(UIModuleSiteContextualMenu __instance, GeoSite site, List<SiteContextualMenuItem> ____menuItems)
@@ -453,7 +454,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker && AssortedAdjustments.Settings.AgendaTrackerShowExcavations;
             }
 
             public static void Postfix(UIModuleStatusBarMessages __instance, StatusBarTimedMessage message)
@@ -516,7 +517,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker && AssortedAdjustments.Settings.AgendaTrackerShowVehicles;
             }
 
             public static void Postfix(UIStateVehicleSelected __instance, GeoAbility ability)
@@ -595,7 +596,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker && AssortedAdjustments.Settings.AgendaTrackerShowVehicles;
             }
 
             public static void Postfix(UIStateVehicleSelected __instance, GeoSite site)
@@ -674,7 +675,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker && AssortedAdjustments.Settings.AgendaTrackerShowExcavations;
             }
 
             public static void Postfix(UIStateVehicleSelected __instance, GeoPhoenixFaction faction, SiteExcavationState excavation)
@@ -703,7 +704,11 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     ___UpdateData.Invoke(____factionTracker, null);
 
 
-                    AddAncientSiteEncounterObjective(faction, excavation);
+
+                    if (AssortedAdjustments.Settings.AgendaTrackerAddMissionObjective)
+                    {
+                        AddAncientSiteEncounterObjective(faction, excavation);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -718,7 +723,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker && AssortedAdjustments.Settings.AgendaTrackerShowVehicles;
             }
 
             public static void Postfix(UIStateVehicleSelected __instance, GeoVehicle vehicle, bool justPassing)
@@ -766,7 +771,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker && AssortedAdjustments.Settings.AgendaTrackerShowVehicles;
             }
 
             public static void Postfix(UIStateVehicleSelected __instance, GeoVehicle vehicle)
@@ -816,7 +821,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker;
             }
 
             public static bool Prefix(UIModuleFactionAgendaTracker __instance, ref bool __result, UIFactionDataTrackerElement element, GeoFaction ____faction, GeoscapeViewContext ____context)
@@ -969,7 +974,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker;
             }
 
             // Store UIFactionDataTrackerElement prefab to be able to reset visuals of the items in UIFactionDataTrackerElement.Init()
@@ -986,29 +991,32 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     //MethodInfo ___OnAddedElement = typeof(UIModuleFactionAgendaTracker).GetMethod("OnAddedElement", BindingFlags.NonPublic | BindingFlags.Instance);
 
                     // Vehicles
-                    foreach (GeoVehicle vehicle in geoPhoenixFaction.Vehicles.Where(v => v.Travelling || v.IsExploringSite))
+                    if (AssortedAdjustments.Settings.AgendaTrackerShowVehicles)
                     {
-                        Logger.Debug($"[UIModuleFactionAgendaTracker_InitialSetup_POSTFIX] Adding/Reapplying vehicle related tracker elements.");
-
-                        UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
-
-                        string siteName = "ERR";
-                        string vehicleInfo = "ERR";
-                        if (vehicle.Travelling)
+                        foreach (GeoVehicle vehicle in geoPhoenixFaction.Vehicles.Where(v => v.Travelling || v.IsExploringSite))
                         {
-                            siteName = GetSiteName(vehicle.FinalDestination, vehicle.Owner);
-                            vehicleInfo = $"{vehicle.Name} {actionTraveling} {siteName}";
-                        }
-                        else if (vehicle.IsExploringSite)
-                        {
-                            siteName = GetSiteName(vehicle.CurrentSite, vehicle.Owner);
-                            vehicleInfo = $"{vehicle.Name} {actionExploring} {siteName}";
-                        }
+                            Logger.Debug($"[UIModuleFactionAgendaTracker_InitialSetup_POSTFIX] Adding/Reapplying vehicle related tracker elements.");
 
-                        freeElement.Init(vehicle, vehicleInfo, vehicle.VehicleDef.ViewElement, false);
-                        //freeElement.Init(vehicle, vehicleInfo, null, false);
+                            UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
 
-                        ___OnAddedElement.Invoke(__instance, new object[] { freeElement });
+                            string siteName = "ERR";
+                            string vehicleInfo = "ERR";
+                            if (vehicle.Travelling)
+                            {
+                                siteName = GetSiteName(vehicle.FinalDestination, vehicle.Owner);
+                                vehicleInfo = $"{vehicle.Name} {actionTraveling} {siteName}";
+                            }
+                            else if (vehicle.IsExploringSite)
+                            {
+                                siteName = GetSiteName(vehicle.CurrentSite, vehicle.Owner);
+                                vehicleInfo = $"{vehicle.Name} {actionExploring} {siteName}";
+                            }
+
+                            freeElement.Init(vehicle, vehicleInfo, vehicle.VehicleDef.ViewElement, false);
+                            //freeElement.Init(vehicle, vehicleInfo, null, false);
+
+                            ___OnAddedElement.Invoke(__instance, new object[] { freeElement });
+                        }
                     }
 
                     // Facilities under repair
@@ -1025,19 +1033,22 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     }
 
                     // Excavations in progress
-                    IEnumerable<SiteExcavationState> excavatingSites = geoPhoenixFaction.ExcavatingSites.Where(s => !s.IsExcavated);
-                    foreach (SiteExcavationState excavatingSite in excavatingSites)
+                    if (AssortedAdjustments.Settings.AgendaTrackerShowExcavations)
                     {
-                        UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
+                        IEnumerable<SiteExcavationState> excavatingSites = geoPhoenixFaction.ExcavatingSites.Where(s => !s.IsExcavated);
+                        foreach (SiteExcavationState excavatingSite in excavatingSites)
+                        {
+                            UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
 
-                        string siteName = excavatingSite.Site.Name;
-                        string excavationInfo = $"{actionExcavating} {siteName}";
+                            string siteName = excavatingSite.Site.Name;
+                            string excavationInfo = $"{actionExcavating} {siteName}";
 
-                        // Without a viewdef there are... problems. Therefore we borrow one with the correct icon
-                        ViewElementDef borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("ArcheologyLab_PhoenixFacilityDef")).FirstOrDefault();
-                        freeElement.Init(excavatingSite.Site, excavationInfo, borrowedViewElementDef, false);
+                            // Without a viewdef there are... problems. Therefore we borrow one with the correct icon
+                            ViewElementDef borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("ArcheologyLab_PhoenixFacilityDef")).FirstOrDefault();
+                            freeElement.Init(excavatingSite.Site, excavationInfo, borrowedViewElementDef, false);
 
-                        ___OnAddedElement.Invoke(__instance, new object[] { freeElement });
+                            ___OnAddedElement.Invoke(__instance, new object[] { freeElement });
+                        }
                     }
                 }
             }
@@ -1050,7 +1061,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowTravelAgenda;
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker;
             }
 
             public static void Postfix(UIFactionDataTrackerElement __instance, object objToTrack, string text, ViewElementDef def, bool localize)

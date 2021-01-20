@@ -17,14 +17,25 @@ namespace AssortedAdjustments
         public bool EnableScrapAircraft = true;
 
 
+        [Annotation("Adds vehicle-related entries (travel and exploration times) to the agenda tracker above the time controller.", "True", true, "UX Enhancements")]
+        public bool EnableExtendedAgendaTracker = true;
+        [Annotation("Adds vehicle-related entries (travel and exploration times) to the agenda tracker", "True")]
+        public bool AgendaTrackerShowVehicles = true;
+        [Annotation("Adds excavation-related entries (excavation times) to the agenda tracker", "True")]
+        public bool AgendaTrackerShowExcavations = true;
+        [Annotation("Hides status bar. This shows 'timed events' (excavation and base defense countdowns) in vanilla and is not needed when the items are displayed in the tracker", "False")]
+        public bool AgendaTrackerHideStatusBar = false;
+        [Annotation("Adds a secondary objective to take control of a recently excavated site", "True")]
+        public bool AgendaTrackerAddMissionObjective = true;
+
+
+
         [Annotation("General switch to enable the related subfeatures.", "True", true, "UI Enhancements")]
         public bool EnableUIEnhancements = true;
         [Annotation("Shows current production and research points behind the facility count and adds some related information to the manufacturing and research screens.", "True")]
         public bool ShowDetailedResearchAndProduction = true;
         [Annotation("Shows personal abilities and augmentations (if any) of recruits in havens.", "True")]
         public bool ShowRecruitInfoInsideZoneTooltip = true;
-        [Annotation("Adds vehicle-related entries (travel and exploration times) to the agenda tracker above the time controller.", "True")]
-        public bool ShowTravelAgenda = true;
         [Annotation("Adds current healing rates to the bases tooltip in geoscape. Adds tooltips to the left-hand side menu in the bases screen and the bases info in recruitment screen.", "True")]
         public bool ShowExtendedBaseInfo = true;
         [Annotation("Adds trade information and recruit class/level to the haven popups.", "True")]
