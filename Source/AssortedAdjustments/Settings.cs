@@ -17,7 +17,7 @@ namespace AssortedAdjustments
         public bool EnableScrapAircraft = true;
 
 
-        [Annotation("Adds vehicle-related entries (travel and exploration times) to the agenda tracker above the time controller.", "True", true, "UX Enhancements")]
+        [Annotation("Adds various items to the agenda tracker above the time controller.", "True", true, "UX Enhancements")]
         public bool EnableExtendedAgendaTracker = true;
         [Annotation("Adds vehicle-related entries (travel and exploration times) to the agenda tracker", "True")]
         public bool AgendaTrackerShowVehicles = true;

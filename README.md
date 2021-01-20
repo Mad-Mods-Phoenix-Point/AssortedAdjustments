@@ -32,14 +32,20 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
 
 ## Features (may not be complete)
 
+### UX
+* The global agenda tracker (or however you call it) now shows vehicle-related (travel and exploration times) AND excavation-related items.
+    * Added the functionality to focus on related site/activity when an item is clicked.
+    * Facilities under repair will also show.
+    * Once an excavation is done, a new secondary mission objective (to seize control of the site) is added.
+    * Optionally hide the ugly big buttons that show excavation times in vanilla.
+    * The context menu will show expected times behind the action too (Borrowed from Sheepy).
+
 ### UI
 * Smart base selection. Ever wondered why the bases menu didn't show the base your aircraft just arrived at as selected by default?
     * Before opening the bases gui the most relevant (that is the closest to your screen's center) base is prepared to be shown as default.
     * Also works when panning around freely and opening the menu while above a base
 * Research and Production points are shown in Info-Bar and the Manufacture/Research-Queues. To make a bit more sense of the required times.
 * The tooltip at recruitment zones in havens now show the personal abilities of the recruit (Adapted from Sheepy's "Recruit Info").
-* The global agenda tracker (or however you call it) now shows travel and exploration times of your aircraft. 
-    * The context menu will show expected times behind the action too (Borrowed from Sheepy).
 * Extended information for bases.
     * Popup on activated Phoenix Bases will show healing and repair capabilities.
     * Added popup in base overview to show the accumulated healing/resources output, soldiers in treatment and vehicle details.
@@ -53,6 +59,7 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
 
 ### Gameplay
 * Maxed out soldiers now gain additional SP for their wasted XP (Rebuilds Sheepy's "Spill Exp to Skill").
+    * The converted skillpoints can be assigned to the soldier's pool or the global pool (or both).
 * Return Fire has a (configurable) maximum reaction angle and a (configurable) shot limit per turn (Thx pantolomin for the inspiration).
 * Squad limit in missions can be configured (Vanilla: 8, Default: 10).
 * All missions can be set to always collect any dropped items (Default: off).
