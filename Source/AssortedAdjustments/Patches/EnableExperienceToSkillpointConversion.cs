@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Harmony;
 using PhoenixPoint.Common.Entities;
 using PhoenixPoint.Common.Entities.Characters;
 using PhoenixPoint.Common.Levels.Missions;
 using PhoenixPoint.Geoscape.Entities;
+using PhoenixPoint.Geoscape.Levels;
 using PhoenixPoint.Tactical.Entities;
 using PhoenixPoint.Tactical.Levels;
 using PhoenixPoint.Tactical.View.ViewControllers;
@@ -17,7 +19,6 @@ namespace AssortedAdjustments.Patches
         private static bool captureExperience = false;
         private static Dictionary<LevelProgression, int> missionExperience;
         private static Dictionary<GeoTacUnitId, int> convertedSkillpoints;
-
 
 
 
@@ -144,6 +145,12 @@ namespace AssortedAdjustments.Patches
 
                     soldierResultElement.EarnedExperience.text = String.Format("SP +{0}", skillpoints);
                     soldierResultElement.EarnedExperience.color = soldierResultElement.DefaultStatus.TextColor;
+
+                    // Change color of indicator if adding to the faction's pool
+                    if (AssortedAdjustments.Settings.XPtoSPAddToFactionPool)
+                    {
+                        soldierResultElement.EarnedExperience.text = $"<color=#fba734>SP +{skillpoints}</color>";
+                    }
                 }
                 catch (Exception e)
                 {
@@ -159,7 +166,7 @@ namespace AssortedAdjustments.Patches
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableExperienceToSkillpointConversion;
+                return AssortedAdjustments.Settings.EnableExperienceToSkillpointConversion && AssortedAdjustments.Settings.XPtoSPAddToPersonalPool;
             }
 
             public static void Postfix(GeoCharacter __instance, TacActorUnitResult result)
@@ -176,11 +183,83 @@ namespace AssortedAdjustments.Patches
                         Logger.Info(String.Format("[GeoCharacter_ApllyTacticalResult_POSTFIX] (Geo) {0} has {1} SP and will earn additional {2} SP from XP conversion", __instance.GetName(), result.CharacterProgression.SkillPoints, skillpoints));
 
                         __instance.Progression.SkillPoints += skillpoints;
-                        convertedSkillpoints.Remove(result.GeoUnitId);
-                        if (convertedSkillpoints.Count <= 0)
-                        {
-                            convertedSkillpoints = null;
-                        }
+
+                        //convertedSkillpoints.Remove(result.GeoUnitId);
+                        //if (convertedSkillpoints.Count <= 0)
+                        //{
+                        //    convertedSkillpoints = null;
+                        //}
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+
+
+
+        // Add the cumulated overflow to the faction's skillpoint pool too
+        [HarmonyPatch(typeof(GeoMission), "ApplyTacticalMissionResult")]
+        public static class GeoMission_ApplyTacticalMissionResult_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableExperienceToSkillpointConversion && AssortedAdjustments.Settings.XPtoSPAddToFactionPool;
+            }
+
+            public static void Postfix(GeoMission __instance, TacMissionResult result, GeoSquad squad)
+            {
+                try
+                {
+                    if (convertedSkillpoints == null)
+                    {
+                        return;
+                    }
+
+                    GeoLevelController geoLevel = __instance.Site.GeoLevel;
+                    int skillpoints = convertedSkillpoints.Sum(csp => csp.Value);
+
+                    if (skillpoints > 0)
+                    {
+                        Logger.Info($"[GeoMission_ApplyTacticalMissionResult_POSTFIX] (Geo) Faction skillpoints: {geoLevel.PhoenixFaction.Skillpoints}, allConvertedSkillpoints: {skillpoints}");
+                        geoLevel.PhoenixFaction.Skillpoints += skillpoints;
+                    }
+
+                    // Cleanup
+                    convertedSkillpoints = null;
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(UIModuleBattleSummary), "Initialize")]
+        public static class UIModuleBattleSummary_Initialize_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableExperienceToSkillpointConversion && AssortedAdjustments.Settings.XPtoSPAddToFactionPool;
+            }
+
+            public static void Postfix(UIModuleBattleSummary __instance, TacticalFaction faction)
+            {
+                try
+                {
+                    if (convertedSkillpoints == null)
+                    {
+                        return;
+                    }
+
+                    int skillpoints = convertedSkillpoints.Sum(csp => csp.Value);
+
+                    if (skillpoints > 0)
+                    {
+                        int modifiedTotal = (faction.Skillpoints - faction.StartingSkillpoints) + skillpoints;
+                        __instance.TotalSkillPoints.text = $"<color=#fba734>+{modifiedTotal}</color>";
                     }
                 }
                 catch (Exception e)
