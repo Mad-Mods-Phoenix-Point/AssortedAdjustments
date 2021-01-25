@@ -25,6 +25,7 @@ namespace AssortedAdjustments.Patches
     {
         internal static Color emptySlotDefaultColor = new Color32(0, 0, 0, 128);
         internal static string emptySlotDefaultText = "EMPTY";
+        internal static string emptySlotScrapText = "SCRAP AIRCRAFT?";
 
         private class ContainerInfo
         {
@@ -81,22 +82,23 @@ namespace AssortedAdjustments.Patches
                 try
                 {
                     // Empty
-                    if (__instance.EmptySlot.activeSelf)
+                    if (__instance.Container.MaxCharacterSpace > 0 && __instance.Container.CurrentOccupiedSpace == 0)
                     {
-                        Text Text = __instance.EmptySlot.GetComponentInChildren<Text>(true);
+                        Text emptySlotText = __instance.EmptySlot.GetComponentInChildren<Text>(true);
+                        //Logger.Info($"[GeoRosterContainterItem_Refresh_POSTFIX] emptySlotText: {emptySlotText.text}");
 
-                        // Aircraft
+                        // Aircraft 
                         if (__instance.Container.MaxCharacterSpace != 2147483647)
                         {
-                            Text.text = "SCRAP AIRCRAFT?";
+                            emptySlotText.text = emptySlotScrapText;
                         }
                         // Base
                         else
                         {
-                            Text.text = emptySlotDefaultText;
+                            emptySlotText.text = emptySlotDefaultText;
                         }
-                    } 
-
+                        //Logger.Info($"[GeoRosterContainterItem_Refresh_POSTFIX] emptySlotText: {emptySlotText.text}");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -133,27 +135,26 @@ namespace AssortedAdjustments.Patches
                         {
                             GeoRosterContainterItem c = ____geoRosterModule.Groups[i];
 
-                            Text emptySlotText = c.EmptySlot.GetComponentInChildren<Text>(true);
-
                             if (!c.EmptySlot.GetComponent<EventTrigger>())
                             {
-                                Logger.Info($"[UIModuleGeneralPersonelRoster_InitRosterSlots_POSTFIX] {c.Container.Name} had no event trigger. Adding...");
+                                Logger.Info($"[UIStateGeoRoster_EnterState_POSTFIX] {c.Container.Name} had no event trigger. Adding...");
                                 c.EmptySlot.AddComponent<EventTrigger>();
                             }
 
-                            Logger.Info($"[UIModuleGeneralPersonelRoster_InitRosterSlots_POSTFIX] {c.Container.Name} Clearing all mouse events from empty slot.");
+                            Logger.Info($"[UIStateGeoRoster_EnterState_POSTFIX] {c.Container.Name} Clearing all mouse events from empty slot.");
                             EventTrigger eventTrigger = c.EmptySlot.GetComponent<EventTrigger>();
                             eventTrigger.triggers.Clear();
 
-                            Logger.Info($"[UIModuleGeneralPersonelRoster_InitRosterSlots_POSTFIX] {c.Container.Name} Refreshing/Resetting text for empty slot.");
+                            Logger.Info($"[UIStateGeoRoster_EnterState_POSTFIX] {c.Container.Name} Refreshing/Resetting text for empty slot. This IS needed.");
                             c.Refresh();
 
                             if (c.Container.MaxCharacterSpace != 2147483647) // !Bases
                             {
-                                Logger.Info($"[UIModuleGeneralPersonelRoster_InitRosterSlots_POSTFIX] {c.Container.Name} is NOT a base. Adding mouse events to empty slot. ");
+                                Logger.Info($"[UIStateGeoRoster_EnterState_POSTFIX] {c.Container.Name} is NOT a base. Adding mouse events to empty slot. ");
 
+                                Text emptySlotText = c.EmptySlot.GetComponentInChildren<Text>(true);
                                 ContainerInfo containerInfo = new ContainerInfo(c.Container.Name, i);
-                                Logger.Info($"[UIModuleGeneralPersonelRoster_InitRosterSlots_POSTFIX] containerInfo: {containerInfo.Name}, {containerInfo.Index}");
+                                Logger.Info($"[UIStateGeoRoster_EnterState_POSTFIX] containerInfo: {containerInfo.Name}, {containerInfo.Index}");
 
                                 EventTrigger.Entry mouseenter = new EventTrigger.Entry();
                                 mouseenter.eventID = EventTriggerType.PointerEnter;
@@ -177,7 +178,7 @@ namespace AssortedAdjustments.Patches
 
                     void OnScrapAircraftMouseEnter(Text t)
                     {
-                        Logger.Info($"[UIModuleGeneralPersonelRoster_InitRosterSlots_POSTFIX] OnScrapAircraftMouseEnter({t})");
+                        Logger.Info($"[UIStateGeoRoster_EnterState_POSTFIX] OnScrapAircraftMouseEnter({t})");
                         t.color = Color.red;
                     }
 
@@ -185,7 +186,7 @@ namespace AssortedAdjustments.Patches
 
                     void OnScrapAircraftMouseExit(Text t)
                     {
-                        Logger.Info($"[UIModuleGeneralPersonelRoster_InitRosterSlots_POSTFIX] OnScrapAircraftMouseExit({t})");
+                        Logger.Info($"[UIStateGeoRoster_EnterState_POSTFIX] OnScrapAircraftMouseExit({t})");
                         t.color = emptySlotDefaultColor;
                     }
 
@@ -193,7 +194,7 @@ namespace AssortedAdjustments.Patches
 
                     void OnScrapAircraftClick(ContainerInfo containerInfo)
                     {
-                        Logger.Info($"[UIModuleGeneralPersonelRoster_InitRosterSlots_POSTFIX] OnScrapAircraftClick(containerInfo: {containerInfo.Name}, {containerInfo.Index})");
+                        Logger.Info($"[UIStateGeoRoster_EnterState_POSTFIX] OnScrapAircraftClick(containerInfo: {containerInfo.Name}, {containerInfo.Index})");
 
                         string aircraftIdentifier = containerInfo.Name;
                         int groupIndex = containerInfo.Index;
@@ -260,7 +261,7 @@ namespace AssortedAdjustments.Patches
                         if (msgResult.DialogResult == MessageBoxResult.Yes)
                         {
                             ContainerInfo containerInfo = msgResult.UserData as ContainerInfo;
-                            Logger.Info($"[UIModuleGeneralPersonelRoster_InitRosterSlots_POSTFIX] OnScrapAircraftCallback(containerInfo: {containerInfo.Name}, {containerInfo.Index})");
+                            Logger.Info($"[UIStateGeoRoster_EnterState_POSTFIX] OnScrapAircraftCallback(containerInfo: {containerInfo.Name}, {containerInfo.Index})");
 
                             string aircraftIdentifier = containerInfo.Name;
                             int groupIndex = containerInfo.Index;
@@ -292,16 +293,20 @@ namespace AssortedAdjustments.Patches
 
                                 // Reset roster list
                                 ____geoRosterModule.Init(___Context, ____characterContainers, null, ____preferableFilterMode, RosterSelectionMode.SingleSelect);
-                                
+
                                 // Reapply events to the correct slots
                                 RefreshScrapTriggers();
                             }
                             else
                             {
-                                Logger.Debug($"[UIModuleGeneralPersonelRoster_InitRosterSlots_POSTFIX] Couldn't get GeoVehicle from aircraftIdentifier: {aircraftIdentifier}");
+                                Logger.Debug($"[UIStateGeoRoster_EnterState_POSTFIX] Couldn't get GeoVehicle from aircraftIdentifier: {aircraftIdentifier}");
                             }
                         }
                     }
+
+
+
+
                 }
                 catch (Exception e)
                 {

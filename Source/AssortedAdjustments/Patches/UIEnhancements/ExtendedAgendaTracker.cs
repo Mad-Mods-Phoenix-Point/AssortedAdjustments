@@ -26,6 +26,7 @@ using PhoenixPoint.Geoscape.Levels.Factions.Archeology;
 using Base.Defs;
 using UnityEngine.EventSystems;
 using PhoenixPoint.Geoscape.Levels.Objectives;
+using PhoenixPoint.Geoscape.Core;
 
 namespace AssortedAdjustments.Patches.UIEnhancements
 {
@@ -42,6 +43,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         internal static string actionRepairing = "REPAIRING:";
         internal static string actionExcavating = "EXCAVATING:";
         internal static string actionAcquire = "SECURE";
+        internal static string actionBaseAttack = "PANDORAN ATTACK: ";
 
         internal static Sprite aircraftSprite = null;
         internal static Sprite ancientSiteProbeSprite = null;
@@ -52,6 +54,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         internal static Color manufactureTrackerColor = new Color32(235, 110, 42, 255);
         internal static Color researchTrackerColor = new Color32(42, 245, 252, 255);
         internal static Color excavationTrackerColor = new Color32(93, 153, 106, 255);
+        internal static Color baseAttackTrackerColor = new Color32(192, 32, 32, 255);
         internal static Color facilityTrackerColor = new Color32(185, 185, 185, 255);
         internal static Color defaultTrackerColor = new Color32(155, 155, 155, 255);
         internal static UIFactionDataTrackerElement trackerElementDefault = null;
@@ -302,6 +305,43 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             }
         }
 
+        // Disable the last safeguard for starting a base defense mission.
+        // Vanilla will cancel the assault if no alien base in range is active anymore (because it was detected after a haven defence and subsequently destroyed)
+        // With this patch the assault WILL happen and there's no silent abort (because it feels like a bug)
+        [HarmonyPatch(typeof(GeoAlienFaction), "StartPhoenixBaseAssault")]
+        public static class GeoAlienFaction_StartPhoenixBaseAssault_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker;
+            }
+
+            // Override
+            public static bool Prefix(GeoAlienFaction __instance, SiteAttackSchedule target)
+            {
+                try
+                {
+                    Logger.Info($"[GeoAlienFaction_StartPhoenixBaseAssault_PREFIX] Base assault on {target.Site.Name} should start");
+
+                    GeoSite pxBase = target.Site;
+                    IEnumerable<GeoAlienBase> source = from p in __instance.Bases where p.SitesInRange.Contains(pxBase) select p;
+                    if (!source.Any<GeoAlienBase>())
+                    {
+                        Logger.Info($"[GeoAlienFaction_StartPhoenixBaseAssault_PREFIX] Original method would cancel the mission as there is no alien base in range left. Overriding. Starting mission NOW.");
+                        //return;
+                    }
+                    pxBase.CreatePhoenixBaseDefenseMission(new PhoenixBaseAttacker(__instance, from s in source select s.Site));
+
+                    return false;
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                    return true;
+                }
+            }
+        }
+
         // Disables the big dumb buttons for excavations and base defense
         [HarmonyPatch(typeof(UIModuleStatusBarMessages), "Update")]
         public static class UIModuleStatusBarMessages_Update_Patch
@@ -379,6 +419,50 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             }
         }
 
+        [HarmonyPatch(typeof(GeoSiteVisualsController), "RefreshSiteVisuals")]
+        public static class GeoSiteVisualsController_RefreshSiteVisuals_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker;
+            }
+
+            public static void Postfix(GeoSiteVisualsController __instance, GeoSite site)
+            {
+                try
+                {
+                    GeoLevelController geoLevel = site.GeoLevel;
+                    bool isActivePhoenixBase = site.Type == GeoSiteType.PhoenixBase && site.IsActiveSite;
+                    bool isScheduledForAttack = geoLevel.AlienFaction.PhoenixBaseAttackSchedule.Where(sas => sas.Site == site && sas.HasAttackScheduled).Count() > 0;
+
+                    if (isActivePhoenixBase && isScheduledForAttack)
+                    {
+                        Logger.Info($"[GeoSiteVisualsController_RefreshSiteVisuals_POSTFIX] Site: {site.Name} is scheduled for a pandoran attack.");
+
+                        // Works
+                        foreach (Renderer r in __instance.TimerController.gameObject.GetComponentsInChildren<Renderer>())
+                        {
+                            //Logger.Info($"{r.name}, {r.GetType()}");
+
+                            if (r.name == "TimedIcon")
+                            {
+                                r.material.color = baseAttackTrackerColor;
+                            }
+
+                            //if (r.name == "TimeText")
+                            //{
+                            //    r.material.color = Color.black;
+                            //}
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+
         // Just an informational patch for now
         [HarmonyPatch(typeof(UIModuleFactionAgendaTracker), "Dispose")]
         public static class UIModuleFactionAgendaTracker_Dispose_Patch
@@ -448,7 +532,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
          ** 
         */
 
-        // ADDs or UPDATEs excavation items of the tracker
+        // ADDs or UPDATEs site-related (excavations or base defenses) items of the tracker
         [HarmonyPatch(typeof(UIModuleStatusBarMessages), "DisplayTimedEventMessage")]
         public static class UIModuleStatusBarMessages_DisplayTimedEventMessage_Patch
         {
@@ -471,7 +555,15 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     if (__instance.Context?.View?.CurrentViewState is UIStateVehicleSelected uiStateVehicleSelected)
                     {
                         string siteName = geoSite.LocalizedSiteName;
-                        string excavationInfo = $"{actionExcavating} {siteName}";
+                        string siteInfo = "ERR";
+                        if (geoSite.IsArcheologySite)
+                        {
+                            siteInfo = $"{actionExcavating} {siteName}";
+                        }
+                        else if (geoSite.Type == GeoSiteType.PhoenixBase)
+                        {
+                            siteInfo = $"{actionBaseAttack} {siteName}";
+                        }
 
                         UIModuleFactionAgendaTracker ____factionTracker = (UIModuleFactionAgendaTracker)AccessTools.Property(typeof(UIStateVehicleSelected), "_factionTracker").GetValue(uiStateVehicleSelected, null);
                         List<UIFactionDataTrackerElement> ____currentTrackedElements = (List<UIFactionDataTrackerElement>)AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_currentTrackedElements").GetValue(____factionTracker);
@@ -483,7 +575,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                             {
                                 Logger.Debug($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] {geoSite.Name} already tracked. Updating.");
 
-                                trackedElement.TrackedName.text = excavationInfo;
+                                trackedElement.TrackedName.text = siteInfo;
 
                                 //AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_needsRefresh").SetValue(____factionTracker, true);
                                 ___UpdateData.Invoke(____factionTracker, null);
@@ -497,11 +589,27 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         // Add
                         Logger.Debug($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] {geoSite.Name} currently not tracked. Adding to tracker.");
 
-                        ViewElementDef borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("ArcheologyLab_PhoenixFacilityDef")).FirstOrDefault();
+                        ViewElementDef borrowedViewElementDef = null;
+                        if (geoSite.IsArcheologySite)
+                        {
+                            borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("ArcheologyLab_PhoenixFacilityDef")).FirstOrDefault();
+                        }
+                        else if (geoSite.Type == GeoSiteType.PhoenixBase)
+                        {
+                            // ToDo
+                            borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("Crabman_ActorViewDef")).FirstOrDefault();
+                        }
+
                         UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(____factionTracker, null);
-                        freeElement.Init(geoSite, excavationInfo, borrowedViewElementDef, false);
+                        freeElement.Init(geoSite, siteInfo, borrowedViewElementDef, false);
 
                         ___OnAddedElement.Invoke(____factionTracker, new object[] { freeElement });
+
+
+
+
+                        // Add the timer to the site too
+                        geoSite.ExpiringTimerAt = message.TimeEnd;
                     }
                 }
                 catch (Exception e)
@@ -947,13 +1055,24 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         eventTrigger.triggers.Add(click);
 
 
+                        if (geoSite.IsArcheologySite)
+                        {
+                            SiteExcavationState siteExcavationState = geoSite.GeoLevel.PhoenixFaction.ExcavatingSites.FirstOrDefault((SiteExcavationState s) => s.Site == geoSite);
+                            TimeUnit excavationTimeEnd = TimeUnit.FromHours((float)(siteExcavationState.ExcavationEndDate - ____context.Level.Timing.Now).TimeSpan.TotalHours);
+                            //Logger.Info($"[UIModuleFactionAgendaTracker_UpdateData_PREFIX] element.TrackedObject: {element.TrackedObject}, excavationTimeEnd: {excavationTimeEnd}");
 
-                        SiteExcavationState siteExcavationState = geoSite.GeoLevel.PhoenixFaction.ExcavatingSites.FirstOrDefault((SiteExcavationState s) => s.Site == geoSite);
-                        TimeUnit excavationTimeEnd = TimeUnit.FromHours((float)(siteExcavationState.ExcavationEndDate - ____context.Level.Timing.Now).TimeSpan.TotalHours);
-                        //Logger.Info($"[UIModuleFactionAgendaTracker_UpdateData_PREFIX] element.TrackedObject: {element.TrackedObject}, excavationTimeEnd: {excavationTimeEnd}");
+                            element.UpdateData(excavationTimeEnd, true, null);
+                            __result = excavationTimeEnd <= TimeUnit.Zero;
+                        }
+                        else if (geoSite.Type == GeoSiteType.PhoenixBase)
+                        {
+                            SiteAttackSchedule siteAttackSchedule = geoSite.GeoLevel.AlienFaction.PhoenixBaseAttackSchedule.FirstOrDefault((SiteAttackSchedule s) => s.Site == geoSite);
+                            TimeUnit attackTime = TimeUnit.FromHours((float)(siteAttackSchedule.ScheduledFor - ____context.Level.Timing.Now).TimeSpan.TotalHours);
+                            //Logger.Info($"[UIModuleFactionAgendaTracker_UpdateData_PREFIX] element.TrackedObject: {element.TrackedObject}, attackTime: {attackTime}");
 
-                        element.UpdateData(excavationTimeEnd, true, null);
-                        __result = excavationTimeEnd <= TimeUnit.Zero;
+                            element.UpdateData(attackTime, true, null);
+                            __result = attackTime <= TimeUnit.Zero;
+                        }
 
                         return false;
                     }
@@ -983,73 +1102,101 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 trackerElementDefault = __instance.TrackerRowPrefab;
             }
 
-            public static void Postfix(UIModuleFactionAgendaTracker __instance, GeoFaction ____faction)
+            public static void Postfix(UIModuleFactionAgendaTracker __instance, GeoFaction ____faction, GeoscapeViewContext ____context)
             {
-                if (____faction is GeoPhoenixFaction geoPhoenixFaction)
+                try
+                { 
+                    if (____faction is GeoPhoenixFaction geoPhoenixFaction)
+                    {
+                        //MethodInfo ___GetFreeElement = typeof(UIModuleFactionAgendaTracker).GetMethod("GetFreeElement", BindingFlags.NonPublic | BindingFlags.Instance);
+                        //MethodInfo ___OnAddedElement = typeof(UIModuleFactionAgendaTracker).GetMethod("OnAddedElement", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                        // Vehicles
+                        if (AssortedAdjustments.Settings.AgendaTrackerShowVehicles)
+                        {
+                            foreach (GeoVehicle vehicle in geoPhoenixFaction.Vehicles.Where(v => v.Travelling || v.IsExploringSite))
+                            {
+                                Logger.Debug($"[UIModuleFactionAgendaTracker_InitialSetup_POSTFIX] Add/Reapply tracker element for {vehicle.Name}.");
+
+                                UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
+
+                                string siteName = "ERR";
+                                string vehicleInfo = "ERR";
+                                if (vehicle.Travelling)
+                                {
+                                    siteName = GetSiteName(vehicle.FinalDestination, vehicle.Owner);
+                                    vehicleInfo = $"{vehicle.Name} {actionTraveling} {siteName}";
+                                }
+                                else if (vehicle.IsExploringSite)
+                                {
+                                    siteName = GetSiteName(vehicle.CurrentSite, vehicle.Owner);
+                                    vehicleInfo = $"{vehicle.Name} {actionExploring} {siteName}";
+                                }
+
+                                freeElement.Init(vehicle, vehicleInfo, vehicle.VehicleDef.ViewElement, false);
+                                //freeElement.Init(vehicle, vehicleInfo, null, false);
+
+                                ___OnAddedElement.Invoke(__instance, new object[] { freeElement });
+                            }
+                        }
+
+                        // Facilities under repair
+                        IEnumerable<GeoPhoenixFacility> facilitiesUnderRepair = geoPhoenixFaction.Bases.SelectMany((GeoPhoenixBase t) => from f in t.Layout.Facilities where f.IsRepairing && f.GetTimeLeftToUpdate() != TimeUnit.Zero select f);
+                        foreach (GeoPhoenixFacility facility in facilitiesUnderRepair)
+                        {
+                            UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
+
+                            string facilityName = I2.Loc.LocalizationManager.GetTranslation(facility.Def.ViewElementDef.DisplayName1.LocalizationKey);
+                            string facilityInfo = $"{actionRepairing} {facilityName}";
+                            freeElement.Init(facility, facilityInfo, facility.Def.ViewElementDef, false);
+
+                            ___OnAddedElement.Invoke(__instance, new object[] { freeElement });
+                        }
+
+                        // Excavations in progress
+                        if (AssortedAdjustments.Settings.AgendaTrackerShowExcavations)
+                        {
+                            IEnumerable<SiteExcavationState> excavatingSites = geoPhoenixFaction.ExcavatingSites.Where(s => !s.IsExcavated);
+                            foreach (SiteExcavationState excavatingSite in excavatingSites)
+                            {
+                                UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
+
+                                string siteName = excavatingSite.Site.Name;
+                                string excavationInfo = $"{actionExcavating} {siteName}";
+
+                                // Without a viewdef there are... problems. Therefore we borrow one with the correct icon
+                                ViewElementDef borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("ArcheologyLab_PhoenixFacilityDef")).FirstOrDefault();
+                                freeElement.Init(excavatingSite.Site, excavationInfo, borrowedViewElementDef, false);
+
+                                ___OnAddedElement.Invoke(__instance, new object[] { freeElement });
+                            }
+                        }
+
+                        // Base defense incoming
+                        if (AssortedAdjustments.Settings.AgendaTrackerShowBaseDefenses)
+                        {
+                            IEnumerable<SiteAttackSchedule> siteAttackSchedules = ____context.Level.AlienFaction.PhoenixBaseAttackSchedule.Where(sas => sas.HasAttackScheduled);
+                            foreach (SiteAttackSchedule siteAttackSchedule in siteAttackSchedules)
+                            {
+                                Logger.Debug($"[UIModuleFactionAgendaTracker_InitialSetup_POSTFIX] Add/Reapply tracker element for {siteAttackSchedule.Site.Name}.");
+
+                                UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
+
+                                string siteName = siteAttackSchedule.Site.Name;
+                                string attackInfo = $"{actionBaseAttack} {siteName}";
+
+                                // Without a viewdef there are... problems. Therefore we borrow one with the correct icon
+                                ViewElementDef borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("Crabman_ActorViewDef")).FirstOrDefault();
+                                freeElement.Init(siteAttackSchedule.Site, attackInfo, borrowedViewElementDef, false);
+
+                                ___OnAddedElement.Invoke(__instance, new object[] { freeElement });
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
                 {
-                    //MethodInfo ___GetFreeElement = typeof(UIModuleFactionAgendaTracker).GetMethod("GetFreeElement", BindingFlags.NonPublic | BindingFlags.Instance);
-                    //MethodInfo ___OnAddedElement = typeof(UIModuleFactionAgendaTracker).GetMethod("OnAddedElement", BindingFlags.NonPublic | BindingFlags.Instance);
-
-                    // Vehicles
-                    if (AssortedAdjustments.Settings.AgendaTrackerShowVehicles)
-                    {
-                        foreach (GeoVehicle vehicle in geoPhoenixFaction.Vehicles.Where(v => v.Travelling || v.IsExploringSite))
-                        {
-                            Logger.Debug($"[UIModuleFactionAgendaTracker_InitialSetup_POSTFIX] Adding/Reapplying vehicle related tracker elements.");
-
-                            UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
-
-                            string siteName = "ERR";
-                            string vehicleInfo = "ERR";
-                            if (vehicle.Travelling)
-                            {
-                                siteName = GetSiteName(vehicle.FinalDestination, vehicle.Owner);
-                                vehicleInfo = $"{vehicle.Name} {actionTraveling} {siteName}";
-                            }
-                            else if (vehicle.IsExploringSite)
-                            {
-                                siteName = GetSiteName(vehicle.CurrentSite, vehicle.Owner);
-                                vehicleInfo = $"{vehicle.Name} {actionExploring} {siteName}";
-                            }
-
-                            freeElement.Init(vehicle, vehicleInfo, vehicle.VehicleDef.ViewElement, false);
-                            //freeElement.Init(vehicle, vehicleInfo, null, false);
-
-                            ___OnAddedElement.Invoke(__instance, new object[] { freeElement });
-                        }
-                    }
-
-                    // Facilities under repair
-                    IEnumerable<GeoPhoenixFacility> facilitiesUnderRepair = geoPhoenixFaction.Bases.SelectMany((GeoPhoenixBase t) => from f in t.Layout.Facilities where f.IsRepairing && f.GetTimeLeftToUpdate() != TimeUnit.Zero select f);
-                    foreach (GeoPhoenixFacility facility in facilitiesUnderRepair)
-                    {
-                        UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
-
-                        string facilityName = I2.Loc.LocalizationManager.GetTranslation(facility.Def.ViewElementDef.DisplayName1.LocalizationKey);
-                        string facilityInfo = $"{actionRepairing} {facilityName}";
-                        freeElement.Init(facility, facilityInfo, facility.Def.ViewElementDef, false);
-
-                        ___OnAddedElement.Invoke(__instance, new object[] { freeElement });
-                    }
-
-                    // Excavations in progress
-                    if (AssortedAdjustments.Settings.AgendaTrackerShowExcavations)
-                    {
-                        IEnumerable<SiteExcavationState> excavatingSites = geoPhoenixFaction.ExcavatingSites.Where(s => !s.IsExcavated);
-                        foreach (SiteExcavationState excavatingSite in excavatingSites)
-                        {
-                            UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(__instance, null);
-
-                            string siteName = excavatingSite.Site.Name;
-                            string excavationInfo = $"{actionExcavating} {siteName}";
-
-                            // Without a viewdef there are... problems. Therefore we borrow one with the correct icon
-                            ViewElementDef borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("ArcheologyLab_PhoenixFacilityDef")).FirstOrDefault();
-                            freeElement.Init(excavatingSite.Site, excavationInfo, borrowedViewElementDef, false);
-
-                            ___OnAddedElement.Invoke(__instance, new object[] { freeElement });
-                        }
-                    }
+                    Logger.Error(e);
                 }
             }
         }
@@ -1126,14 +1273,24 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     }
                     else if (__instance.TrackedObject is GeoSite gs)
                     {
-                        __instance.TrackedName.text = text; // Always use passed text for non-default elements as def disturbs it
-                        __instance.TrackedName.color = excavationTrackerColor;
-                        __instance.TrackedTime.color = excavationTrackerColor;
-                        __instance.Icon.color = excavationTrackerColor;
+                        if (gs.IsArcheologySite)
+                        {
+                            __instance.TrackedName.text = text; // Always use passed text for non-default elements as def disturbs it
+                            __instance.TrackedName.color = excavationTrackerColor;
+                            __instance.TrackedTime.color = excavationTrackerColor;
+                            __instance.Icon.color = excavationTrackerColor;
 
-                        // Borrowed from UIModuleInfoBar, fetched at UIModuleInfoBar.Init()
-                        //__instance.Icon.sprite = excavateIcon.sprite;
-                        //__instance.Icon.sprite = excavateSprite;
+                            // Borrowed from UIModuleInfoBar, fetched at UIModuleInfoBar.Init()
+                            //__instance.Icon.sprite = excavateIcon.sprite;
+                            //__instance.Icon.sprite = excavateSprite;
+                        }
+                        else if (gs.Type == GeoSiteType.PhoenixBase)
+                        {
+                            __instance.TrackedName.text = text; // Always use passed text for non-default elements as def disturbs it
+                            __instance.TrackedName.color = baseAttackTrackerColor;
+                            __instance.TrackedTime.color = baseAttackTrackerColor;
+                            __instance.Icon.color = baseAttackTrackerColor;
+                        }
                     }
                 }
                 catch (Exception e)

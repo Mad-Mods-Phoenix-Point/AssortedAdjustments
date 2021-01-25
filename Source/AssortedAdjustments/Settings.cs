@@ -23,6 +23,8 @@ namespace AssortedAdjustments
         public bool AgendaTrackerShowVehicles = true;
         [Annotation("Adds excavation-related entries (excavation times) to the agenda tracker", "True")]
         public bool AgendaTrackerShowExcavations = true;
+        [Annotation("Adds incoming base defense mssions to the agenda tracker", "True")]
+        public bool AgendaTrackerShowBaseDefenses = true;
         [Annotation("Hides status bar. This shows 'timed events' (excavation and base defense countdowns) in vanilla and is not needed when the items are displayed in the tracker", "False")]
         public bool AgendaTrackerHideStatusBar = false;
         [Annotation("Adds a secondary objective to take control of a recently excavated site", "True")]

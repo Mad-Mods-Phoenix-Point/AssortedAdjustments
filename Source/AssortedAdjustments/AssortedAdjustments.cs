@@ -32,7 +32,16 @@ namespace AssortedAdjustments
             // Apply my own custom settings that differ from "popular demands"
             if (!String.IsNullOrEmpty(Settings.DebugDevKey) && Settings.DebugDevKey == "mad")
             {
+                Settings.AgendaTrackerHideStatusBar = true;
+
                 Settings.PersistentClassFilterInitDisabled = true;
+
+                Settings.MedicalBayBaseHeal = 4; // Vanilla defaut
+                Settings.LivingQuartersBaseStaminaHeal = 2; // Vanilla defaut
+                Settings.VehicleBayAircraftHealAmount = 2; // Vanilla defaut
+                Settings.VehicleBayVehicleHealAmount = 20; // Vanilla defaut
+                Settings.MutationLabMutogHealAmount = 20; // Vanilla defaut
+
                 Settings.MaxWill = 25;
                 Settings.PauseOnExplorationSet = true;
                 Settings.DebugLevel = 3;

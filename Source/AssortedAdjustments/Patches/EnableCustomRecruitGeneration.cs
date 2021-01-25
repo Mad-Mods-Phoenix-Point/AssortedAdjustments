@@ -243,7 +243,7 @@ namespace AssortedAdjustments.Patches
 
             // Override!
             // @ToDo: Learn to use transpiler, it's just one value to change here
-            public static bool Prefix(GeoPhoenixFaction __instance, Dictionary<GeoUnitDescriptor, ResourcePack> ____nakedRecruits, GeoLevelController ____level, TimeUnit ____lastNakedRecruitRefresh)
+            public static bool Prefix(GeoPhoenixFaction __instance, ref Dictionary<GeoUnitDescriptor, ResourcePack> ____nakedRecruits, GeoLevelController ____level, ref TimeUnit ____lastNakedRecruitRefresh)
             {
                 try
                 {
