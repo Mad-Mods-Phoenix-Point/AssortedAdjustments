@@ -83,7 +83,7 @@ namespace AssortedAdjustments
 
 
 
-        [Annotation("Fully leveled soldiers will convert some experience to skill points. Base rate is dependent on difficulty setting, somewhere between 1 and 3 percent.", "True", true, "Progression")]
+        [Annotation("Fully leveled soldiers will convert some experience to skill points. Base rate is dependent on difficulty setting, somewhere between 1 and 2 percent.", "True", true, "Progression")]
         public bool EnableExperienceToSkillpointConversion = true;
         [Annotation("Will add the converted skill points to the soldier's pool.", "True")]
         public bool XPtoSPAddToPersonalPool = true;
