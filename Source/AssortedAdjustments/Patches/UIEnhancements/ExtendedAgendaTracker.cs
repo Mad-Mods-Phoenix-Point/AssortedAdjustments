@@ -472,7 +472,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 return AssortedAdjustments.Settings.EnableExtendedAgendaTracker;
             }
 
-            public static void Prefix(UIModuleFactionAgendaTracker __instance, ref UIFactionDataTrackerElement element)
+            public static void Prefix(UIModuleFactionAgendaTracker __instance, UIFactionDataTrackerElement element)
             {
                 try
                 {
@@ -1066,6 +1066,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         }
                         else if (geoSite.Type == GeoSiteType.PhoenixBase)
                         {
+                            // @ToDo: Check all factions
                             SiteAttackSchedule siteAttackSchedule = geoSite.GeoLevel.AlienFaction.PhoenixBaseAttackSchedule.FirstOrDefault((SiteAttackSchedule s) => s.Site == geoSite);
                             TimeUnit attackTime = TimeUnit.FromHours((float)(siteAttackSchedule.ScheduledFor - ____context.Level.Timing.Now).TimeSpan.TotalHours);
                             //Logger.Info($"[UIModuleFactionAgendaTracker_UpdateData_PREFIX] element.TrackedObject: {element.TrackedObject}, attackTime: {attackTime}");
@@ -1175,6 +1176,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         // Base defense incoming
                         if (AssortedAdjustments.Settings.AgendaTrackerShowBaseDefenses)
                         {
+                            // @ToDo: Check all factions
                             IEnumerable<SiteAttackSchedule> siteAttackSchedules = ____context.Level.AlienFaction.PhoenixBaseAttackSchedule.Where(sas => sas.HasAttackScheduled);
                             foreach (SiteAttackSchedule siteAttackSchedule in siteAttackSchedules)
                             {

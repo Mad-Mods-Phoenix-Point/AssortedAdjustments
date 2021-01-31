@@ -68,6 +68,21 @@ namespace AssortedAdjustments
 
 
 
+        [Annotation("Override some difficulty settings", "True", true, "Difficulty")]
+        public bool EnableDifficultyOverrides = true;
+        [Annotation("Amount of supplies you'll start the game with, vanilla defaults: { Easy: 800, Standard: 500, Hard: 300, VeryHard: 200 } ", "800")]
+        public float DifficultyOverrideStartingSupplies = 800f;
+        [Annotation("Amount of materials you'll start the game with, vanilla defaults: { Easy: 1000, Standard: 700, Hard: 500, VeryHard: 400 } ", "1000")]
+        public float DifficultyOverrideStartingMaterials = 1000f;
+        [Annotation("Amount of tech you'll start the game with, vanilla defaults: { Easy: 200, Standard: 150, Hard: 100, VeryHard: 80 } ", "200")]
+        public float DifficultyOverrideStartingTech = 200f;
+        [Annotation("How much flat skill points each alive soldier will get, vanilla defaults: { Easy: 12, Standard: 10, Hard: 8, VeryHard: 5 } ", "12")]
+        public int DifficultyOverrideSoldierSkillPointsPerMission = 12;
+        [Annotation("How much of total experience will be converted to PX skill points, vanilla defaults: { Easy: 0.02, Standard: 0.015, Hard: 0.01, VeryHard: 0.01 } ", "0.02")]
+        public float DifficultyOverrideExpConvertedToSkillpoints = 0.02f;
+
+
+
         [Annotation("Fully leveled soldiers will convert some experience to skill points. Base rate is dependent on difficulty setting, somewhere between 1 and 3 percent.", "True", true, "Progression")]
         public bool EnableExperienceToSkillpointConversion = true;
         [Annotation("Will add the converted skill points to the soldier's pool.", "True")]
@@ -135,8 +150,10 @@ namespace AssortedAdjustments
         [Annotation("Healing rate for mutogs at mutation labs, vanilla default is 20", "40")]
         public int MutationLabMutogHealAmount = 40;
         //Training
-        [Annotation("Experience gain rate for soldiers at training facilities, vanilla default is 2", "2")]
+        [Annotation("Experience gain rate per hour for soldiers at training facilities, vanilla default is 2", "2")]
         public int TrainingFacilityBaseExperienceAmount = 2;
+        [Annotation("Global skillpoints gain rate per day, vanilla default is 1", "2")]
+        public int TrainingFacilityBaseSkillPointsAmount = 2;
         // Resource Generators
         [Annotation("Production points generated at fabrication plants, vanilla default is 4", "4")]
         public float FabricationPlantGenerateProductionAmount = 4f;

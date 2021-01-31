@@ -92,11 +92,9 @@ namespace AssortedAdjustments
             //Logger.Initialize(LogPath, DebugLevel, ModDirectory, nameof(AssortedAdjustments));
             //Settings = api("config", null) as Settings ?? new Settings();
 
+            DataHelpers.Print();
             Harmony.PatchAll();
             ApplyAll();
-            DataHelpers.Print();
-
-
 
             Logger.Always($"Modnix Mad.AssortedAdjustments.MainMod initialised.");
         }
@@ -133,6 +131,11 @@ namespace AssortedAdjustments
             if (Settings.EnableCustomRecruitGeneration)
             {
                 CustomRecruitGeneration.Apply();
+            }
+
+            if (Settings.EnableDifficultyOverrides)
+            {
+                DifficultyOverrides.Apply();
             }
         }
     }

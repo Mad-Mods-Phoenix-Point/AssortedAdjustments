@@ -59,6 +59,8 @@ namespace AssortedAdjustments.Patches
                 {
                     efcDef.ExperiencePerUser = AssortedAdjustments.Settings.TrainingFacilityBaseExperienceAmount;
                     currentExperienceFacilityExperienceOutput = efcDef.ExperiencePerUser;
+
+                    efcDef.SkillPointsPerDay = AssortedAdjustments.Settings.TrainingFacilityBaseSkillPointsAmount;
                 }
                 Logger.Info($"[FacilityAdjustments_Apply] efcDef: {efcDef.name}, GUID: {efcDef.Guid}, ExperiencePerUser: {efcDef.ExperiencePerUser}, SkillPointsPerDay: {efcDef.SkillPointsPerDay}");
             }

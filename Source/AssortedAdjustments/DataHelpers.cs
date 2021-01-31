@@ -30,6 +30,21 @@ namespace AssortedAdjustments
         {
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
 
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<GameDifficultyLevelDef>())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                Logger.Info($"[DataHelpers_Print] StartingSupplies: {def.StartingSupplies}");
+                Logger.Info($"[DataHelpers_Print] StartingMaterials: {def.StartingMaterials}");
+                Logger.Info($"[DataHelpers_Print] StartingTech: {def.StartingTech}");
+                Logger.Info($"[DataHelpers_Print] ExpEqualDistributionPart: {def.ExpEqualDistributionPart}");
+                Logger.Info($"[DataHelpers_Print] SoldierSkillPointsPerMission: {def.SoldierSkillPointsPerMission}");
+                Logger.Info($"[DataHelpers_Print] ExpConvertedToSkillpoints: {def.ExpConvertedToSkillpoints}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
 
             /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<AircraftBuffResearchRewardDef>())
@@ -44,8 +59,6 @@ namespace AssortedAdjustments
                 Logger.Info($"[DataHelpers_Print] ---");
             }
             */
-
-
 
             /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TacCharacterDef>().Where(d => d.IsHuman))
@@ -128,6 +141,13 @@ namespace AssortedAdjustments
                 Logger.Info($"[DataHelpers_Print] HoursText: {def.HoursText.Localize(null)}");
 
                 Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<ExperienceFacilityComponentDef>())
+            {
+                Logger.Info($"[DataHelpers_Print] def: {def.name}, Type: {def.GetType().Name}, SkillPointsPerDay: {def.SkillPointsPerDay}, ExperiencePerUser: {def.ExperiencePerUser}");
             }
             */
 

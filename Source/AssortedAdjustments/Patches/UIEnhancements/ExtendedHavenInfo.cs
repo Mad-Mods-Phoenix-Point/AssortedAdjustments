@@ -9,6 +9,7 @@ using PhoenixPoint.Common.Core;
 using Base.UI;
 using PhoenixPoint.Geoscape.Entities.Sites;
 using UnityEngine;
+using PhoenixPoint.Common.UI;
 
 namespace AssortedAdjustments.Patches.UIEnhancements
 {
@@ -51,13 +52,16 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
                     string className = recruit.Progression.MainSpecDef.ViewElementDef.DisplayName1.Localize();
                     string level = recruit.Level.ToString();
+                    IEnumerable<ViewElementDef> abilityViews = recruit.GetPersonalAbilityTrack().AbilitiesByLevel?.Select(a => a?.Ability?.ViewElementDef).Where(e => e != null);
+                    string abilities = abilityViews?.Select(v => v.DisplayName1.Localize()).Join(null, "\n");
 
                     if (String.IsNullOrEmpty(recruitAvailableText))
                     {
                         recruitAvailableText = WordToTitleCase(__instance.RecruitAvailableText.text.Split((char)32).First() + ":");
                     }
+                    __instance.RecruitAvailableText.fontSize = 24;
                     __instance.RecruitAvailableText.horizontalOverflow = HorizontalWrapMode.Overflow;
-                    __instance.RecruitAvailableText.text = $"{recruitAvailableText} <color=#f4a22c>{className}</color> (Level {level})";
+                    __instance.RecruitAvailableText.text = $"<size=30>{recruitAvailableText} <color=#f4a22c>{className}</color> (Level {level})</size>\n<color=#ecba62>{abilities}</color>";
                 }
                 catch (Exception e)
                 {

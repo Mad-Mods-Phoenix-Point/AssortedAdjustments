@@ -7,11 +7,70 @@ using PhoenixPoint.Geoscape.View.ViewControllers.BaseRecruits;
 using PhoenixPoint.Geoscape.View.DataObjects;
 using System.Collections.Generic;
 using System.Linq;
+using PhoenixPoint.Geoscape.Levels.Factions;
+using PhoenixPoint.Geoscape.Levels;
+using PhoenixPoint.Common.Core;
+using PhoenixPoint.Geoscape.Entities;
 
 namespace AssortedAdjustments.Patches.UIEnhancements
 {
     internal static class Shared
     {
+        /*
+        [HarmonyPatch(typeof(GeoLevelController), "DisableEmptyRevealedExplorationSites")]
+        public static class GeoLevelController_DisableEmptyRevealedExplorationSites_Patch
+        {
+            public static void Postfix(GeoLevelController __instance)
+            {
+                try
+                {
+                    Logger.Info($"[GeoLevelController_DisableEmptyRevealedExplorationSites_POSTFIX] Called.");
+
+                    IList<GeoSite> explorationSites = __instance.Map.SitesByType[GeoSiteType.Exploration];
+
+                    foreach (GeoSite gs in explorationSites.Where(s => !s.GetInspected(__instance.PhoenixFaction)))
+                    {
+                        Logger.Info($"[GeoLevelController_DisableEmptyRevealedExplorationSites_POSTFIX] NOT INSPECTED Site: {gs.Type}, State: {gs.State}, CanBeRevealed: {gs.CanBeRevealed}, Visible: {gs.GetVisible(__instance.PhoenixFaction)}, HasActiveEncounter: {gs.HasActiveEncounter}({gs.EncounterID}) ");
+                    }
+
+                    
+                    foreach (GeoSite gs in explorationSites)
+                    {
+                        Logger.Info($"[GeoLevelController_DisableEmptyRevealedExplorationSites_POSTFIX] ALL Site: {gs.Type}, State: {gs.State}, CanBeRevealed: {gs.CanBeRevealed}, Visible: {gs.GetVisible(__instance.PhoenixFaction)}, Inspected: {gs.GetInspected(__instance.PhoenixFaction)}, HasActiveEncounter: {gs.HasActiveEncounter}({gs.EncounterID})");
+
+                        if (gs.ActiveMission != null)
+                        {
+                            continue;
+                        }
+
+                        if (gs.CanBeRevealed && gs.GetInspected(__instance.PhoenixFaction) && !String.IsNullOrEmpty(gs.EncounterID) && gs.EncounterID.Contains("EX"))
+                        {
+                            gs.SetVisited(__instance.PhoenixFaction, false);
+                            gs.SetInspected(__instance.PhoenixFaction, false);
+                            gs.ActivateSite();
+                            gs.RefreshVisuals();
+
+                            __instance.EventSystem.EnableGeoscapeEvent(gs.EncounterID);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+        */
+
+
+
+
+
+
+
+
+
+
         // Add class tooltip to RecruitsListElements and beautify the perk titles
         [HarmonyPatch(typeof(RecruitsListElementController), "SetRecruitElement")]
         public static class RecruitsListElementController_SetRecruitElement_Patch
