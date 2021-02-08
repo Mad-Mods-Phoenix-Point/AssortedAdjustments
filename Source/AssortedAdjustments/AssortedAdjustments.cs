@@ -36,11 +36,23 @@ namespace AssortedAdjustments
 
                 Settings.PersistentClassFilterInitDisabled = true;
 
-                Settings.MedicalBayBaseHeal = 4; // Vanilla defaut
-                Settings.LivingQuartersBaseStaminaHeal = 2; // Vanilla defaut
-                Settings.VehicleBayAircraftHealAmount = 2; // Vanilla defaut
-                Settings.VehicleBayVehicleHealAmount = 20; // Vanilla defaut
-                Settings.MutationLabMutogHealAmount = 20; // Vanilla defaut
+                Settings.DifficultyOverrideExpConvertedToSkillpoints = 0.03f;
+
+                Settings.MaxPlayerUnitsAdd = 1;
+
+                Settings.MedicalBayBaseHeal = 4; // Vanilla default
+                Settings.LivingQuartersBaseStaminaHeal = 2; // Vanilla default
+                Settings.VehicleBayAircraftHealAmount = 2; // Vanilla default
+                Settings.VehicleBayVehicleHealAmount = 20; // Vanilla default
+                Settings.MutationLabMutogHealAmount = 20; // Vanilla default
+
+                Settings.AircraftBlimpSpeed = 250; // Vanilla default
+                Settings.AircraftThunderbirdSpeed = 380; // Vanilla default
+                Settings.AircraftManticoreSpeed = 500; // Vanilla default
+                Settings.AircraftHeliosSpeed = 650; // Vanilla default
+                Settings.AircraftBlimpSpace = 9;
+
+                Settings.CostMultiplier = 0.75f;
 
                 Settings.MaxWill = 25;
                 Settings.PauseOnExplorationSet = true;

@@ -13,6 +13,7 @@ using PhoenixPoint.Common.Entities;
 using PhoenixPoint.Common.Entities.Items;
 using PhoenixPoint.Common.Levels.Missions;
 using PhoenixPoint.Common.UI;
+using PhoenixPoint.Geoscape.Entities;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases.FacilityComponents;
 using PhoenixPoint.Geoscape.Entities.Research.Reward;
@@ -31,6 +32,48 @@ namespace AssortedAdjustments
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
 
             /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TacCharacterDef>().Where(d => d.IsVehicle || d.IsMutog))
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                Logger.Info($"[DataHelpers_Print] Volume: {def.Volume}");
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<GeoHavenDef>().ToList())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+
+                Logger.Info($"[DataHelpers_Print] RecruitmentBaseChance: {def.RecruitmentBaseChance}");
+                Logger.Info($"[DataHelpers_Print] PhoenixSoldiersCap: {def.PhoenixSoldiersCap}");
+                Logger.Info($"[DataHelpers_Print] MaxZones: {def.MaxZones}");
+                Logger.Info($"[DataHelpers_Print] StarvationDeathsPart: {def.StarvationDeathsPart}");
+                Logger.Info($"[DataHelpers_Print] StarvationMistDeathsPart: {def.StarvationMistDeathsPart}");
+                Logger.Info($"[DataHelpers_Print] StarvationDeathsFlat: {def.StarvationDeathsFlat}");
+                Logger.Info($"[DataHelpers_Print] StarvationMistDeathsFlat: {def.StarvationMistDeathsFlat}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TacticalAbilityDef>().ToList())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+
+                Logger.Info($"[DataHelpers_Print] ActionPointCost: {def.ActionPointCost}");
+                Logger.Info($"[DataHelpers_Print] WillPointCost: {def.WillPointCost}");
+                Logger.Info($"[DataHelpers_Print] SkillTags: {def.SkillTags.Select(s => s.name).Join(null, ",")}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
+            /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<GameDifficultyLevelDef>())
             {
                 Logger.Info($"[DataHelpers_Print] Def: {def.name}");
@@ -41,6 +84,7 @@ namespace AssortedAdjustments
                 Logger.Info($"[DataHelpers_Print] ExpEqualDistributionPart: {def.ExpEqualDistributionPart}");
                 Logger.Info($"[DataHelpers_Print] SoldierSkillPointsPerMission: {def.SoldierSkillPointsPerMission}");
                 Logger.Info($"[DataHelpers_Print] ExpConvertedToSkillpoints: {def.ExpConvertedToSkillpoints}");
+                Logger.Info($"[DataHelpers_Print] MinPopulationThreshold: {def.MinPopulationThreshold}");
 
                 Logger.Info($"[DataHelpers_Print] ---");
             }

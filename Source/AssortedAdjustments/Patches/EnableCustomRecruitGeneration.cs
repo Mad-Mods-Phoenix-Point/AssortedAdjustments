@@ -286,69 +286,49 @@ namespace AssortedAdjustments.Patches
 
 
 
-        /*
-        // Applied for *all* recruits (Now called on the difficulty level def in Apply() to not strip the initial squad of their equipment...)
-        [HarmonyPatch(typeof(FactionCharacterGenerator), "ApplyGenerationParameters")]
-        public static class FactionCharacterGenerator_ApplyGenerationParameters_Patch
+        // Always update haven recruits
+        [HarmonyPatch(typeof(GeoHaven), "CheckShouldSpawnRecruit")]
+        public static class GeoHaven_CheckShouldSpawnRecruit_Patch
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableCustomRecruitGeneration;
+                return AssortedAdjustments.Settings.EnableCustomRecruitGeneration && AssortedAdjustments.Settings.IgnoreRngFactorsForHavenRecruitGeneration;
             }
 
-            public static void Prefix(FactionCharacterGenerator __instance, GeoUnitDescriptor unit, ref CharacterGenerationParams generationParams)
+            public static bool Prefix(GeoHaven __instance, ref bool __result)
             {
                 try
                 {
-                    if (unit == null || generationParams == null)
+                    Logger.Debug($"[GeoHaven_CheckShouldSpawnRecruit_PREFIX] Ignoring unit limits and rng factors for haven recruit generation");
+
+                    if (!__instance.IsRecruitmentEnabled || !__instance.ZonesStats.CanGenerateRecruit)
                     {
-                        return;
+                        __result = false;
+                        return false;
+                    }
+                    if (__instance.QuerySpawnNewRecruit)
+                    {
+                        __result = true;
+                        return false;
+                    }
+                    GeoFaction phoenixFaction = __instance.Site.GeoLevel.PhoenixFaction;
+                    PartyDiplomacy.Relation relation = __instance.Leader.Diplomacy.GetRelation(phoenixFaction);
+                    if (relation.Diplomacy <= 0)
+                    {
+                        __result = false;
+                        return false;
                     }
 
-                    Logger.Debug($"[FactionCharacterGenerator_ApplyGenerationParameters_PREFIX] Overriding character generation parameters according to settings.");
-                    Logger.Info($"[FactionCharacterGenerator_ApplyGenerationParameters_PREFIX] Class: {unit.Progression?.MainSpecDef?.ClassTag?.className}");
-                    Logger.Info($"[FactionCharacterGenerator_ApplyGenerationParameters_PREFIX] Faction: {unit.Faction?.Name.Localize()}");
-
-                    CharacterGenerationParams overrideGenerationParams = new CharacterGenerationParams
-                    {
-                        HasArmor = AssortedAdjustments.Settings.RecruitGenerationHasArmor,
-                        HasWeapons = AssortedAdjustments.Settings.RecruitGenerationHasWeapons,
-                        HasConsumableItems = AssortedAdjustments.Settings.RecruitGenerationHasConsumableItems,
-                        HasInventoryItems = AssortedAdjustments.Settings.RecruitGenerationHasInventoryItems,
-                        CanHaveAugmentations = AssortedAdjustments.Settings.RecruitGenerationCanHaveAugmentations,
-                        EnduranceBonus = generationParams.EnduranceBonus,
-                        WillBonus = generationParams.WillBonus,
-                        SpeedBonus = generationParams.SpeedBonus
-                    };
-
-                    // Bonus stats depending on class?
-                    //switch (unit.Progression.MainSpecDef.ClassTag.className)
-                    //{
-                    //    case "Heavy":
-                    //        overrideGenerationParams.EnduranceBonus = 2;
-                    //        break;
-                    //
-                    //    default: break;
-                    //}
-
-                    generationParams = overrideGenerationParams;
-
-                    Logger.Info($"[FactionCharacterGenerator_ApplyGenerationParameters_PREFIX] HasArmor: {generationParams.HasArmor}");
-                    Logger.Info($"[FactionCharacterGenerator_ApplyGenerationParameters_PREFIX] HasWeapons: {generationParams.HasWeapons}");
-                    Logger.Info($"[FactionCharacterGenerator_ApplyGenerationParameters_PREFIX] HasConsumableItems: {generationParams.HasConsumableItems}");
-                    Logger.Info($"[FactionCharacterGenerator_ApplyGenerationParameters_PREFIX] HasInventoryItems: {generationParams.HasInventoryItems}");
-                    Logger.Info($"[FactionCharacterGenerator_ApplyGenerationParameters_PREFIX] CanHaveAugmentations: {generationParams.CanHaveAugmentations}");
-                    Logger.Info($"[FactionCharacterGenerator_ApplyGenerationParameters_PREFIX] EnduranceBonus: {generationParams.EnduranceBonus}");
-                    Logger.Info($"[FactionCharacterGenerator_ApplyGenerationParameters_PREFIX] WillBonus: {generationParams.WillBonus}");
-                    Logger.Info($"[FactionCharacterGenerator_ApplyGenerationParameters_PREFIX] SpeedBonus: {generationParams.SpeedBonus}");
+                    __result = true;
+                    return false;
                 }
                 catch (Exception e)
                 {
                     Logger.Error(e);
+                    return true;
                 }
             }
         }
-        */
 
 
 

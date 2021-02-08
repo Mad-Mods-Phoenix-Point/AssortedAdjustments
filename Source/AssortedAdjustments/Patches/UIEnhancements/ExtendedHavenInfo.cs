@@ -74,8 +74,6 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         [HarmonyPatch(typeof(UIModuleSelectionInfoBox), "SetHaven")]
         public static class UIModuleSelectionInfoBox_SetHaven_Patch2
         {
-            internal static string sitePopulationText = "";
-
             private static string GetResourceName(ResourceType type)
             {
                 switch (type)
@@ -130,15 +128,10 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     {
                         string format = "<size=26>Exchange {0} for {1} ({2})</size>\n";
 
-                        if (String.IsNullOrEmpty(sitePopulationText))
-                        {
-                            sitePopulationText = textAnchor.text; 
-                        }
                         textAnchor.horizontalOverflow = HorizontalWrapMode.Overflow;
                         textAnchor.lineSpacing = 0.8f;
 
-                        textAnchor.text = $"{sitePopulationText}\n\n";
-                        textAnchor.text += string.Concat(resourcesAvailable.Select(e => string.Format(format, GetResourceEntry(e.HavenReceiveQuantity, e.HavenWants, 99), GetResourceEntry(e.HavenOfferQuantity, e.HavenOffers, 99), e.ResourceStock)));
+                        textAnchor.text += "\n\n" + string.Concat(resourcesAvailable.Select(e => string.Format(format, GetResourceEntry(e.HavenReceiveQuantity, e.HavenWants, 99), GetResourceEntry(e.HavenOfferQuantity, e.HavenOffers, 99), e.ResourceStock)));
                     }
                 }
                 catch (Exception e)

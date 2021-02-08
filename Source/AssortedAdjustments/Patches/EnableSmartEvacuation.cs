@@ -80,6 +80,12 @@ namespace AssortedAdjustments.Patches
                         { 
                             tAbility = tActor.GetAbility<EvacuateMountedActorsAbility>() as TacticalAbility;
                         }
+                        if (tAbility == null)
+                        {
+                            // Has no relevant ability, most likely a turret
+                            Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] actor: {tActor.DisplayName} has no exit/evacuate ability (IsMetallic: {tActor.IsMetallic}, GameTags: {tActor.TacticalActorBaseDef.GameTags})");
+                            continue;
+                        }
                         Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] actor: {tActor.DisplayName}, canEvacuate: {tAbility?.HasValidTargets}");
 
                         if (!tAbility.HasValidTargets)

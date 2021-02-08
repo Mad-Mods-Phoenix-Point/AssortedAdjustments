@@ -23,7 +23,7 @@ namespace AssortedAdjustments
         public bool AgendaTrackerShowVehicles = true;
         [Annotation("Adds excavation-related entries (excavation times) to the agenda tracker", "True")]
         public bool AgendaTrackerShowExcavations = true;
-        [Annotation("Adds incoming base defense mssions to the agenda tracker", "True")]
+        [Annotation("Adds incoming base defense missions to the agenda tracker", "True")]
         public bool AgendaTrackerShowBaseDefenses = true;
         [Annotation("Hides status bar. This shows 'timed events' (excavation and base defense countdowns) in vanilla and is not needed when the items are displayed in the tracker", "False")]
         public bool AgendaTrackerHideStatusBar = false;
@@ -55,6 +55,8 @@ namespace AssortedAdjustments
         public bool EnableCustomRecruitGeneration = true;
         [Annotation("Fixed amount of recruits that get generated for phoenix faction. Note that more than 3 looks like shit because of the broken UI. Note that the UI cannot handle more than 4 at all.", "3")]
         public int RecruitGenerationCount = 3;
+        [Annotation("Havens will update their recruits more consistently.", "True")]
+        public bool IgnoreRngFactorsForHavenRecruitGeneration = true;
         [Annotation("New recruits may have armor.", "True")]
         public bool RecruitGenerationHasArmor = true;
         [Annotation("New recruits may have weapons.", "True")]
@@ -70,17 +72,28 @@ namespace AssortedAdjustments
 
         [Annotation("Override some difficulty settings", "True", true, "Difficulty")]
         public bool EnableDifficultyOverrides = true;
-        [Annotation("Amount of supplies you'll start the game with, vanilla defaults: { Easy: 800, Standard: 500, Hard: 300, VeryHard: 200 } ", "800")]
+        [Annotation("Amount of supplies you'll start the game with, vanilla defaults: { Easy: 800, Standard: 500, Hard: 300, VeryHard: 200 }", "800")]
         public float DifficultyOverrideStartingSupplies = 800f;
-        [Annotation("Amount of materials you'll start the game with, vanilla defaults: { Easy: 1000, Standard: 700, Hard: 500, VeryHard: 400 } ", "1000")]
+        [Annotation("Amount of materials you'll start the game with, vanilla defaults: { Easy: 1000, Standard: 700, Hard: 500, VeryHard: 400 }", "1000")]
         public float DifficultyOverrideStartingMaterials = 1000f;
-        [Annotation("Amount of tech you'll start the game with, vanilla defaults: { Easy: 200, Standard: 150, Hard: 100, VeryHard: 80 } ", "200")]
+        [Annotation("Amount of tech you'll start the game with, vanilla defaults: { Easy: 200, Standard: 150, Hard: 100, VeryHard: 80 }", "200")]
         public float DifficultyOverrideStartingTech = 200f;
-        [Annotation("How much flat skill points each alive soldier will get, vanilla defaults: { Easy: 12, Standard: 10, Hard: 8, VeryHard: 5 } ", "12")]
+        [Annotation("How much flat skill points each alive soldier will get, vanilla defaults: { Easy: 12, Standard: 10, Hard: 8, VeryHard: 5 }", "12")]
         public int DifficultyOverrideSoldierSkillPointsPerMission = 12;
-        [Annotation("How much of total experience will be converted to PX skill points, vanilla defaults: { Easy: 0.02, Standard: 0.015, Hard: 0.01, VeryHard: 0.01 } ", "0.02")]
+        [Annotation("How much of total experience will be converted to PX skill points, vanilla defaults: { Easy: 0.02, Standard: 0.015, Hard: 0.01, VeryHard: 0.01 }", "0.02")]
         public float DifficultyOverrideExpConvertedToSkillpoints = 0.02f;
-
+        [Annotation("How much geoscape population (% of starting) must drop to reach game over, vanilla defaults: { Easy: 5, Standard: 10, Hard: 15, VeryHard: 20 }", "5")]
+        public int DifficultyOverrideMinPopulationThreshold = 5;
+        [Annotation("How much % of starving population at a haven will die each day, vanilla default is 0.01 (1%)", "0.01")]
+        public float DifficultyOverrideStarvationDeathsPart = 0.01f;
+        [Annotation("How much % of starving population at a haven will die each day if in mist, vanilla default is 0.03 (3%)", "0.03")]
+        public float DifficultyOverrideStarvationMistDeathsPart = 0.03f;
+        [Annotation("Additional deaths of starving population at a haven each day, vanilla default is 5", "5")]
+        public int DifficultyOverrideStarvationDeathsFlat = 5;
+        [Annotation("Additional deaths of starving population at a haven each day if in mist, vanilla default is 15", "15")]
+        public int DifficultyOverrideStarvationMistDeathsFlat = 15;
+        [Annotation("Completely disable population reduction by starvation. Only haven destructions will drop the bar.", "False")]
+        public bool DifficultyOverrideDisableDeathByStarvation = false;
 
 
         [Annotation("Fully leveled soldiers will convert some experience to skill points. Base rate is dependent on difficulty setting, somewhere between 1 and 2 percent.", "True", true, "Progression")]
@@ -97,8 +110,8 @@ namespace AssortedAdjustments
 
         [Annotation("General switch to enable the related subfeatures", "True", true, "Return Fire")]
         public bool EnableReturnFireAdjustments = true;
-        [Annotation("Maximum angle in which return fire is possible at all. Vanilla didn't check at all, returned fire for 360 degrees.", "225")]
-        public int ReturnFireAngle = 225;
+        [Annotation("Maximum angle in which return fire is possible at all. Vanilla didn't check at all, returned fire for 360 degrees.", "180")]
+        public int ReturnFireAngle = 180;
         [Annotation("Limit the ability to return fire to X times per round, vanilla default is unlimited.", "2")]
         public int ReturnFireLimit = 2;
 
@@ -217,6 +230,15 @@ namespace AssortedAdjustments
         public float AircraftManticoreRange = 2500f;
         [Annotation("Maximum range for the Helios, vanilla default is 3500", "3500")]
         public float AircraftHeliosRange = 3500f;
+
+        [Annotation("Size of Mutogs for squad/space calculations, vanilla default is 3", "2")]
+        public int OccupyingSpaceMutog = 2;
+        [Annotation("Size of Armadillos for squad/space calculations, vanilla default is 3", "2")]
+        public int OccupyingSpaceArmadillo = 2;
+        [Annotation("Size of Scarabs for squad/space calculations, vanilla default is 3", "2")]
+        public int OccupyingSpaceScarab = 2;
+        [Annotation("Size of Aspida for squad/space calculations, vanilla default is 3", "2")]
+        public int OccupyingSpaceAspida = 2;
 
 
 
