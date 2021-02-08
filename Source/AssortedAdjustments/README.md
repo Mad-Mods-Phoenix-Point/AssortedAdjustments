@@ -81,6 +81,7 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
     * If you move all units out of the aircraft the formerly "Empty"-Slot will now trigger the option to scrap the vehicle.
     * You can't scrap your last aircraft because the game bugs out totally in geoscape without any vehicle to select.
 * Starting resources and general skillpoint gains are adjustable now, by default they resemble the game's easy setting.
+* You can set the size of groundehicles and mutogs (space occupied in aircraft)
 
 #### Facilities
 * Medical bays and vehicle bays have their base healing/repair rate doubled.
