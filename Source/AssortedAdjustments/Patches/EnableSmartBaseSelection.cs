@@ -11,7 +11,7 @@ using PhoenixPoint.Geoscape.View;
 using PhoenixPoint.Geoscape.View.ViewStates;
 using UnityEngine;
 
-namespace AssortedAdjustments.Patches.UIEnhancements
+namespace AssortedAdjustments.Patches
 {
     internal static class SmartBaseSelection
     {

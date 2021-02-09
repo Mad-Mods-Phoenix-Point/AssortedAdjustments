@@ -72,10 +72,10 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
 * Disable the annoying "Right Click Move" in tactical missions. God.
 * Disable the rock tiles in bases. 
 * Keep the game paused when ordering vehicles to travel and when a squad is rested (Thx Sheepy).
-* Pause the game when new recruits have arrived at phoenic bases.
+* Pause the game when new recruits have arrived at phoenix bases.
 * Allow full mutations AND full augmentations for the soldiers along with UI fixes for the related screens.
 * Recruitment of soldiers with more than 3 personal abilities at phoenix bases now works!
-* Recruits at Phoenic bases now come with armor and equipment by default.
+* Recruits at phoenix bases now come with armor and equipment by default.
 * The evacuation prompt in tactical missions will now only show if the whole squad is ready to exit the mission.
 * You can now scrap aircraft from the roster list.
     * If you move all units out of the aircraft the formerly "Empty"-Slot will now trigger the option to scrap the vehicle.

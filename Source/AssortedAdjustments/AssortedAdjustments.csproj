@@ -99,7 +99,7 @@
     <Compile Include="Patches\UIEnhancements\SiteAddons.cs" />
     <Compile Include="Patches\UIEnhancements\PersistentClassFilter.cs" />
     <Compile Include="Patches\UIEnhancements\ExtendedHavenInfo.cs" />
-    <Compile Include="Patches\UIEnhancements\SmartBaseSelection.cs" />
+    <Compile Include="Patches\EnableSmartBaseSelection.cs" />
     <Compile Include="Patches\UIEnhancements\ExtendedBaseInfo.cs" />
     <Compile Include="Patches\UIEnhancements\DetailedResearchAndProduction.cs" />
     <Compile Include="Patches\UIEnhancements\RecruitInfoInsideZoneTooltip.cs" />

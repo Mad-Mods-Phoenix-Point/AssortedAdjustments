@@ -3,6 +3,9 @@ using System.IO;
 using System.Reflection;
 using Harmony;
 using AssortedAdjustments.Patches;
+using Base.Build;
+using System.Linq;
+using PhoenixPoint.Home.View.ViewModules;
 
 namespace AssortedAdjustments
 {
@@ -16,6 +19,10 @@ namespace AssortedAdjustments
         // BEN: DebugLevel (0: nothing, 1: error, 2: debug, 3: info)
         internal static int DebugLevel = 0;
 
+        internal static string GameBuildVersion = RuntimeBuildInfo.BuildVersion;
+        internal static string ModName = "AssortedAdjustments";
+        internal static string ModVersion;
+
 
 
         // Modnix Entrypoints
@@ -26,6 +33,10 @@ namespace AssortedAdjustments
             ModDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             LogPath = Path.Combine(ModDirectory, "AssortedAdjustments.log");
             Settings = api("config", null) as Settings ?? new Settings();
+
+            object modInfo = api("mod_info", null);
+            Version version = (Version)modInfo.GetType().GetField("Version").GetValue(modInfo);
+            ModVersion = $"{ModName} {version}";
 
 
 
@@ -83,7 +94,19 @@ namespace AssortedAdjustments
 
 
             Logger.Always($"Modnix Mad.AssortedAdjustments.SplashMod initialised.");
+
+            //MAD: HOTFIX for 1.10
+            Logger.Always($"GameBuildVersion: {GameBuildVersion}");
+            if (Int32.Parse(GameBuildVersion.Split('.').ElementAt(1)) > 9)
+            {
+                Logger.Always($"WARNING: Game version is higher than 1.9.3 -> forcing setting 'EnableSmartEvacuation' to false.");
+                Settings.EnableSmartEvacuation = false;
+            }
+            Logger.Always($"ModVersion: {ModVersion}");
+            //:DAM
+
             Logger.Always($"Settings: {Settings}");
+
 
 
             try
@@ -99,12 +122,7 @@ namespace AssortedAdjustments
 
         public static void MainMod(Func<string, object, object> api)
         {
-            //ModDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            //LogPath = Path.Combine(ModDirectory, "AssortedAdjustments.log");
-            //Logger.Initialize(LogPath, DebugLevel, ModDirectory, nameof(AssortedAdjustments));
-            //Settings = api("config", null) as Settings ?? new Settings();
-
-            DataHelpers.Print();
+             DataHelpers.Print();
             Harmony.PatchAll();
             ApplyAll();
 
@@ -148,6 +166,24 @@ namespace AssortedAdjustments
             if (Settings.EnableDifficultyOverrides)
             {
                 DifficultyOverrides.Apply();
+            }
+        }
+
+
+
+        [HarmonyPatch(typeof(UIModuleBuildRevision), "SetRevisionNumber")]
+        public static class UIModuleBuildRevision_SetRevisionNumber_Patch
+        {
+            public static void Postfix(UIModuleBuildRevision __instance)
+            {
+                try
+                {
+                    __instance.BuildRevisionNumber.text = $"{RuntimeBuildInfo.UserVersion} w/ {ModVersion}";
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
             }
         }
     }

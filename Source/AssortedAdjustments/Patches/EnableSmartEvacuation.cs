@@ -105,21 +105,6 @@ namespace AssortedAdjustments.Patches
 
 
                     return false;
-
-
-
-                    /*
-                    // This would evacuate the unit directly, no questions asked. BEWARE: Would also evacuate soldier on minimal movement at level start (while still in deployment/evacuation zone)!
-                    TacticalAbility tacticalAbility = exitMissionAbility as TacticalAbility;
-                    TacticalAbilityTarget tacticalAbilityTarget = tacticalAbility?.GetTargets().FirstOrDefault<TacticalAbilityTarget>();
-                    if (tacticalAbilityTarget != null)
-                    {
-                        tacticalAbility.Activate(tacticalAbilityTarget);
-                        __instance.ResetViewState();
-                        return false;
-                    }
-                    return true;
-                    */
                 }
                 catch (Exception e)
                 {
