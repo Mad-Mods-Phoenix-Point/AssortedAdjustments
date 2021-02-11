@@ -86,6 +86,7 @@
     <Compile Include="Patches\EnableMissionAdjustments.cs" />
     <Compile Include="Patches\EnableReturnFireAdjustments.cs" />
     <Compile Include="Patches\EnableExperienceToSkillpointConversion.cs" />
+    <Compile Include="Patches\EnableAbilityAdjustments.cs" />
     <Compile Include="Patches\ModifyDamageOverTimeStatus.cs" />
     <Compile Include="Patches\PauseOnRecruitsGenerated.cs" />
     <Compile Include="Patches\SkipIntro.cs" />
@@ -112,14 +113,17 @@
   <ItemGroup>
     <None Include="mod_info.js" />
     <None Include="README.md" />
+    <None Include="changelog.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rd /s /q "$(SolutionDir)..\Release\"
 xcopy "$(ProjectDir)README.md" "$(SolutionDir)..\" /Y
+xcopy "$(ProjectDir)changelog.txt" "$(SolutionDir)..\" /Y
 xcopy "$(TargetPath)" "$(SolutionDir)..\Release\$(TargetName)\" /Y
 xcopy "$(ProjectDir)mod_info.js" "$(SolutionDir)..\Release\$(TargetName)\" /Y
 xcopy "$(ProjectDir)README.md" "$(SolutionDir)..\Release\$(TargetName)\" /Y
+xcopy "$(ProjectDir)changelog.txt" "$(SolutionDir)..\Release\$(TargetName)\" /Y
 xcopy "$(SolutionDir)..\Release\*.*" "C:\Users\Ben\Documents\My Games\Phoenix Point\Mods\" /S /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

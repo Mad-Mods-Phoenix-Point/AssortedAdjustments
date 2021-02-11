@@ -67,6 +67,7 @@ namespace AssortedAdjustments
         public bool RecruitGenerationHasInventoryItems = true;
         [Annotation("New recruits may have augmentations already installed.", "False")]
         public bool RecruitGenerationCanHaveAugmentations = false;
+        internal bool BuffTutorialSquad = false;
 
 
 
@@ -199,6 +200,11 @@ namespace AssortedAdjustments
         public int MaxWill = 20;
         [Annotation("Maximum speed, vanilla default is 20", "20")]
         public int MaxSpeed = 20;
+
+
+
+        [Annotation("General switch to enable the related subfeatures.", "True", true, "Abilities")]
+        public bool EnableAbilityAdjustments = true;
 
 
 

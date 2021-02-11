@@ -13,6 +13,9 @@ using System.Linq;
 using Base.Defs;
 using PhoenixPoint.Tactical.Entities.Equipments;
 using Base;
+using PhoenixPoint.Common.Entities.GameTagsTypes;
+using PhoenixPoint.Common.Entities;
+using PhoenixPoint.Tactical.Entities.Abilities;
 
 namespace AssortedAdjustments.Patches
 {
@@ -56,6 +59,112 @@ namespace AssortedAdjustments.Patches
                 Logger.Info($"[CustomRecruitGeneration_Apply] SpeedBonus: {gdlDef.RecruitsGenerationParams.SpeedBonus}");
                 Logger.Info("---");
                 */
+            }
+        }
+
+
+
+
+
+        // Buff Sophia, Jacob, Omar, Irina and Takeshi with seven adequate personal skills
+        [HarmonyPatch(typeof(FactionCharacterGenerator), "GenerateUnit")]
+        public static class FactionCharacterGenerator_GenerateUnit_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableCustomRecruitGeneration && AssortedAdjustments.Settings.BuffTutorialSquad;
+            }
+
+            public static void Postfix(FactionCharacterGenerator __instance, ref GeoUnitDescriptor __result, GeoFaction faction, TacCharacterDef template, List<TacticalAbilityDef> ____personalAbilityPool)
+            {
+                try
+                {
+                    if (template == null)
+                    {
+                        return;
+                    }
+
+                    // BIOCHEMIST => BioChemist_AbilityDef
+                    // BOMBARDIER => Crafty_AbilityDef
+                    // CAUTIOUS => Cautious_AbilityDef
+                    // CLOSE QUARTERS SPECIALIST => CloseQuartersSpecialist_AbilityDef
+                    // FARSIGHTED => Brainiac_AbilityDef
+                    // HEALER => Helpful_AbilityDef
+                    // QUARTERBACK => Pitcher_AbilityDef
+                    // RECKLESS => Reckless_AbilityDef
+                    // RESOURCEFUL => Resourceful_AbilityDef
+                    // SELF DEFENSE SPECIALIST => SelfDefenseSpecialist_AbilityDef
+                    // SNIPERIST => Focused_AbilityDef
+                    // STRONGMAN => Strongman_AbilityDef
+                    // THIEF => Thief_AbilityDef
+                    // TROOPER => GoodShot_AbilityDef
+                    Dictionary<string, List<string>> abilitiesByCharacter = new Dictionary<string, List<string>>();
+                    abilitiesByCharacter.Add("Sophia", new List<string> { "Pitcher", "GoodShot", "Helpful", "Resourceful", "Brainiac", "Thief", "Focused" });
+                    abilitiesByCharacter.Add("Jacob", new List<string> { "Pitcher", "Resourceful", "CloseQuartersSpecialist", "Brainiac", "Reckless", "Helpful", "GoodShot" });
+                    abilitiesByCharacter.Add("Omar", new List<string> { "Resourceful", "Pitcher", "BioChemist", "Strongman", "Brainiac", "Crafty", "Helpful" });
+                    abilitiesByCharacter.Add("Irina", new List<string> { "Brainiac", "Focused", "SelfDefenseSpecialist", "Pitcher", "Resourceful", "Thief", "Helpful" });
+                    abilitiesByCharacter.Add("Takeshi", new List<string> { "Helpful", "Resourceful", "Pitcher", "Thief", "Cautious", "GoodShot", "Brainiac" });
+
+                    foreach (string character in abilitiesByCharacter.Keys)
+                    {
+                        if (template.name.Contains(character))
+                        {
+                            Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_POSTFIX] {character} will get dedicated abilities: {abilitiesByCharacter[character].Join()}");
+
+                            GeoUnitDescriptor geoUnitDescriptor = new GeoUnitDescriptor(faction, new GeoUnitDescriptor.UnitTypeDescriptor(template));
+                            GeoUnitDescriptor.ProgressionDescriptor progressionDescriptor = null;
+                            foreach (ClassTagDef classTag in template.ClassTags)
+                            {
+                                SpecializationDef specializationByClassTag = __instance.GetSpecializationByClassTag(classTag);
+                                if (specializationByClassTag != null)
+                                {
+                                    if (progressionDescriptor == null)
+                                    {
+                                        Dictionary<int, TacticalAbilityDef> personalAbilitiesByLevel = new Dictionary<int, TacticalAbilityDef>();
+
+                                        int index = 0;
+                                        foreach (string ability in abilitiesByCharacter[character])
+                                        {
+                                            if (!String.IsNullOrEmpty(ability))
+                                            {
+                                                personalAbilitiesByLevel.Add(index, ____personalAbilityPool.Where(a => a.name.Contains(ability)).FirstOrDefault());
+                                            }
+                                            index++;
+
+                                            // Safeguard
+                                            if (index > 6)
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        progressionDescriptor = new GeoUnitDescriptor.ProgressionDescriptor(specializationByClassTag, personalAbilitiesByLevel);
+                                    }
+                                    else
+                                    {
+                                        progressionDescriptor.SecondarySpecDef = specializationByClassTag;
+                                    }
+                                }
+                            }
+                            if (progressionDescriptor != null && template.Data.LevelProgression.IsValid)
+                            {
+                                progressionDescriptor.Level = template.Data.LevelProgression.Level;
+                                progressionDescriptor.ExtraAbilities.AddRange(template.Data.Abilites);
+                            }
+                            if (progressionDescriptor != null)
+                            {
+                                __result.Progression = progressionDescriptor;
+
+                                break;
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+
+                }
             }
         }
 

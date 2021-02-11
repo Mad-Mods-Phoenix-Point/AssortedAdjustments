@@ -1,0 +1,87 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+
+
+## 1.9.3.1
+- Add a hotfix for PP 1.10.X (unverified)
+
+
+## 1.9.3.0
+- Expose some difficulty settings related to population death by starvation
+- Fix a minor bug with SmartEvacuate and turrets
+- Add possibility to change the size of ground vehicles and mutogs (space occupied in aircraft)
+- Fix a vanilla bug with scrapping of items that you cannot manufacture yourself
+
+
+## 1.9.1.1
+- Change versioning style
+- Starting resources and general skillpoint gains are adjustable now, by default they resemble the game's easy setting.
+- Haven popups show personal skills of recruits now too
+- Expose skillpoints per day of training facility as a setting
+
+
+## 1.9-010R
+- The global agenda tracker now shows vehicle-related (travel and exploration times) AND excavation-related items.
+    - Added the functionality to focus on related site/activity when an item is clicked.
+    - Facilities under repair will also show.
+    - Once an excavation is done, a new secondary mission objective (to seize control of the site) is added.
+    - Optionally hide the ugly big buttons that show excavation times in vanilla.
+    - The context menu will show expected times behind the action too (Borrowed from Sheepy).
+- XP to SP conversion: The converted skillpoints can be assigned to the soldier's pool or the global pool (or both).
+- Added the option to edit aircraft ranges
+
+
+## 1.9-009R
+- You can now scrap aircraft from the roster list.
+    - If you move all units out of the aircraft the formerly "Empty"-Slot will now trigger the option to scrap the vehicle.
+    - You can't scrap your last aircraft because the game bugs out totally in geoscape without any vehicle to select.
+
+
+## 1.9-008R
+- Fixes rare bug on smart evacuation
+- Fixes custom recruit generation to not affect starting squad
+
+
+## 1.9-007R
+- Added trade information to haven popups along with the recruits class (if any).
+- Recruits at Phoenix bases now come with armor and equipment by default.
+- The evacuation prompt in tactical missions will now only show if the whole squad is ready to exit the mission.
+- Disable the "Nothing found" event
+- Added extensive documentation for the settings
+
+
+## 1.9-006R
+- Smart base selection. Ever wondered why the bases menu didn't show the base your aircraft just arrived at as selected by default?
+    - Before opening the bases gui the most relevant (that is the closest to your screen's center) base is prepared to be shown as default.
+    - Also works when panning around freely and opening the menu while above a base
+- Vanillas broken ability generation sometimes caused soldiers to have less than the expected number of personal skills
+    - This is fixed and supports up to 7 personal abilities for every soldier.
+    - UI fixes and enhancements included.
+
+
+## 1.9-005R
+- Extended information for bases
+    - Popup on activated Phoenix Bases will show healing and repair capabilities
+    - Added popup in base overview to show the accumulated healing/resources output, soldiers in treatment and vehicle details
+    - Added popup in recruitment screen for the selected base with extended info too
+- Pause the game when new recruits have arrived at phoenic bases
+- Recruitment of soldiers with more than 3 personal abilities at phoenix bases now works!
+- Allow full mutations AND full augmentations for the soldiers along with UI fixes for the related screens
+
+
+## 1.9-004R
+- Remove augmentation limit
+
+
+## 1.9-003R
+- Add several user interface enhancements
+
+
+## 1.9-002R
+- Add return fire adjustments and XPtoSP conversion for maxed out units
+
+
+## 1.9-001R
+- Initial release

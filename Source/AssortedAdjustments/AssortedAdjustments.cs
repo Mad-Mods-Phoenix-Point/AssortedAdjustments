@@ -17,9 +17,9 @@ namespace AssortedAdjustments
         internal static HarmonyInstance Harmony;
 
         // BEN: DebugLevel (0: nothing, 1: error, 2: debug, 3: info)
-        internal static int DebugLevel = 0;
+        internal static int DebugLevel = 1;
 
-        internal static string GameBuildVersion = RuntimeBuildInfo.BuildVersion;
+        internal static string GameVersion = RuntimeBuildInfo.BuildVersion;
         internal static string ModName = "AssortedAdjustments";
         internal static string ModVersion;
 
@@ -46,6 +46,8 @@ namespace AssortedAdjustments
                 Settings.AgendaTrackerHideStatusBar = true;
 
                 Settings.PersistentClassFilterInitDisabled = true;
+
+                Settings.BuffTutorialSquad = true;
 
                 Settings.DifficultyOverrideExpConvertedToSkillpoints = 0.03f;
 
@@ -96,13 +98,12 @@ namespace AssortedAdjustments
             Logger.Always($"Modnix Mad.AssortedAdjustments.SplashMod initialised.");
 
             //MAD: HOTFIX for 1.10
-            Logger.Always($"GameBuildVersion: {GameBuildVersion}");
-            if (Int32.Parse(GameBuildVersion.Split('.').ElementAt(1)) > 9)
+            Logger.Always($"GameVersion: {GameVersion}");
+            if (Int32.Parse(GameVersion.Split('.').ElementAt(1)) > 9)
             {
                 Logger.Always($"WARNING: Game version is higher than 1.9.3 -> forcing setting 'EnableSmartEvacuation' to false.");
                 Settings.EnableSmartEvacuation = false;
             }
-            Logger.Always($"ModVersion: {ModVersion}");
             //:DAM
 
             Logger.Always($"Settings: {Settings}");
@@ -122,7 +123,7 @@ namespace AssortedAdjustments
 
         public static void MainMod(Func<string, object, object> api)
         {
-             DataHelpers.Print();
+            DataHelpers.Print();
             Harmony.PatchAll();
             ApplyAll();
 
@@ -166,6 +167,11 @@ namespace AssortedAdjustments
             if (Settings.EnableDifficultyOverrides)
             {
                 DifficultyOverrides.Apply();
+            }
+
+            if (Settings.EnableAbilityAdjustments)
+            {
+                AbilityAdjustments.Apply();
             }
         }
 

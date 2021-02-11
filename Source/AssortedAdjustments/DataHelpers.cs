@@ -32,11 +32,11 @@ namespace AssortedAdjustments
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
 
             /*
-            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TacCharacterDef>().Where(d => d.IsVehicle || d.IsMutog))
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TacCharacterDef>().Where(d => d.IsHuman))
             {
                 Logger.Info($"[DataHelpers_Print] Def: {def.name}");
                 Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
-                Logger.Info($"[DataHelpers_Print] Volume: {def.Volume}");
+                Logger.Info($"[DataHelpers_Print] Abilities: {def.Data.Abilites.Select(a => a.name).Join()}");
                 Logger.Info($"[DataHelpers_Print] ---");
             }
             */
@@ -60,18 +60,17 @@ namespace AssortedAdjustments
             */
 
             /*
-            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TacticalAbilityDef>().ToList())
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TacticalAbilityDef>())
             {
                 Logger.Info($"[DataHelpers_Print] Def: {def.name}");
                 Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                Logger.Info($"[DataHelpers_Print] {def.ViewElementDef?.DisplayName1.Localize()} => {def.name}");
 
                 Logger.Info($"[DataHelpers_Print] ActionPointCost: {def.ActionPointCost}");
                 Logger.Info($"[DataHelpers_Print] WillPointCost: {def.WillPointCost}");
-                Logger.Info($"[DataHelpers_Print] SkillTags: {def.SkillTags.Select(s => s.name).Join(null, ",")}");
-
                 Logger.Info($"[DataHelpers_Print] ---");
             }
-            */
+            */  
 
             /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<GameDifficultyLevelDef>())

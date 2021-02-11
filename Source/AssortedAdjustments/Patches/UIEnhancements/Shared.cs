@@ -17,6 +17,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
     internal static class Shared
     {
         /*
+        // Reset exploration sites
         [HarmonyPatch(typeof(GeoLevelController), "DisableEmptyRevealedExplorationSites")]
         public static class GeoLevelController_DisableEmptyRevealedExplorationSites_Patch
         {
@@ -64,13 +65,6 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
 
 
-
-
-
-
-
-
-
         // Add class tooltip to RecruitsListElements and beautify the perk titles
         [HarmonyPatch(typeof(RecruitsListElementController), "SetRecruitElement")]
         public static class RecruitsListElementController_SetRecruitElement_Patch
@@ -80,7 +74,6 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 return AssortedAdjustments.Settings.EnableUIEnhancements;
             }
 
-            
             public static void Postfix(RecruitsListElementController __instance, RecruitsListEntryData entryData, List<RowIconTextController> ____abilityIcons)
             {
                 try
@@ -211,6 +204,8 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 }
             }
         }
+
+
 
         // Strip string commands if called by update
         [HarmonyPatch(typeof(UITooltipText), "UpdateText")]
