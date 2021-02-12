@@ -19,7 +19,6 @@ namespace AssortedAdjustments
         // BEN: DebugLevel (0: nothing, 1: error, 2: debug, 3: info)
         internal static int DebugLevel = 1;
 
-        internal static string GameVersion = RuntimeBuildInfo.BuildVersion;
         internal static string ModName = "AssortedAdjustments";
         internal static Version ModVersion;
 
@@ -97,24 +96,8 @@ namespace AssortedAdjustments
 
 
             Logger.Always($"Modnix Mad.AssortedAdjustments.SplashMod initialised.");
-            Logger.Always($"GameVersion: {GameVersion}");
-            Logger.Always($"ModVersion: {ModVersion}");
             //Logger.Always($"Settings: {Settings}");
             
-            
-            
-            
-            //MAD: HOTFIX for 1.10
-            //Logger.Always($"GameVersion: {GameVersion}");
-            //if (Int32.Parse(GameVersion.Split('.').ElementAt(1)) > 9)
-            //{
-            //    Logger.Always($"WARNING: Game version is higher than 1.9.3 -> forcing setting 'EnableSmartEvacuation' to false.");
-            //    Settings.EnableSmartEvacuation = false;
-            //}
-            //:DAM
-
-
-
 
 
             try
@@ -135,6 +118,8 @@ namespace AssortedAdjustments
             ApplyAll();
 
             Logger.Always($"Modnix Mad.AssortedAdjustments.MainMod initialised.");
+            Logger.Always($"GameVersion: {RuntimeBuildInfo.BuildVersion}");
+            Logger.Always($"ModVersion: {ModVersion}");
         }
 
 
