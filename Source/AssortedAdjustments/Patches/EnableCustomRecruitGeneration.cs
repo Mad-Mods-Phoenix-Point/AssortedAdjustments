@@ -16,6 +16,7 @@ using Base;
 using PhoenixPoint.Common.Entities.GameTagsTypes;
 using PhoenixPoint.Common.Entities;
 using PhoenixPoint.Tactical.Entities.Abilities;
+using PhoenixPoint.Common.Entities.Characters;
 
 namespace AssortedAdjustments.Patches
 {
@@ -61,8 +62,6 @@ namespace AssortedAdjustments.Patches
                 */
             }
         }
-
-
 
 
 
@@ -466,6 +465,57 @@ namespace AssortedAdjustments.Patches
                         geoHaven.KillRecruit();
                         CharacterGenerationContext context = ____level.CharacterGenerator.GenerateCharacterGeneratorContext(__instance);
                         geoHaven.SpawnNewRecruit(context, null);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+        */
+
+        /*
+        // Not created equally (not possible atm as ____progression.BaseStatSheet is global and readonly)
+        [HarmonyPatch(typeof(GeoUnitDescriptor), "FinishInitCharacter")]
+        public static class GeoUnitDescriptor_FinishInitCharacter_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableCustomRecruitGeneration;
+            }
+
+            public static void Postfix(GeoUnitDescriptor __instance, ref GeoCharacter character)
+            {
+                try
+                {
+                    Logger.Debug($"[GeoUnitDescriptor_FinishInitCharacter_POSTFIX] Not created equally.");
+
+                    if (__instance.Progression != null)
+                    {
+                        int defaultMaxStrength = __instance.LevelController.CharacterGenerator.BaseStatsSheet.MaxStrength;
+                        int defaultMaxWill = __instance.LevelController.CharacterGenerator.BaseStatsSheet.MaxWill;
+                        int defaultMaxSpeed = __instance.LevelController.CharacterGenerator.BaseStatsSheet.MaxSpeed;
+                        Logger.Info($"[GeoUnitDescriptor_FinishInitCharacter_POSTFIX] ({character.DisplayName}) Default max base stats: {defaultMaxStrength}, {defaultMaxWill}, {defaultMaxSpeed}");
+
+                        int[] allowedStrengthDeviation = new int[] { -3, 4 };
+                        int[] allowedWillDeviation = new int[] { -2, 3 };
+                        int[] allowedSpeedDeviation = new int[] { -2, 1 };
+
+                        System.Random r = new System.Random();
+                        int randomMaxStrength = defaultMaxStrength + r.Next(allowedStrengthDeviation[0], allowedStrengthDeviation[1]);
+                        int randomMaxWill = defaultMaxWill + r.Next(allowedWillDeviation[0], allowedWillDeviation[1]);
+                        int randomMaxSpeed = defaultMaxSpeed + r.Next(allowedSpeedDeviation[0], allowedSpeedDeviation[1]);
+
+                        CharacterProgression ____progression = (CharacterProgression)AccessTools.Field(typeof(GeoCharacter), "_progression").GetValue(character);
+
+                        ____progression.BaseStatSheet = new BaseStatSheetDef();
+
+                        ____progression.BaseStatSheet.MaxStrength = randomMaxStrength;
+                        ____progression.BaseStatSheet.MaxWill = randomMaxWill;
+                        ____progression.BaseStatSheet.MaxSpeed = randomMaxSpeed;
+
+                        Logger.Info($"[GeoUnitDescriptor_FinishInitCharacter_POSTFIX] ({character.DisplayName}) Generated max base stats: {randomMaxStrength}, {randomMaxWill}, {randomMaxSpeed}");
                     }
                 }
                 catch (Exception e)

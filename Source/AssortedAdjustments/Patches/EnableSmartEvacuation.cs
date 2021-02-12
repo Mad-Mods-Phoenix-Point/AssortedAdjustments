@@ -75,9 +75,9 @@ namespace AssortedAdjustments.Patches
                     bool isExitMissionAbilityEnabled = ability?.TacticalActorBase?.GetAbility<ExitMissionAbility>()?.IsEnabled(null) == true;
                     bool isEvacuateMountedActorsAbilityEnabled = ability?.TacticalActorBase?.GetAbility<EvacuateMountedActorsAbility>()?.IsEnabled(null) == true;
                     bool shouldOverridePrompt = isExitMissionAbilityEnabled || isEvacuateMountedActorsAbilityEnabled;
-                    Logger.Debug($"[TacticalView_OnAbilityExecuted_PREFIX] isExitMissionAbilityEnabled: {isExitMissionAbilityEnabled}");
-                    Logger.Debug($"[TacticalView_OnAbilityExecuted_PREFIX] isEvacuateMountedActorsAbilityEnabled: {isEvacuateMountedActorsAbilityEnabled}");
-                    Logger.Debug($"[TacticalView_OnAbilityExecuted_PREFIX] shouldOverridePrompt: {shouldOverridePrompt}");
+                    //Logger.Debug($"[TacticalView_OnAbilityExecuted_PREFIX] isExitMissionAbilityEnabled: {isExitMissionAbilityEnabled}");
+                    //Logger.Debug($"[TacticalView_OnAbilityExecuted_PREFIX] isEvacuateMountedActorsAbilityEnabled: {isEvacuateMountedActorsAbilityEnabled}");
+                    //Logger.Debug($"[TacticalView_OnAbilityExecuted_PREFIX] shouldOverridePrompt: {shouldOverridePrompt}");
 
                     if (ability is IMoveAbility && ability.TacticalActor == ____selectedActor && shouldOverridePrompt)
                     {
