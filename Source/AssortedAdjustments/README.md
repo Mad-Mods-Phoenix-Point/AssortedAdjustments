@@ -82,6 +82,15 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
     * You can't scrap your last aircraft because the game bugs out totally in geoscape without any vehicle to select.
 * Starting resources and general skillpoint gains are adjustable now, by default they resemble the game's easy setting.
 * You can set the size of groundehicles and mutogs (space occupied in aircraft)
+* You can enable some minor adjustments to a few tactical abilities (Default: off).
+    * "RetrieveTurret" will cost only 1AP
+    * "BigBooms" will cost only 4WP
+    * "Cautious" will only lose 5% damage
+    * "Reckless" will only lose 5% accuracy
+    * "Strongman" will only lose 10 perception
+* Exposed some diffculty settings regarding population census (the "doom meter").
+    * You can reduce (or completely disable) the death rate of havens caused by starvation
+    * By default the values are equivalent to vanilla's settings
 
 #### Facilities
 * Medical bays and vehicle bays have their base healing/repair rate doubled.

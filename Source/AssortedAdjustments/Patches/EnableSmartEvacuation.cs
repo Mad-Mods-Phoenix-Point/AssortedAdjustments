@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Base.Core;
 using Base.UI.MessageBox;
 using Harmony;
@@ -12,8 +13,8 @@ namespace AssortedAdjustments.Patches
 {
     internal static class SmartEvacuation
     {
-        [HarmonyPatch(typeof(TacticalView), "ShowExitMissionPrompt")]
-        public static class GeoFaction_ShowExitMissionPrompt_Patch
+        [HarmonyPatch(typeof(TacticalView), "OnAbilityExecuted")]
+        public static class TacticalView_OnAbilityExecuted_Patch
         {
             internal static IEnumerable<TacticalActor> allActiveSquadmembers;
 
@@ -25,7 +26,7 @@ namespace AssortedAdjustments.Patches
             }
 
             // Override!
-            public static bool Prefix(TacticalView __instance, TacticalActor ____selectedActor)
+            public static bool Prefix(TacticalView __instance, TacticalAbility ability, TacticalActor ____selectedActor)
             {
                 // Callback Helper
                 void OnEvacuateSquadConfirmationResult(MessageBoxCallbackResult res)
@@ -66,45 +67,77 @@ namespace AssortedAdjustments.Patches
 
                 try
                 {
-                    Logger.Debug($"[GeoFaction_ShowExitMissionPrompt_PREFIX] Overriding exit mission prompt to only trigger if the whole squad is in some exit zone.");
-
-                    ExitMissionAbility exitMissionAbility = ____selectedActor.GetAbility<ExitMissionAbility>();
-                    allActiveSquadmembers = __instance.TacticalLevel.CurrentFaction.TacticalActors.Where(a => a != ____selectedActor && a.IsActive);
-                    Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] allActiveSquadmembers: {allActiveSquadmembers.Select(a => a.DisplayName).ToArray().Join(null, ", ")}");
-
-                    bool isSquadInExitZone = true;
-                    foreach(TacticalActor tActor in allActiveSquadmembers)
+                    if (!__instance.ViewerFaction.IsPlayingTurn || (ability.TacticalActorBase && ability.TacticalActorBase.TacticalFaction != __instance.ViewerFaction) || ability is IdleAbility)
                     {
-                        TacticalAbility tAbility = tActor.GetAbility<ExitMissionAbility>() as TacticalAbility;
-                        if (tAbility == null)
-                        { 
-                            tAbility = tActor.GetAbility<EvacuateMountedActorsAbility>() as TacticalAbility;
-                        }
-                        if (tAbility == null)
-                        {
-                            // Has no relevant ability, most likely a turret
-                            Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] actor: {tActor.DisplayName} has no exit/evacuate ability (IsMetallic: {tActor.IsMetallic}, GameTags: {tActor.TacticalActorBaseDef.GameTags})");
-                            continue;
-                        }
-                        Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] actor: {tActor.DisplayName}, canEvacuate: {tAbility?.HasValidTargets}");
-
-                        if (!tAbility.HasValidTargets)
-                        {
-                            isSquadInExitZone = false;
-                            // Don't break to test for a while
-                            //break;
-                        }
-                    }
-                    Logger.Info($"[GeoFaction_ShowExitMissionPrompt_PREFIX] isSquadInExitZone: {isSquadInExitZone}");
-
-                    if (isSquadInExitZone)
-                    {
-                        GameUtl.GetMessageBox().ShowSimplePrompt("Evacuate Squad?", MessageBoxIcon.Question, MessageBoxButtons.YesNo, new MessageBox.MessageBoxCallback(OnEvacuateSquadConfirmationResult), null, exitMissionAbility);
+                        return false;
                     }
 
+                    bool isExitMissionAbilityEnabled = ability?.TacticalActorBase?.GetAbility<ExitMissionAbility>()?.IsEnabled(null) == true;
+                    bool isEvacuateMountedActorsAbilityEnabled = ability?.TacticalActorBase?.GetAbility<EvacuateMountedActorsAbility>()?.IsEnabled(null) == true;
+                    bool shouldOverridePrompt = isExitMissionAbilityEnabled || isEvacuateMountedActorsAbilityEnabled;
+                    Logger.Debug($"[TacticalView_OnAbilityExecuted_PREFIX] isExitMissionAbilityEnabled: {isExitMissionAbilityEnabled}");
+                    Logger.Debug($"[TacticalView_OnAbilityExecuted_PREFIX] isEvacuateMountedActorsAbilityEnabled: {isEvacuateMountedActorsAbilityEnabled}");
+                    Logger.Debug($"[TacticalView_OnAbilityExecuted_PREFIX] shouldOverridePrompt: {shouldOverridePrompt}");
+
+                    if (ability is IMoveAbility && ability.TacticalActor == ____selectedActor && shouldOverridePrompt)
+                    {
+                        Logger.Debug($"[TacticalView_OnAbilityExecuted_PREFIX] Overriding exit mission prompt to only trigger if the whole squad is in some exit zone.");
 
 
-                    return false;
+
+                        // Always called by original method, needed?
+                        typeof(TacticalView).GetMethod("UpdateApPool", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { false });
+                        //__instance.UpdateApPool(false);
+
+
+
+                        TacticalAbility evacuateAbility = ____selectedActor.GetAbility<ExitMissionAbility>();
+                        if (evacuateAbility == null)
+                        {
+                            evacuateAbility = ____selectedActor.GetAbility<EvacuateMountedActorsAbility>();
+                        }
+
+                        allActiveSquadmembers = __instance.TacticalLevel.CurrentFaction.TacticalActors.Where(a => a != ____selectedActor && a.IsActive);
+                        Logger.Info($"[TacticalView_OnAbilityExecuted_PREFIX] allActiveSquadmembers: {allActiveSquadmembers.Select(a => a.DisplayName).ToArray().Join(null, ", ")}");
+
+                        bool isSquadInExitZone = true;
+                        foreach (TacticalActor tActor in allActiveSquadmembers)
+                        {
+                            TacticalAbility tAbility = tActor.GetAbility<ExitMissionAbility>() as TacticalAbility;
+                            if (tAbility == null)
+                            {
+                                tAbility = tActor.GetAbility<EvacuateMountedActorsAbility>() as TacticalAbility;
+                            }
+                            if (tAbility == null)
+                            {
+                                // Has no relevant ability, most likely a turret
+                                Logger.Info($"[TacticalView_OnAbilityExecuted_PREFIX] actor: {tActor.DisplayName} has no exit/evacuate ability (IsMetallic: {tActor.IsMetallic}, GameTags: {tActor.TacticalActorBaseDef.GameTags})");
+                                continue;
+                            }
+                            Logger.Info($"[TacticalView_OnAbilityExecuted_PREFIX] actor: {tActor.DisplayName}, canEvacuate: {tAbility?.HasValidTargets}");
+
+                            if (!tAbility.HasValidTargets)
+                            {
+                                isSquadInExitZone = false;
+                                // Don't break to test for a while
+                                //break;
+                            }
+                        }
+                        Logger.Info($"[TacticalView_OnAbilityExecuted_PREFIX] isSquadInExitZone: {isSquadInExitZone}");
+
+                        if (isSquadInExitZone)
+                        {
+                            GameUtl.GetMessageBox().ShowSimplePrompt("Evacuate Squad?", MessageBoxIcon.Question, MessageBoxButtons.YesNo, new MessageBox.MessageBoxCallback(OnEvacuateSquadConfirmationResult), null, evacuateAbility);
+                        }
+
+
+
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
                 }
                 catch (Exception e)
                 {

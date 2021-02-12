@@ -6,4 +6,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("AssortedAdjustments")]
 [assembly: ComVisible(false)]
 [assembly: Guid("128FD367-9F02-4D74-B156-875C9AAA21A7")]
-[assembly: AssemblyVersion("1.9.3.*")]
+[assembly: AssemblyVersion("1.10.0.*")]

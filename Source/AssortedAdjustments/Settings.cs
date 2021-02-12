@@ -203,8 +203,8 @@ namespace AssortedAdjustments
 
 
 
-        [Annotation("General switch to enable the related subfeatures.", "True", true, "Abilities")]
-        public bool EnableAbilityAdjustments = true;
+        [Annotation("Enable minor adjustments to some abilities, see readme for details", "False", true, "Abilities")]
+        public bool EnableAbilityAdjustments = false;
 
 
 

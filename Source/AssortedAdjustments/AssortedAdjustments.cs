@@ -21,7 +21,7 @@ namespace AssortedAdjustments
 
         internal static string GameVersion = RuntimeBuildInfo.BuildVersion;
         internal static string ModName = "AssortedAdjustments";
-        internal static string ModVersion;
+        internal static Version ModVersion;
 
 
 
@@ -34,9 +34,8 @@ namespace AssortedAdjustments
             LogPath = Path.Combine(ModDirectory, "AssortedAdjustments.log");
             Settings = api("config", null) as Settings ?? new Settings();
 
-            object modInfo = api("mod_info", null);
-            Version version = (Version)modInfo.GetType().GetField("Version").GetValue(modInfo);
-            ModVersion = $"{ModName} {version}";
+            object ModInfo = api("mod_info", null);
+            ModVersion = (Version)ModInfo.GetType().GetField("Version").GetValue(ModInfo);
 
 
 
@@ -68,6 +67,8 @@ namespace AssortedAdjustments
                 Settings.CostMultiplier = 0.75f;
 
                 Settings.MaxWill = 25;
+                Settings.EnableAbilityAdjustments = true;
+
                 Settings.PauseOnExplorationSet = true;
                 Settings.DebugLevel = 3;
             }
@@ -96,17 +97,23 @@ namespace AssortedAdjustments
 
 
             Logger.Always($"Modnix Mad.AssortedAdjustments.SplashMod initialised.");
-
-            //MAD: HOTFIX for 1.10
             Logger.Always($"GameVersion: {GameVersion}");
-            if (Int32.Parse(GameVersion.Split('.').ElementAt(1)) > 9)
-            {
-                Logger.Always($"WARNING: Game version is higher than 1.9.3 -> forcing setting 'EnableSmartEvacuation' to false.");
-                Settings.EnableSmartEvacuation = false;
-            }
+            Logger.Always($"ModVersion: {ModVersion}");
+            //Logger.Always($"Settings: {Settings}");
+            
+            
+            
+            
+            //MAD: HOTFIX for 1.10
+            //Logger.Always($"GameVersion: {GameVersion}");
+            //if (Int32.Parse(GameVersion.Split('.').ElementAt(1)) > 9)
+            //{
+            //    Logger.Always($"WARNING: Game version is higher than 1.9.3 -> forcing setting 'EnableSmartEvacuation' to false.");
+            //    Settings.EnableSmartEvacuation = false;
+            //}
             //:DAM
 
-            Logger.Always($"Settings: {Settings}");
+
 
 
 
@@ -184,7 +191,7 @@ namespace AssortedAdjustments
             {
                 try
                 {
-                    __instance.BuildRevisionNumber.text = $"{RuntimeBuildInfo.UserVersion} w/ {ModVersion}";
+                    __instance.BuildRevisionNumber.text = $"{RuntimeBuildInfo.UserVersion} w/{ModName} {ModVersion}";
                 }
                 catch (Exception e)
                 {
