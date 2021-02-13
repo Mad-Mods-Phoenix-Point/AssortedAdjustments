@@ -32,6 +32,12 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
 
 ## Features (may not be complete)
 
+### BALANCE PRESETS
+* Upon popular demand you can set a balance preset which overrides the mod's general defaults if set to recognized values
+    * "vanilla": This will disable all difficulty-related changes and only keep general enhancements (UI, Pause & Center, Fixes)
+    * "hardcore": Sets many variables to be even harder than legendary
+    * For now, details can only be found here: https://github.com/Mad-Mods-Phoenix-Point/AssortedAdjustments/blob/main/Source/AssortedAdjustments/AssortedAdjustments.cs (just try it, you'll have a very hard time)
+
 ### UX
 * The global agenda tracker (or however you call it) now shows vehicle-related (travel and exploration times) AND excavation-related items.
     * Added the functionality to focus on related site/activity when an item is clicked.
@@ -91,6 +97,7 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
 * Exposed some diffculty settings regarding population census (the "doom meter").
     * You can reduce (or completely disable) the death rate of havens caused by starvation
     * By default the values are equivalent to vanilla's settings
+* Fresh recruits at havens will spawn every 3 days (Vanilla: 7)
 
 #### Facilities
 * Medical bays and vehicle bays have their base healing/repair rate doubled.

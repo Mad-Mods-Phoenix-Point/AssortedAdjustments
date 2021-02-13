@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 
 
+## 1.10.0.1
+- Expose recruit generation interval for havens, default 3days, vanilla 7days
+- Prepare setting presets
+- Work around crashing with Modnix3 beta
+
+
 ## 1.10.0.0
 - Fix SmartEvacuate for PP 1.10 (properly)
 - Add optional ability adjustments
