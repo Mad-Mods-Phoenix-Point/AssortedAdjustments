@@ -61,6 +61,16 @@ namespace AssortedAdjustments.Patches
                 Logger.Info("---");
                 */
             }
+
+            foreach (GeoFactionDef gfDef in defRepository.DefRepositoryDef.AllDefs.OfType<GeoFactionDef>())
+            {
+                if (gfDef.name.Contains("Anu") || gfDef.name.Contains("NewJericho") || gfDef.name.Contains("Synedrion"))
+                {
+                    gfDef.RecruitIntervalCheckDays = AssortedAdjustments.Settings.RecruitIntervalCheckDays;
+                    
+                    Logger.Info($"[CustomRecruitGeneration_Apply] gfDef: {gfDef.name}, RecruitIntervalCheckDays: {gfDef.RecruitIntervalCheckDays}");
+                }
+            }
         }
 
 
@@ -369,8 +379,8 @@ namespace AssortedAdjustments.Patches
                     {
                         GeoUnitDescriptor geoUnitDescriptor = ____level.CharacterGenerator.GenerateRandomUnit(context);
                         ____level.CharacterGenerator.ApplyRecruitDifficultyParameters(geoUnitDescriptor);
-                        ResourcePack value = __instance.GenerateNakedRecruitsCost();
-                        ____nakedRecruits.Add(geoUnitDescriptor, value);
+                        ResourcePack resourcePack = __instance.GenerateNakedRecruitsCost();
+                        ____nakedRecruits.Add(geoUnitDescriptor, resourcePack);
                     }
                     ____lastNakedRecruitRefresh = ____level.Timing.Now;
                     __instance.SpawnedRecruitNotification = true;
@@ -379,7 +389,7 @@ namespace AssortedAdjustments.Patches
                     {
                         return false;
                     }
-                    recruitsRegenerated(__instance.NakedRecruits.Keys);
+                    recruitsRegenerated.Invoke(__instance.NakedRecruits.Keys);
 
 
                     return false;
@@ -434,6 +444,34 @@ namespace AssortedAdjustments.Patches
                 {
                     Logger.Error(e);
                     return true;
+                }
+            }
+        }
+
+
+
+        // Info
+        [HarmonyPatch(typeof(GeoFaction), "GenerateRecruits", new Type[] { typeof(Timing) })]
+        public static class GeoFaction_GenerateRecruits_Patch
+        {
+            public static void Prefix(GeoFaction __instance, Timing timing)
+            {
+                try
+                {
+                    
+                    if (__instance.Def.name.Contains("Anu") || __instance.Def.name.Contains("NewJericho") || __instance.Def.name.Contains("Synedrion"))
+                    {
+                        Logger.Debug($"[GeoFaction_GenerateRecruits_PREFIX] Faction: {__instance.Name.Localize()}");
+                        Logger.Debug($"[GeoFaction_GenerateRecruits_PREFIX] RecruitIntervalCheckDays: {__instance.Def.RecruitIntervalCheckDays}");
+                        Logger.Debug($"[GeoFaction_GenerateRecruits_PREFIX] GenerateRecruitNextTime: {__instance.GenerateRecruitNextTime}, Now: {timing.Now}");
+
+                        // Update now?
+                        //__instance.GenerateRecruitNextTime = timing.Now;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
                 }
             }
         }

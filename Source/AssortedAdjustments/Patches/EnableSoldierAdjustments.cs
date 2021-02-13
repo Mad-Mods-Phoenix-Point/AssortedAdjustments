@@ -27,8 +27,9 @@ namespace AssortedAdjustments.Patches
     {
         internal static int MaxAugmentations = Mathf.Clamp(AssortedAdjustments.Settings.MaxAugmentations, 0, 3);
         internal static int VanillaAbilityLimit = 3;
-        internal static int ModAbilityLimit = 7;
-        internal static int PersonalAbilitiesCount = Mathf.Clamp(AssortedAdjustments.Settings.PersonalAbilitiesCount, VanillaAbilityLimit, ModAbilityLimit);
+        internal static int MinAbilityLimit = 1;
+        internal static int MaxAbilityLimit = 7;
+        internal static int PersonalAbilitiesCount = Mathf.Clamp(AssortedAdjustments.Settings.PersonalAbilitiesCount, MinAbilityLimit, MaxAbilityLimit);
 
 
 
@@ -137,11 +138,11 @@ namespace AssortedAdjustments.Patches
                     //Logger.Debug($"[RecruitsListElementController_SetRecruitElement_PREFIX] abilities: {entryData.PersonalTrackAbilities.Count()}");
 
                     // Only add the icon containers if we need them
-                    if (rowItems.Length < ModAbilityLimit)
+                    if (rowItems.Length < MaxAbilityLimit)
                     {
                         // Clone the first item as often as needed, it's filled with content in the original method by calling RecruitsListElementController.SetAbilityIcons()
                         RowIconTextController cloneBase = rowItems.FirstOrDefault();
-                        int clonesNeeded = ModAbilityLimit - VanillaAbilityLimit;
+                        int clonesNeeded = MaxAbilityLimit - VanillaAbilityLimit;
 
                         if (cloneBase == null)
                         {

@@ -179,13 +179,13 @@ namespace AssortedAdjustments.Patches
                 }
 
                 // All factions
-                if (__instance.Def.name.Contains("FabricationPlant"))
+                if (__instance.Def.name.Contains("FabricationPlant") && AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount > 0)
                 {
                     float value = AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount / AssortedAdjustments.Settings.GenerateResourcesBaseDivisor;
                     ResourceUnit materials = new ResourceUnit(ResourceType.Materials, value);
                     __instance.ResourceOutput.AddUnique(materials);
                 }
-                else if (__instance.Def.name.Contains("ResearchLab"))
+                else if (__instance.Def.name.Contains("ResearchLab") && AssortedAdjustments.Settings.ResearchLabGenerateTechAmount > 0)
                 {
                     float value = AssortedAdjustments.Settings.ResearchLabGenerateTechAmount / AssortedAdjustments.Settings.GenerateResourcesBaseDivisor;
                     ResourceUnit tech = new ResourceUnit(ResourceType.Tech, value);
@@ -310,13 +310,13 @@ namespace AssortedAdjustments.Patches
                 {
                     __instance.Description.text = $"Vehicles and aircraft at the base recover {currentVehicleSlotFacilityVehicleHealOuput} Hit Points per hour. Allows maintenance of 2 ground vehicles and 2 aircraft.";
                 }
-                else if (facility.name.Contains("FabricationPlant"))
+                else if (facility.name.Contains("FabricationPlant") && AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount > 0)
                 {
                     string org = __instance.Description.text;
                     string add = $"Every plant generates {AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount} material per hour.";
                     __instance.Description.text = $"{org}\n{add}";
                 }
-                else if (facility.name.Contains("ResearchLab"))
+                else if (facility.name.Contains("ResearchLab") && AssortedAdjustments.Settings.ResearchLabGenerateTechAmount > 0)
                 {
                     string org = __instance.Description.text;
                     string add = $"Every lab generates {AssortedAdjustments.Settings.ResearchLabGenerateTechAmount} tech per hour.";
@@ -360,13 +360,13 @@ namespace AssortedAdjustments.Patches
                 {
                     __instance.Description.text = $"Vehicles and aircraft at the base recover {currentVehicleSlotFacilityVehicleHealOuput} Hit Points per hour. Allows maintenance of 2 ground vehicles and 2 aircraft.";
                 }
-                else if (facility.Def.name.Contains("FabricationPlant"))
+                else if (facility.Def.name.Contains("FabricationPlant") && AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount > 0)
                 {
                     string org = __instance.Description.text;
                     string add = $"Every plant generates {AssortedAdjustments.Settings.FabricationPlantGenerateMaterialsAmount} material per hour.";
                     __instance.Description.text = $"{org}\n{add}";
                 }
-                else if (facility.Def.name.Contains("ResearchLab"))
+                else if (facility.Def.name.Contains("ResearchLab") && AssortedAdjustments.Settings.ResearchLabGenerateTechAmount > 0)
                 {
                     string org = __instance.Description.text;
                     string add = $"Every lab generates {AssortedAdjustments.Settings.ResearchLabGenerateTechAmount} tech per hour.";

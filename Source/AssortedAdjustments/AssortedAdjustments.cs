@@ -38,36 +38,109 @@ namespace AssortedAdjustments
 
 
 
+            if (!String.IsNullOrEmpty(Settings.BalancePreset))
+            {
+                if (Settings.BalancePreset == "vanilla")
+                {
+                    Settings.DisableRocksAtBases = false;
+                    Settings.EnableCustomRecruitGeneration = false;
+                    Settings.EnableDifficultyOverrides = false;
+                    Settings.EnableExperienceToSkillpointConversion = false;
+                    Settings.EnableMissionAdjustments = false;
+                    Settings.EnablePlentifulItemDrops = false;
+                    Settings.EnableFacilityAdjustments = false;
+                    Settings.EnableSoldierAdjustments = false;
+                    Settings.EnableVehicleAdjustments = false;
+                    Settings.EnableEconomyAdjustments = false;
+                }
+                else if (Settings.BalancePreset == "hardcore")
+                {
+                    Settings.DisableRocksAtBases = false;
+
+                    Settings.EnableCustomRecruitGeneration = true;
+                    Settings.RecruitGenerationCount = 1;
+                    Settings.IgnoreRngFactorsForHavenRecruitGeneration = false;
+                    Settings.RecruitIntervalCheckDays = 9f;
+                    Settings.RecruitGenerationHasArmor = false;
+                    Settings.RecruitGenerationHasWeapons = false;
+                    Settings.RecruitGenerationHasConsumableItems = false;
+                    Settings.RecruitGenerationHasInventoryItems = false;
+
+                    Settings.EnableDifficultyOverrides = true;
+                    Settings.DifficultyOverrideStartingSupplies = 150f;
+                    Settings.DifficultyOverrideStartingMaterials = 300f;
+                    Settings.DifficultyOverrideStartingTech = 50f;
+                    Settings.DifficultyOverrideSoldierSkillPointsPerMission = 4;
+                    Settings.DifficultyOverrideExpConvertedToSkillpoints = 0.005f;
+                    Settings.DifficultyOverrideMinPopulationThreshold = 25;
+                    Settings.DifficultyOverrideStarvationDeathsPart = 0.02f;
+                    Settings.DifficultyOverrideStarvationMistDeathsPart = 0.04f;
+                    Settings.DifficultyOverrideStarvationDeathsFlat = 10;
+                    Settings.DifficultyOverrideStarvationMistDeathsFlat = 20;
+
+                    Settings.EnableExperienceToSkillpointConversion = false;
+
+                    Settings.EnableMissionAdjustments = false;
+
+                    Settings.EnablePlentifulItemDrops = false;
+
+                    Settings.EnableFacilityAdjustments = true;
+                    Settings.MedicalBayBaseHeal = 3f;
+                    Settings.LivingQuartersBaseStaminaHeal = 1f;
+                    Settings.VehicleBayAircraftHealAmount = 1;
+                    Settings.VehicleBayVehicleHealAmount = 15;
+                    Settings.MutationLabMutogHealAmount = 15;
+                    Settings.TrainingFacilityBaseExperienceAmount = 1;
+                    Settings.TrainingFacilityBaseSkillPointsAmount = 1;
+                    Settings.FabricationPlantGenerateProductionAmount = 3f;
+                    Settings.ResearchLabGenerateResearchAmount = 3f;
+                    Settings.FoodProductionGenerateSuppliesAmount = 0.25f;
+                    Settings.BionicsLabGenerateResearchAmount = 3f;
+                    Settings.MutationLabGenerateMutagenAmount = 0.25f;
+                    Settings.FabricationPlantGenerateMaterialsAmount = 0f;
+                    Settings.ResearchLabGenerateTechAmount = 0f;
+
+                    Settings.EnableSoldierAdjustments = true;
+                    Settings.MaxAugmentations = 1;
+                    Settings.PersonalAbilitiesCount = 3;
+                    Settings.MaxStrength = 25;
+                    Settings.MaxWill = 20;
+                    Settings.MaxSpeed = 20;
+
+                    Settings.EnableVehicleAdjustments = false;
+
+                    Settings.EnableEconomyAdjustments = true;
+                    Settings.ResourceMultiplier = 1.1f;
+                    Settings.ScrapMultiplier = 0.25f;
+                    Settings.CostMultiplier = 1.1f;
+
+                    Settings.DisableAmbushes = false;
+                }
+            }
+
+
+
             // Apply my own custom settings that differ from "popular demands"
             if (!String.IsNullOrEmpty(Settings.DebugDevKey) && Settings.DebugDevKey == "mad")
             {
                 Settings.AgendaTrackerHideStatusBar = true;
-
                 Settings.PersistentClassFilterInitDisabled = true;
-
                 Settings.BuffTutorialSquad = true;
-
                 Settings.DifficultyOverrideExpConvertedToSkillpoints = 0.03f;
-
                 Settings.MaxPlayerUnitsAdd = 1;
-
                 Settings.MedicalBayBaseHeal = 4; // Vanilla default
                 Settings.LivingQuartersBaseStaminaHeal = 2; // Vanilla default
                 Settings.VehicleBayAircraftHealAmount = 2; // Vanilla default
                 Settings.VehicleBayVehicleHealAmount = 20; // Vanilla default
                 Settings.MutationLabMutogHealAmount = 20; // Vanilla default
-
                 Settings.AircraftBlimpSpeed = 250; // Vanilla default
                 Settings.AircraftThunderbirdSpeed = 380; // Vanilla default
                 Settings.AircraftManticoreSpeed = 500; // Vanilla default
                 Settings.AircraftHeliosSpeed = 650; // Vanilla default
                 Settings.AircraftBlimpSpace = 9;
-
                 Settings.CostMultiplier = 0.75f;
-
                 Settings.MaxWill = 25;
                 Settings.EnableAbilityAdjustments = true;
-
                 Settings.PauseOnExplorationSet = true;
                 Settings.DebugLevel = 3;
             }

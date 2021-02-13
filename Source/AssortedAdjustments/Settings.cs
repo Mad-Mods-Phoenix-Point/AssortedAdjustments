@@ -5,6 +5,11 @@ namespace AssortedAdjustments
 {
     internal class Settings
     {
+        [Annotation("This will apply predefined settings for everything balance/difficulty related. Enhancements will stay enabled. Possible values: 'vanilla', 'hardcore'", "", true, "Preset")]
+        public string BalancePreset = "";
+
+
+
         [Annotation("Disables direct right click movement.", "True", true, "General")]
         public bool DisableRightClickMove = true;
         [Annotation("Disables the rock tiles in phoenix bases completely.", "True")]
@@ -15,6 +20,7 @@ namespace AssortedAdjustments
         public bool EnableSmartBaseSelection = true;
         [Annotation("If an aircraft is completely empty you can scrap it from the roster list.", "True")]
         public bool EnableScrapAircraft = true;
+
 
 
         [Annotation("Adds various items to the agenda tracker above the time controller.", "True", true, "UX Enhancements")]
@@ -46,7 +52,7 @@ namespace AssortedAdjustments
         public bool PersistentClassFilter = true;
         [Annotation("Will start the manufacturing screen with all class filters deselected.", "False")]
         public bool PersistentClassFilterInitDisabled = false;
-        [Annotation("Hides addons of havens/bases on the geoscape (ie. mist repeller).", "False")]
+        [Annotation("Hides visual addons of havens/bases on the geoscape (ie. mist repeller).", "False")]
         public bool HideSiteAddons = false;
 
 
@@ -57,6 +63,8 @@ namespace AssortedAdjustments
         public int RecruitGenerationCount = 3;
         [Annotation("Havens will update their recruits more consistently.", "True")]
         public bool IgnoreRngFactorsForHavenRecruitGeneration = true;
+        [Annotation("Interval in days in which havens will try to generate new recruits, vanilla default is 7", "3")]
+        public float RecruitIntervalCheckDays = 3f;
         [Annotation("New recruits may have armor.", "True")]
         public bool RecruitGenerationHasArmor = true;
         [Annotation("New recruits may have weapons.", "True")]
@@ -95,6 +103,7 @@ namespace AssortedAdjustments
         public int DifficultyOverrideStarvationMistDeathsFlat = 15;
         [Annotation("Completely disable population reduction by starvation. Only haven destructions will drop the bar.", "False")]
         public bool DifficultyOverrideDisableDeathByStarvation = false;
+
 
 
         [Annotation("Fully leveled soldiers will convert some experience to skill points. Base rate is dependent on difficulty setting, somewhere between 1 and 2 percent.", "True", true, "Progression")]
