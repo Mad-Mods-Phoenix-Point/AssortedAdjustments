@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 
 
+## 1.10.0.2
+- Add possibility to change max stamina of soldiers
+- Fix a vanilla bug with the post mission replenishment module
+- Add proper preset handling and a section in the readme for that
+
+
 ## 1.10.0.1
 - Expose recruit generation interval for havens, default 3days, vanilla 7days
 - Prepare setting presets

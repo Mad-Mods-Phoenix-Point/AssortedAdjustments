@@ -30,13 +30,31 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
 - If some values in the reference are marked <b>bold</b> it means that your currently set value is different from the mod's default
     - Just to help you keep track of yourself.
 
-## Features (may not be complete)
+### Balance Presets
+Upon popular demand you can set a balance preset which overrides the mod's general defaults if set to recognized values:  
+* "vanilla": This will disable all difficulty-related changes and only keep general enhancements
+* "hardcore": Sets many variables to be even harder than legendary
 
-### BALANCE PRESETS
-* Upon popular demand you can set a balance preset which overrides the mod's general defaults if set to recognized values
-    * "vanilla": This will disable all difficulty-related changes and only keep general enhancements (UI, Pause & Center, Fixes)
-    * "hardcore": Sets many variables to be even harder than legendary
-    * For now, details can only be found here: https://github.com/Mad-Mods-Phoenix-Point/AssortedAdjustments/blob/main/Source/AssortedAdjustments/AssortedAdjustments.cs (just try it, you'll have a very hard time)
+#### Guide
+Since version 1.10.0.2 i use Modnix's API to save the preset-related settings back its .conf-file if a valid preset is detected.  
+With that change you can  
+* Set a preset at "BalancePresetId" and <b>after you loaded up the game once</b>...
+* Change the config to your liking even if your changes partially affect the preset
+* Play with a custom config that is <b>based upon</b> a preset
+
+To make it easier for you to trust this system there's the settings-field "BalancePresetState" which displays a keyword describing the preset's state:
+* "SET" -> All values in your config match the relevant settings of the preset, you're all set :-)
+* "CUSTOMIZED" -> You have changed a value in your config which overrides the desired value of the preset. At this point you're on your own.
+* "RESET" -> This will never get set automatically, <b>you</b> can set it it to <b>force all related values</b> back to the preset's default.
+
+#### Long story short
+All this is only relevant if you have entered a valid preset at "BalancePresetId".  
+If you're happy with your current config just ignore this option.  
+If you think this mod makes things too easy for you, set "vanilla", play legendary and enjoy the QOL/UI enhancements.  
+If you wanna suffer, set "hardcore" and try to make it through.  
+
+
+## Features (may not be complete, mod default)
 
 ### UX
 * The global agenda tracker (or however you call it) now shows vehicle-related (travel and exploration times) AND excavation-related items.
@@ -62,15 +80,22 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
 * Vanillas broken ability generation sometimes caused soldiers to have less than the expected number of personal skills
     * This is fixed and supports up to 7 personal abilities for every soldier.
     * UI fixes and enhancements included.
+* Vanillas post-mission replenishment module potentially shows items of dismissed/dead characters
+    * Happens for example when you dismiss soldiers while their loadout is incomplete
+    * This is fixed.
 
 ### Gameplay
 * Maxed out soldiers now gain additional SP for their wasted XP (Rebuilds Sheepy's "Spill Exp to Skill").
-    * The converted skillpoints can be assigned to the soldier's pool or the global pool (or both).
-* Return Fire has a (configurable) maximum reaction angle and a (configurable) shot limit per turn (Thx pantolomin for the inspiration).
-* Squad limit in missions can be configured (Vanilla: 8, Default: 10).
+    * The converted skillpoints can be assigned to the soldier's pool or the global pool (default: both).
+* Return Fire has a (configurable, default: 180) maximum reaction angle and a (configurable, default: 2) shot limit per turn (Thx pantolomin for the inspiration).
+* Squad limit in missions can be configured (Vanilla: 8, Default: 10 (+2)).
 * All missions can be set to always collect any dropped items (Default: off).
 * Adjust item drop rate (lower destruction chance) and allow weapons to drop (Thx RealityMachina for the inspiration). All configurable.
-* Prepared some soldier attributes to be changed via settings (Default: off).
+    * By default weapon drops are health dependent, so completely undamaged weapons always drop
+* Prepared some soldier attributes to be changed via settings.
+    * You can change Strength, Willpower, Speed (no changes by default)
+    * Personal abilities limit raised to 5 (configurable). Note that this in <b>not>/b> applied retroactively but only affects freshly generated characters.
+    * Stamina is raised to 50 by default, soldiers are tired/exhausted at 15/5.
 * Aircraft speeds and space slightly raised. You can configure that too.
 * Reduced manufacturing times and resource costs for all items. Raised their scrap values.
 * Disable ambushes but retained them if inside the mist (Thx Sheepy).
@@ -80,14 +105,13 @@ In that case, <b>after</b> you launched the game with the mod activated for the 
 * Keep the game paused when ordering vehicles to travel and when a squad is rested (Thx Sheepy).
 * Pause the game when new recruits have arrived at phoenix bases.
 * Allow full mutations AND full augmentations for the soldiers along with UI fixes for the related screens.
-* Recruitment of soldiers with more than 3 personal abilities at phoenix bases now works!
 * Recruits at phoenix bases now come with armor and equipment by default.
 * The evacuation prompt in tactical missions will now only show if the whole squad is ready to exit the mission.
 * You can now scrap aircraft from the roster list.
     * If you move all units out of the aircraft the formerly "Empty"-Slot will now trigger the option to scrap the vehicle.
     * You can't scrap your last aircraft because the game bugs out totally in geoscape without any vehicle to select.
 * Starting resources and general skillpoint gains are adjustable now, by default they resemble the game's easy setting.
-* You can set the size of groundehicles and mutogs (space occupied in aircraft)
+* You can set the size of groundehicles and mutogs (space occupied in aircraft, default: 2)
 * You can enable some minor adjustments to a few tactical abilities (Default: off).
     * "RetrieveTurret" will cost only 1AP
     * "BigBooms" will cost only 4WP
@@ -115,7 +139,7 @@ Everything is configurable. I tried to be very clear in naming the settings so e
 <strike>In the future i hope i can add a detailed table with the Setting, its default value and an extensive description.</strike>  
 Every time the mod is loaded it will generate a markdown-file AND a html-file in the mod-folder. There you can see all settings explained along with thir default values.  
 Where appropiate i added a hint to the vanilla default value.  
-Furthermore, all values marked <b>bold</b> differ from the mods default and thus reflect all changes you made in the configuration of this mod.
+Furthermore, all values marked <b>bold</b> differ from the <b>mods default</b> and thus reflect all changes you (or a preset) made in the configuration of this mod.
 Feel free to comment if sth. is unclear or add a pull request at: 
 - https://github.com/Mad-Mods-Phoenix-Point/AssortedAdjustments.
 
