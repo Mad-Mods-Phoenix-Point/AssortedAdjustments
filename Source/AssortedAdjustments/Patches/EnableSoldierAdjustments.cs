@@ -20,6 +20,8 @@ using PhoenixPoint.Geoscape.View.DataObjects;
 using PhoenixPoint.Geoscape.Core;
 using PhoenixPoint.Tactical.Entities.Abilities;
 using Base;
+using PhoenixPoint.Geoscape.Levels;
+using Base.Entities.Statuses;
 
 namespace AssortedAdjustments.Patches
 {
@@ -40,18 +42,53 @@ namespace AssortedAdjustments.Patches
             List<BaseStatSheetDef> baseStatSheetDefs = defRepository.DefRepositoryDef.AllDefs.OfType<BaseStatSheetDef>().ToList();
             foreach (BaseStatSheetDef bssDef in baseStatSheetDefs)
             {
+                //Logger.Info($"[SoldierAdjustments_Apply] bssDef: {bssDef.name}, GUID: {bssDef.Guid}, PersonalAbilitiesCount: {bssDef.PersonalAbilitiesCount}, Attributes: {bssDef.MaxStrength}, {bssDef.MaxWill}, {bssDef.MaxSpeed}, Stamina: {bssDef.Stamina} ({bssDef.TiredStatusStaminaBelow}%, {bssDef.ExhaustedStatusStaminaBelow}%)");
+
                 bssDef.PersonalAbilitiesCount = PersonalAbilitiesCount;
                 bssDef.MaxStrength = AssortedAdjustments.Settings.MaxStrength;
                 bssDef.MaxWill = AssortedAdjustments.Settings.MaxWill;
                 bssDef.MaxSpeed = AssortedAdjustments.Settings.MaxSpeed;
+                bssDef.Stamina = AssortedAdjustments.Settings.Stamina;
+                bssDef.TiredStatusStaminaBelow = AssortedAdjustments.Settings.TiredStatusStaminaBelow;
+                bssDef.ExhaustedStatusStaminaBelow = AssortedAdjustments.Settings.ExhaustedStatusStaminaBelow;
 
-                Logger.Info($"[SoldierAdjustments_Apply] bssDef: {bssDef.name}, GUID: {bssDef.Guid}, PersonalAbilitiesCount: {bssDef.PersonalAbilitiesCount}, Attributes: {bssDef.MaxStrength}, {bssDef.MaxWill}, {bssDef.MaxSpeed}");
+                Logger.Info($"[SoldierAdjustments_Apply] bssDef: {bssDef.name}, GUID: {bssDef.Guid}, PersonalAbilitiesCount: {bssDef.PersonalAbilitiesCount}, Attributes: {bssDef.MaxStrength}, {bssDef.MaxWill}, {bssDef.MaxSpeed}, Stamina: {bssDef.Stamina} ({bssDef.TiredStatusStaminaBelow}%, {bssDef.ExhaustedStatusStaminaBelow}%)");
             }
         }
 
 
 
-        // Patches
+        //Patches
+        [HarmonyPatch(typeof(GeoFaction), "LevelStartLoadedGame")]
+        public static class GeoFaction_LevelStartLoadedGame_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableSoldierAdjustments;
+            }
+            public static void Postfix(GeoFaction __instance)
+            {
+                try
+                {
+                    // Apply stamina changes retroactively
+                    foreach (GeoCharacter c in __instance.HumanSoldiers.Where(s => s.Fatigue.Stamina.IntMax != AssortedAdjustments.Settings.Stamina))
+                    {
+                        Logger.Info($"[GeoFaction_LevelStartLoadedGame_POSTFIX] Stamina mismatch! Faction: {__instance.Name.Localize()}, Character: {c.DisplayName}, Stamina: {c.Fatigue.Stamina}. Setting max stamina to {AssortedAdjustments.Settings.Stamina}");
+
+                        StatusStat ____stamina = (StatusStat)AccessTools.Field(typeof(CharacterFatigue), "_stamina").GetValue(c.Fatigue);
+                        ____stamina.SetMax(AssortedAdjustments.Settings.Stamina, false);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+
+
+
+        // Number of personal abilities
         [HarmonyPatch(typeof(FactionCharacterGenerator), "GeneratePersonalAbilities")]
         public static class FactionCharacterGenerator_GeneratePersonalAbilities_Patch
         {

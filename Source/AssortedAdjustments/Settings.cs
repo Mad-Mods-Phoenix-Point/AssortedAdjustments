@@ -6,7 +6,9 @@ namespace AssortedAdjustments
     internal class Settings
     {
         [Annotation("This will apply predefined settings for everything balance/difficulty related. Enhancements will stay enabled. Possible values: 'vanilla', 'hardcore'", "", true, "Preset")]
-        public string BalancePreset = "";
+        public string BalancePresetId = "";
+        [Annotation("This field will keep track of the preset you might have set. Don't touch this unless you want to FORCE A RESET to the above preset. In that case set it to 'REFRESH'." , "")]
+        public string BalancePresetState = "";
 
 
 
@@ -209,6 +211,12 @@ namespace AssortedAdjustments
         public int MaxWill = 20;
         [Annotation("Maximum speed, vanilla default is 20", "20")]
         public int MaxSpeed = 20;
+        [Annotation("Maximum stamina, vanilla default is 40", "50")]
+        public int Stamina = 50;
+        [Annotation("Soldiers will get the status 'Tired' when their stamina falls be below this value (percentage), vanilla default is 25%", "30")]
+        public int TiredStatusStaminaBelow = 30;
+        [Annotation("Soldiers will get the status 'Exhausted' when their stamina falls be below this value (percentage), vanilla default is 0%", "10")]
+        public int ExhaustedStatusStaminaBelow = 10;
 
 
 
@@ -297,8 +305,45 @@ namespace AssortedAdjustments
         [Annotation("Enables some logging if errors occur", "True", true, "Do not touch")]
         public bool Debug = true;
         internal int DebugLevel = 1;
-        [Annotation("Magical setting that allows the developer to override some settings for personal use.", "")]
+        [Annotation("Magical setting that allows the developer to trigger code for personal use.", "")]
         public string DebugDevKey = "";
+        public int PresetStateHash = -1;
+
+
+
+        public bool Equals(Settings obj)
+        {
+            Type t = this.GetType();
+            Type o = obj.GetType();
+
+            if (t != o)
+            {
+                return false;
+            }
+
+            FieldInfo[] tFields = t.GetFields(BindingFlags.Instance | BindingFlags.Public);
+            //FieldInfo[] oFields = o.GetFields(BindingFlags.Instance | BindingFlags.Public);
+
+
+            foreach (FieldInfo fi in tFields)
+            {
+                if (fi.Name == "BalancePresetId" || fi.Name == "BalancePresetState" || fi.Name == "DebugDevKey"|| fi.Name == "PresetStateHash")
+                {
+                    continue;
+                }
+
+                object tValue = fi.GetValue(this);
+                object oValue = fi.GetValue(obj);
+                Logger.Info($"[Settings_Equals] {fi.Name}: {tValue} <-> {oValue}");
+
+                if (!tValue.Equals(oValue))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
 
 
