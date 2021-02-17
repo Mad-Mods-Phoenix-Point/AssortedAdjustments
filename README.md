@@ -134,7 +134,7 @@ If you have problems with finding/applying the settings please see:
 
 ## Notes
 Requires Modnix 2.5.5 or higher.  
-Tested with GOG Year One Edition (1.9).  
+Tested with GOG Year One Edition (1.10).  
 Some features are derivates of existent mods which are adapted, sometimes fixed to work with the YOE version of the game.  
 If the original mods work for you and/or you just like them better, please disable the corresponding feature in the settings of this mod.
 

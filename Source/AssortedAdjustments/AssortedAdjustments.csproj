@@ -69,6 +69,8 @@
   <ItemGroup>
     <Compile Include="AnnotationHelpers.cs" />
     <Compile Include="DataHelpers.cs" />
+    <Compile Include="Patches\Bugfixes\Replenish.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="HarmonyHelpers.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Patches\CenterOnVehicleArrived.cs" />
@@ -115,6 +117,7 @@
     <None Include="README.md" />
     <None Include="changelog.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rd /s /q "$(SolutionDir)..\Release\"
