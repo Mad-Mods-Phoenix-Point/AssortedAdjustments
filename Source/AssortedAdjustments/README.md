@@ -36,7 +36,7 @@ Upon popular demand you can set a balance preset which overrides the mod's gener
 * "hardcore": Sets many variables to be even harder than legendary
 
 #### Guide
-Since version 1.10.0.2 i use Modnix's API to save the preset-related settings back its .conf-file if a valid preset is detected.  
+Since version 1.10.0.2 i use Modnix's API to save the preset-related settings back to its .conf-file if a valid preset is detected.  
 With that change you can  
 * Set a preset at "BalancePresetId" and <b>after you loaded up the game once</b>...
 * Change the config to your liking even if your changes partially affect the preset
@@ -94,7 +94,7 @@ If you wanna suffer, set "hardcore" and try to make it through.
     * By default weapon drops are health dependent, so completely undamaged weapons always drop
 * Prepared some soldier attributes to be changed via settings.
     * You can change Strength, Willpower, Speed (no changes by default)
-    * Personal abilities limit raised to 5 (configurable). Note that this in <b>not>/b> applied retroactively but only affects freshly generated characters.
+    * Personal abilities limit raised to 5 (configurable). Note that this in <b>not</b> applied retroactively but only affects freshly generated characters.
     * Stamina is raised to 50 by default, soldiers are tired/exhausted at 15/5.
 * Aircraft speeds and space slightly raised. You can configure that too.
 * Reduced manufacturing times and resource costs for all items. Raised their scrap values.

@@ -17,7 +17,7 @@ namespace AssortedAdjustments.Patches
                     {
                         Logger.Debug($"[DamageOverTimeStatus_LowerDamageOverTimeLevel_PREFIX] [PARALYSIS || INFECTED] amount: {amount}");
 
-                        if (__instance.TacticalActor.IsControlledByPlayer)
+                        if ((bool)(__instance.TacticalActor?.IsControlledByPlayer))
                         {
                             amount *= 10f;
                         }
