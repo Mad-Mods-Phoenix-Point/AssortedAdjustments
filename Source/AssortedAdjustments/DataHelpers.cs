@@ -64,13 +64,14 @@ namespace AssortedAdjustments
             {
                 Logger.Info($"[DataHelpers_Print] Def: {def.name}");
                 Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
-                Logger.Info($"[DataHelpers_Print] {def.ViewElementDef?.DisplayName1.Localize()} => {def.name}");
+                Logger.Info($"[DataHelpers_Print] Name: {def.ViewElementDef?.DisplayName1.Localize()} ({def.name})");
+                Logger.Info($"[DataHelpers_Print] Desc: {def.ViewElementDef?.Description.Localize()}");
 
                 Logger.Info($"[DataHelpers_Print] ActionPointCost: {def.ActionPointCost}");
                 Logger.Info($"[DataHelpers_Print] WillPointCost: {def.WillPointCost}");
                 Logger.Info($"[DataHelpers_Print] ---");
             }
-            */  
+            */   
 
             /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<GameDifficultyLevelDef>())

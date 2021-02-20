@@ -16,15 +16,75 @@ using Base;
 using PhoenixPoint.Common.Entities.GameTagsTypes;
 using PhoenixPoint.Common.Entities;
 using PhoenixPoint.Tactical.Entities.Abilities;
-using PhoenixPoint.Common.Entities.Characters;
+using System.Diagnostics;
 
 namespace AssortedAdjustments.Patches
 {
     internal static class CustomRecruitGeneration
     {
+        // Which methods do trigger customization at all. Check "PhoenixPoint.Geoscape.Core.FactionCharacterGenerator.GenerateUnit()"
+        //
+        // FactionCharacterGenerator.GenerateHavenRecruit
+        // FactionCharacterGenerator.GenerateRandomUnit
+        // RecruitEvacuatedOutcomeDef.ApplyOutcome
+        // GeoEventChoiceOutcome.GenerateFactionReward
+        // GeoLevelController.CreateCharacterFromTemplate
+        // GeoPhoenixFaction.CreateInitialSquad
+        // GeoscapeTutorial.InitSquad
+        private static readonly string[] contextsForCustomPools = new string[] { "RecruitEvacuatedOutcomeDef.ApplyOutcome", "GeoEventChoiceOutcome.GenerateFactionReward", "GeoPhoenixFaction.CreateInitialSquad" };
+
+        // Custom ability pools by class. All skills not in this list will get removed from the pool before skills are picked by the generator
+        private static readonly Dictionary<string, List<string>> abilityPoolByClass = new Dictionary<string, List<string>>
+        {
+            { "Assault", new List<string> { "Cautious", "CloseQuartersSpecialist", "Brainiac", "Helpful", "Pitcher", "Resourceful", "SelfDefenseSpecialist", "Thief", "GoodShot" } },
+            { "Heavy", new List<string> { "BioChemist", "Crafty", "Cautious", "Brainiac", "Helpful", "Pitcher", "Reckless", "Resourceful", "Strongman" } },
+            { "Sniper", new List<string> { "Cautious", "Brainiac", "Helpful", "Pitcher", "Resourceful", "SelfDefenseSpecialist", "Focused", "Thief" } },
+
+            { "Berserker", new List<string> { "CloseQuartersSpecialist", "Brainiac", "Helpful", "Pitcher", "Reckless", "Resourceful", "SelfDefenseSpecialist", "Thief" } },
+            { "Priest", new List<string> { "BioChemist", "Cautious", "Brainiac", "Helpful", "Pitcher", "Resourceful", "SelfDefenseSpecialist", "Focused", "Thief", "GoodShot" } },
+            { "Technician", new List<string> { "Cautious", "Brainiac", "Helpful", "Pitcher", "Resourceful", "SelfDefenseSpecialist", "Thief", "GoodShot" } },
+            { "Infiltrator", new List<string> { "Cautious", "Brainiac", "Helpful", "Pitcher", "Resourceful", "SelfDefenseSpecialist", "Focused", "Thief", "GoodShot" } }
+        };
+
+        private static readonly Dictionary<string, List<int>> bonusStatsByClass = new Dictionary<string, List<int>>
+        {
+            { "Assault", new List<int> { 3, 3, 2 } },
+            { "Heavy", new List<int> { 4, 3, 1 } },
+            { "Sniper", new List<int> { 2, 3, 3 } },
+
+            { "Berserker", new List<int> { 2, 2, 4 } },
+            { "Priest", new List<int> { 2, 4, 2 } },
+            { "Technician", new List<int> { 4, 2, 2 } },
+            { "Infiltrator", new List<int> { 2, 3, 3 } }
+        };
+
+        // Add special abilities (from other classes or even augmentations or pandoran)
+        private static readonly Dictionary<string, List<string>> customAbilitiesByClass = new Dictionary<string, List<string>>
+        {
+            { "Assault", new List<string> { "ShadowStep" } },
+            { "Heavy", new List<string> { "ExtremeFocus" } },
+            { "Sniper", new List<string> { "ArmourBreak" } },
+
+            { "Berserker", new List<string> { "Brawler" } },
+            { "Priest", new List<string> { "Inspire" } },
+            { "Technician", new List<string> { "ExpertHealer" } },
+            { "Infiltrator", new List<string> { "MindSense" } }
+        };
+
+        // Individualize Sophia, Jacob, Omar, Irina and Takeshi with seven adequate personal skills
+        private static readonly Dictionary<string, List<string>> abilitiesByCharacter = new Dictionary<string, List<string>>
+        {
+            { "Sophia", new List<string> { "Pitcher", "GoodShot", "Helpful", "Resourceful", "Brainiac", "Thief", "Focused" } },
+            { "Jacob", new List<string> { "Pitcher", "Resourceful", "CloseQuartersSpecialist", "Brainiac", "Reckless", "Helpful", "GoodShot" } },
+            { "Omar", new List<string> { "Resourceful", "Pitcher", "BioChemist", "Strongman", "Brainiac", "Crafty", "Helpful" } },
+            { "Irina", new List<string> { "Brainiac", "Focused", "SelfDefenseSpecialist", "Pitcher", "Resourceful", "Thief", "Helpful" } },
+            { "Takeshi", new List<string> { "Helpful", "Resourceful", "Pitcher", "Thief", "Cautious", "GoodShot", "Brainiac" } }
+        };
+
+
+
         public static void Apply()
         {
-            HarmonyInstance harmony = HarmonyInstance.Create(typeof(EconomyAdjustments).Namespace);
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
 
             List<GameDifficultyLevelDef> gameDifficultyLevelDefDefs = defRepository.DefRepositoryDef.AllDefs.OfType<GameDifficultyLevelDef>().ToList();
@@ -35,31 +95,6 @@ namespace AssortedAdjustments.Patches
                 gdlDef.RecruitsGenerationParams.HasConsumableItems = AssortedAdjustments.Settings.RecruitGenerationHasConsumableItems;
                 gdlDef.RecruitsGenerationParams.HasInventoryItems = AssortedAdjustments.Settings.RecruitGenerationHasInventoryItems;
                 gdlDef.RecruitsGenerationParams.CanHaveAugmentations = AssortedAdjustments.Settings.RecruitGenerationCanHaveAugmentations;
-
-                /*
-                Logger.Info($"[CustomRecruitGeneration_Apply] gdlDef: {gdlDef.Name.Localize()}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] StartingSquadGenerationParams:");
-                Logger.Info($"[CustomRecruitGeneration_Apply] HasArmor: {gdlDef.StartingSquadGenerationParams.HasArmor}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] HasWeapons: {gdlDef.StartingSquadGenerationParams.HasWeapons}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] HasConsumableItems: {gdlDef.StartingSquadGenerationParams.HasConsumableItems}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] HasInventoryItems: {gdlDef.StartingSquadGenerationParams.HasInventoryItems}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] CanHaveAugmentations: {gdlDef.StartingSquadGenerationParams.CanHaveAugmentations}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] EnduranceBonus: {gdlDef.StartingSquadGenerationParams.EnduranceBonus}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] WillBonus: {gdlDef.StartingSquadGenerationParams.WillBonus}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] SpeedBonus: {gdlDef.StartingSquadGenerationParams.SpeedBonus}");
-                Logger.Info("---");
-                Logger.Info($"[CustomRecruitGeneration_Apply] gdlDef: {gdlDef.Name.Localize()}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] RecruitsGenerationParams:");
-                Logger.Info($"[CustomRecruitGeneration_Apply] HasArmor: {gdlDef.RecruitsGenerationParams.HasArmor}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] HasWeapons: {gdlDef.RecruitsGenerationParams.HasWeapons}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] HasConsumableItems: {gdlDef.RecruitsGenerationParams.HasConsumableItems}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] HasInventoryItems: {gdlDef.RecruitsGenerationParams.HasInventoryItems}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] CanHaveAugmentations: {gdlDef.RecruitsGenerationParams.CanHaveAugmentations}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] EnduranceBonus: {gdlDef.RecruitsGenerationParams.EnduranceBonus}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] WillBonus: {gdlDef.RecruitsGenerationParams.WillBonus}");
-                Logger.Info($"[CustomRecruitGeneration_Apply] SpeedBonus: {gdlDef.RecruitsGenerationParams.SpeedBonus}");
-                Logger.Info("---");
-                */
             }
 
             foreach (GeoFactionDef gfDef in defRepository.DefRepositoryDef.AllDefs.OfType<GeoFactionDef>())
@@ -67,7 +102,6 @@ namespace AssortedAdjustments.Patches
                 if (gfDef.name.Contains("Anu") || gfDef.name.Contains("NewJericho") || gfDef.name.Contains("Synedrion"))
                 {
                     gfDef.RecruitIntervalCheckDays = AssortedAdjustments.Settings.RecruitIntervalCheckDays;
-                    
                     Logger.Info($"[CustomRecruitGeneration_Apply] gfDef: {gfDef.name}, RecruitIntervalCheckDays: {gfDef.RecruitIntervalCheckDays}");
                 }
             }
@@ -75,97 +109,98 @@ namespace AssortedAdjustments.Patches
 
 
 
-        // Buff Sophia, Jacob, Omar, Irina and Takeshi with seven adequate personal skills
+        // Patches
         [HarmonyPatch(typeof(FactionCharacterGenerator), "GenerateUnit")]
         public static class FactionCharacterGenerator_GenerateUnit_Patch
         {
+            private static bool useCustomization = false;
+            private static List<TacticalAbilityDef> originalPersonalAbilityPool;
+            private static int originalBonusStatStrength;
+            private static int originalBonusStatWill;
+            private static int originalBonusStatSpeed;
+
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableCustomRecruitGeneration && AssortedAdjustments.Settings.BuffTutorialSquad;
+                return AssortedAdjustments.Settings.EnableCustomRecruitGeneration;
             }
 
-            public static void Postfix(FactionCharacterGenerator __instance, ref GeoUnitDescriptor __result, GeoFaction faction, TacCharacterDef template, List<TacticalAbilityDef> ____personalAbilityPool)
+            public static void Prefix(FactionCharacterGenerator __instance, TacCharacterDef template, List<TacticalAbilityDef> ____personalAbilityPool)
             {
                 try
                 {
-                    if (template == null)
+                    if (template == null || !AssortedAdjustments.Settings.AbilityCustomization)
                     {
                         return;
                     }
 
-                    // BIOCHEMIST => BioChemist_AbilityDef
-                    // BOMBARDIER => Crafty_AbilityDef
-                    // CAUTIOUS => Cautious_AbilityDef
-                    // CLOSE QUARTERS SPECIALIST => CloseQuartersSpecialist_AbilityDef
-                    // FARSIGHTED => Brainiac_AbilityDef
-                    // HEALER => Helpful_AbilityDef
-                    // QUARTERBACK => Pitcher_AbilityDef
-                    // RECKLESS => Reckless_AbilityDef
-                    // RESOURCEFUL => Resourceful_AbilityDef
-                    // SELF DEFENSE SPECIALIST => SelfDefenseSpecialist_AbilityDef
-                    // SNIPERIST => Focused_AbilityDef
-                    // STRONGMAN => Strongman_AbilityDef
-                    // THIEF => Thief_AbilityDef
-                    // TROOPER => GoodShot_AbilityDef
-                    Dictionary<string, List<string>> abilitiesByCharacter = new Dictionary<string, List<string>>();
-                    abilitiesByCharacter.Add("Sophia", new List<string> { "Pitcher", "GoodShot", "Helpful", "Resourceful", "Brainiac", "Thief", "Focused" });
-                    abilitiesByCharacter.Add("Jacob", new List<string> { "Pitcher", "Resourceful", "CloseQuartersSpecialist", "Brainiac", "Reckless", "Helpful", "GoodShot" });
-                    abilitiesByCharacter.Add("Omar", new List<string> { "Resourceful", "Pitcher", "BioChemist", "Strongman", "Brainiac", "Crafty", "Helpful" });
-                    abilitiesByCharacter.Add("Irina", new List<string> { "Brainiac", "Focused", "SelfDefenseSpecialist", "Pitcher", "Resourceful", "Thief", "Helpful" });
-                    abilitiesByCharacter.Add("Takeshi", new List<string> { "Helpful", "Resourceful", "Pitcher", "Thief", "Cautious", "GoodShot", "Brainiac" });
+                    originalPersonalAbilityPool = new List<TacticalAbilityDef>(____personalAbilityPool);
+                    originalBonusStatStrength = template.Data.Strength;
+                    originalBonusStatWill = template.Data.Will;
+                    originalBonusStatSpeed = template.Data.Speed;
+                    useCustomization = false;
 
-                    foreach (string character in abilitiesByCharacter.Keys)
+                    string methodName = "";
+                    string typeName = "";
+                    string qualifiedMethodName = "";
+                    StackTrace st = new StackTrace();
+                    for (int i = 0; i < st.FrameCount; i++)
                     {
-                        if (template.name.Contains(character))
+                        StackFrame sf = st.GetFrame(i);
+                        methodName = sf.GetMethod().Name;
+                        typeName = sf.GetMethod().DeclaringType.Name;
+                        qualifiedMethodName = $"{typeName}.{methodName}";
+                        //Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_PREFIX] st[{i}] -> {qualifiedMethodName}");
+
+                        // Context for ability customization found
+                        if (contextsForCustomPools.Contains(qualifiedMethodName))
                         {
-                            Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_POSTFIX] {character} will get dedicated abilities: {abilitiesByCharacter[character].Join()}");
+                            useCustomization = true;
+                            break;
+                        }
 
-                            GeoUnitDescriptor geoUnitDescriptor = new GeoUnitDescriptor(faction, new GeoUnitDescriptor.UnitTypeDescriptor(template));
-                            GeoUnitDescriptor.ProgressionDescriptor progressionDescriptor = null;
-                            foreach (ClassTagDef classTag in template.ClassTags)
+                        // Already too deep in the stack
+                        if (methodName.Contains("MoveNext"))
+                        {
+                            break;
+                        }
+                    }
+
+                    if (useCustomization)
+                    {
+                        Logger.Debug("---");
+                        Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_PREFIX] Found customization context: {qualifiedMethodName}");
+                        Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_PREFIX] Original ability pool: {originalPersonalAbilityPool.Select(a => a.name).Join()}");
+                        Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_PREFIX] Checking ability pools for template: {template.name}");
+
+                        if (Utilities.GetKeyByTemplate(template, out string key) && abilityPoolByClass != null && abilityPoolByClass.ContainsKey(key))
+                        {
+                            Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_PREFIX] Found a custom pool for class: {key}. Removing everything else from the pool.");
+                            ____personalAbilityPool.RemoveWhere(a => !Utilities.ContainsAny(a.name, abilityPoolByClass[key]));
+                        }
+
+                        if (customAbilitiesByClass != null && customAbilitiesByClass.ContainsKey(key))
+                        {
+                            Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_PREFIX] Found additional custom abilities for class: {key}. Adding to the pool.");
+                            DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
+                            foreach (string ability in customAbilitiesByClass[key])
                             {
-                                SpecializationDef specializationByClassTag = __instance.GetSpecializationByClassTag(classTag);
-                                if (specializationByClassTag != null)
+                                TacticalAbilityDef customAbility = defRepository.DefRepositoryDef.AllDefs.OfType<TacticalAbilityDef>().Where(d => d.name.Contains(ability)).FirstOrDefault();
+                                if (customAbility != null)
                                 {
-                                    if (progressionDescriptor == null)
-                                    {
-                                        Dictionary<int, TacticalAbilityDef> personalAbilitiesByLevel = new Dictionary<int, TacticalAbilityDef>();
-
-                                        int index = 0;
-                                        foreach (string ability in abilitiesByCharacter[character])
-                                        {
-                                            if (!String.IsNullOrEmpty(ability))
-                                            {
-                                                personalAbilitiesByLevel.Add(index, ____personalAbilityPool.Where(a => a.name.Contains(ability)).FirstOrDefault());
-                                            }
-                                            index++;
-
-                                            // Safeguard
-                                            if (index > 6)
-                                            {
-                                                break;
-                                            }
-                                        }
-
-                                        progressionDescriptor = new GeoUnitDescriptor.ProgressionDescriptor(specializationByClassTag, personalAbilitiesByLevel);
-                                    }
-                                    else
-                                    {
-                                        progressionDescriptor.SecondarySpecDef = specializationByClassTag;
-                                    }
+                                    ____personalAbilityPool.Add(customAbility);
                                 }
                             }
-                            if (progressionDescriptor != null && template.Data.LevelProgression.IsValid)
-                            {
-                                progressionDescriptor.Level = template.Data.LevelProgression.Level;
-                                progressionDescriptor.ExtraAbilities.AddRange(template.Data.Abilites);
-                            }
-                            if (progressionDescriptor != null)
-                            {
-                                __result.Progression = progressionDescriptor;
+                        }
+                        Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_PREFIX] Modified ability pool: {____personalAbilityPool.Select(a => a.name).Join()}");
 
-                                break;
-                            }
+
+                        if (bonusStatsByClass != null && bonusStatsByClass.ContainsKey(key))
+                        {
+                            Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_PREFIX] Original Bonus stats: {template.Data.Strength}, {template.Data.Will}, {template.Data.Speed}");
+                            template.Data.Strength += bonusStatsByClass[key][0];
+                            template.Data.Will += bonusStatsByClass[key][1];
+                            template.Data.Speed += bonusStatsByClass[key][2];
+                            Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_PREFIX] Modified bonus stats: {template.Data.Strength}, {template.Data.Will}, {template.Data.Speed}");
                         }
                     }
                 }
@@ -173,6 +208,86 @@ namespace AssortedAdjustments.Patches
                 {
                     Logger.Error(e);
 
+                }
+            }
+
+            public static void Postfix(FactionCharacterGenerator __instance, ref GeoUnitDescriptor __result, GeoFaction faction, TacCharacterDef template, ref List<TacticalAbilityDef> ____personalAbilityPool)
+            {
+                try
+                {
+                    if (useCustomization)
+                    {
+                        // Restore original ability pool
+                        ____personalAbilityPool = new List<TacticalAbilityDef>(originalPersonalAbilityPool);
+                        Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_POSTFIX] Restored ability pool: {____personalAbilityPool.Select(a => a.name).Join()}");
+
+                        // Restore original bonus stats
+                        template.Data.Strength = originalBonusStatStrength;
+                        template.Data.Will = originalBonusStatWill;
+                        template.Data.Speed = originalBonusStatSpeed;
+                        Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_POSTFIX] Restored bonus stats: {template.Data.Strength}, {template.Data.Will}, {template.Data.Speed}");
+                        Logger.Debug("---");
+                    }
+
+                    if (template == null || !AssortedAdjustments.Settings.CustomizeTutorialSquad)
+                    {
+                        return;
+                    }
+
+                    if (Utilities.GetKeyByTemplate(template, out string key) && abilitiesByCharacter.ContainsKey(key))
+                    {
+                        Logger.Debug($"[FactionCharacterGenerator_GenerateUnit_POSTFIX] {key} will get dedicated abilities: {abilitiesByCharacter[key].Join()}");
+
+                        GeoUnitDescriptor geoUnitDescriptor = new GeoUnitDescriptor(faction, new GeoUnitDescriptor.UnitTypeDescriptor(template));
+                        GeoUnitDescriptor.ProgressionDescriptor progressionDescriptor = null;
+                        foreach (ClassTagDef classTag in template.ClassTags)
+                        {
+                            SpecializationDef specializationByClassTag = __instance.GetSpecializationByClassTag(classTag);
+                            if (specializationByClassTag != null)
+                            {
+                                if (progressionDescriptor == null)
+                                {
+                                    Dictionary<int, TacticalAbilityDef> personalAbilitiesByLevel = new Dictionary<int, TacticalAbilityDef>();
+
+                                    int index = 0;
+                                    foreach (string ability in abilitiesByCharacter[key])
+                                    {
+                                        if (!String.IsNullOrEmpty(ability))
+                                        {
+                                            personalAbilitiesByLevel.Add(index, ____personalAbilityPool.Where(a => a.name.Contains(ability)).FirstOrDefault());
+                                        }
+                                        index++;
+
+                                        // Safeguard
+                                        if (index > 6)
+                                        {
+                                            break;
+                                        }
+                                    }
+
+                                    progressionDescriptor = new GeoUnitDescriptor.ProgressionDescriptor(specializationByClassTag, personalAbilitiesByLevel);
+                                }
+                                else
+                                {
+                                    progressionDescriptor.SecondarySpecDef = specializationByClassTag;
+                                }
+                            }
+                        }
+                        if (progressionDescriptor != null && template.Data.LevelProgression.IsValid)
+                        {
+                            progressionDescriptor.Level = template.Data.LevelProgression.Level;
+                            progressionDescriptor.ExtraAbilities.AddRange(template.Data.Abilites);
+                        }
+
+                        if (progressionDescriptor != null)
+                        {
+                            __result.Progression = progressionDescriptor;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
                 }
             }
         }
@@ -327,7 +442,7 @@ namespace AssortedAdjustments.Patches
 
                     // MAD:
                     // Move helmet to inventory just for the looks of it...
-                    TacticalItemDef helmet = geoUnitDescriptor.ArmorItems.Where(e => e.name.Contains("Helmet") || e.name.Contains("Priest_Head")).FirstOrDefault();
+                    TacticalItemDef helmet = geoUnitDescriptor.ArmorItems.Where(e => e.name.Contains("Helmet")/*|| e.name.Contains("Priest_Head")*/).FirstOrDefault();
                     if (helmet != null)
                     {
                         geoUnitDescriptor.ArmorItems.Remove(helmet);

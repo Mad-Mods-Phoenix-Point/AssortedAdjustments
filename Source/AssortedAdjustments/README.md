@@ -56,15 +56,13 @@ If you wanna suffer, set "hardcore" and try to make it through.
 
 ## Features (may not be complete, mod default)
 
-### UX
+### UX & UI
 * The global agenda tracker (or however you call it) now shows vehicle-related (travel and exploration times) AND excavation-related items.
     * Added the functionality to focus on related site/activity when an item is clicked.
     * Facilities under repair will also show.
     * Once an excavation is done, a new secondary mission objective (to seize control of the site) is added.
     * Optionally hide the ugly big buttons that show excavation times in vanilla.
     * The context menu will show expected times behind the action too (Borrowed from Sheepy).
-
-### UI
 * Smart base selection. Ever wondered why the bases menu didn't show the base your aircraft just arrived at as selected by default?
     * Before opening the bases gui the most relevant (that is the closest to your screen's center) base is prepared to be shown as default.
     * Also works when panning around freely and opening the menu while above a base
@@ -86,7 +84,7 @@ If you wanna suffer, set "hardcore" and try to make it through.
 
 ### Gameplay
 * Maxed out soldiers now gain additional SP for their wasted XP (Rebuilds Sheepy's "Spill Exp to Skill").
-    * The converted skillpoints can be assigned to the soldier's pool or the global pool (default: both).
+    * The converted skillpoints can be assigned to the soldier's pool and/or the global pool (default: global pool).
 * Return Fire has a (configurable, default: 180) maximum reaction angle and a (configurable, default: 2) shot limit per turn (Thx pantolomin for the inspiration).
 * Squad limit in missions can be configured (Vanilla: 8, Default: 10 (+2)).
 * All missions can be set to always collect any dropped items (Default: off).
@@ -102,7 +100,8 @@ If you wanna suffer, set "hardcore" and try to make it through.
 * Disable the "Nothing found" event.
 * Disable the annoying "Right Click Move" in tactical missions. God.
 * Disable the rock tiles in bases. 
-* Keep the game paused when ordering vehicles to travel and when a squad is rested (Thx Sheepy).
+* Keep the game paused when ordering vehicles to travel
+* Pause the game when a squad is rested (Thx Sheepy).
 * Pause the game when new recruits have arrived at phoenix bases.
 * Allow full mutations AND full augmentations for the soldiers along with UI fixes for the related screens.
 * Recruits at phoenix bases now come with armor and equipment by default.

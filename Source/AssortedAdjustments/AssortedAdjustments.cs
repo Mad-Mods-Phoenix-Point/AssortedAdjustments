@@ -44,7 +44,7 @@ namespace AssortedAdjustments
 
             if (!String.IsNullOrEmpty(Settings.BalancePresetId) && ValidPresets.Any(p => Settings.BalancePresetId.Contains(p)))
             {
-                Utilities.HandlePresets(ref Settings, api);
+                PresetHelpers.HandlePresets(ref Settings, api);
             }
 
 

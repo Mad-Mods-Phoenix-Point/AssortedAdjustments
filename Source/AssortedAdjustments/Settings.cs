@@ -77,7 +77,8 @@ namespace AssortedAdjustments
         public bool RecruitGenerationHasInventoryItems = true;
         [Annotation("New recruits may have augmentations already installed.", "False")]
         public bool RecruitGenerationCanHaveAugmentations = false;
-        internal bool BuffTutorialSquad = false;
+        public bool CustomizeTutorialSquad = false;
+        public bool AbilityCustomization = false;
 
 
 
@@ -110,8 +111,8 @@ namespace AssortedAdjustments
 
         [Annotation("Fully leveled soldiers will convert some experience to skill points. Base rate is dependent on difficulty setting, somewhere between 1 and 2 percent.", "True", true, "Progression")]
         public bool EnableExperienceToSkillpointConversion = true;
-        [Annotation("Will add the converted skill points to the soldier's pool.", "True")]
-        public bool XPtoSPAddToPersonalPool = true;
+        [Annotation("Will add the converted skill points to the soldier's pool.", "False")]
+        public bool XPtoSPAddToPersonalPool = false;
         [Annotation("Will add the converted skill points to the faction's pool.", "True")]
         public bool XPtoSPAddToFactionPool = true;
         [Annotation("Will multiply the converted skill points by its value.", "2")]
