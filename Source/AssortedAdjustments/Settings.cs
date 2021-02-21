@@ -77,8 +77,8 @@ namespace AssortedAdjustments
         public bool RecruitGenerationHasInventoryItems = true;
         [Annotation("New recruits may have augmentations already installed.", "False")]
         public bool RecruitGenerationCanHaveAugmentations = false;
-        public bool CustomizeTutorialSquad = false;
-        public bool AbilityCustomization = false;
+        [Annotation("Recruits generated at special occasions will have slightly better stats and a custom ability pool so they actually feel special/like a reward. Affects starting squad, recruits offered by events and rescued soldiers from missions.", "False")]
+        public bool EnhanceSpecialRecruits = false;
 
 
 

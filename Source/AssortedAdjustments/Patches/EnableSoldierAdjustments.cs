@@ -102,9 +102,9 @@ namespace AssortedAdjustments.Patches
             {
                 try
                 {
-                    if (__result.Count < PersonalAbilitiesCount)
+                    if (__result.Count < abilitiesCount)
                     {
-                        Logger.Debug($"[FactionCharacterGenerator_GeneratePersonalAbilities_POSTFIX] Vanilla ability generation bugged out ({__result.Count}/{PersonalAbilitiesCount}). Regenerating!");
+                        Logger.Debug($"[FactionCharacterGenerator_GeneratePersonalAbilities_POSTFIX] Vanilla ability generation bugged out ({__result.Count}/{abilitiesCount}). Regenerating!");
 
                         Dictionary<int, TacticalAbilityDef> dictionary = new Dictionary<int, TacticalAbilityDef>();
                         List<TacticalAbilityDef> tmpList = new List<TacticalAbilityDef>();

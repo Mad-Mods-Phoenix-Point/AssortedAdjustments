@@ -84,8 +84,7 @@ namespace AssortedAdjustments
 
             PresetMad.AgendaTrackerHideStatusBar = true;
             PresetMad.PersistentClassFilterInitDisabled = true;
-            PresetMad.CustomizeTutorialSquad = true;
-            PresetMad.AbilityCustomization = true;
+            PresetMad.EnhanceSpecialRecruits = true;
             PresetMad.DifficultyOverrideExpConvertedToSkillpoints = 0.03f;
             PresetMad.MaxPlayerUnitsAdd = 1;
             PresetMad.MedicalBayBaseHeal = 4; // Vanilla default
