@@ -106,6 +106,13 @@ namespace AssortedAdjustments.Patches
             try
             {
                 TacticalActor actor = __instance.TacticalActor;
+
+                if (actor.DisplayName.Contains("decoy", StringComparison.OrdinalIgnoreCase) || __instance.AbilityDef.name.Contains("decoy", StringComparison.OrdinalIgnoreCase))
+                {
+                    Logger.Debug($"[DieAbility_DropItems_POSTFIX] {actor.DisplayName}({actor.name}) seems to be an infiltrator's decoy. Aborting.");
+                    return;
+                }
+
                 IEnumerable<TacticalItem> items = actor?.BodyState?.GetArmourItems();
                 if (items?.Any() != true)
                 {
