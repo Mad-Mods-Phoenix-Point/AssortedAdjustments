@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 
 
+## 1.10.0.3
+- Fix bug with infiltrator decoy dropping its armor
+- Optionally enhance the recruits you get at special occasions (starting squad, event reward, rescue missions)
+
+
+
 ## 1.10.0.2
 - Add possibility to change max stamina of soldiers
 - Fix a vanilla bug with the post mission replenishment module
