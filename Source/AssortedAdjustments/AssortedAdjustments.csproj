@@ -115,20 +115,21 @@
     <Compile Include="AssortedAdjustments.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="mod_info.js" />
+    <EmbeddedResource Include="mod_info.js" />
     <None Include="README.md" />
     <None Include="changelog.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rd /s /q "$(SolutionDir)..\Release\"
+    <PostBuildEvent>
+rd /s /q "$(SolutionDir)..\Release\"
 xcopy "$(ProjectDir)README.md" "$(SolutionDir)..\" /Y
 xcopy "$(ProjectDir)changelog.txt" "$(SolutionDir)..\" /Y
 xcopy "$(TargetPath)" "$(SolutionDir)..\Release\$(TargetName)\" /Y
-xcopy "$(ProjectDir)mod_info.js" "$(SolutionDir)..\Release\$(TargetName)\" /Y
 xcopy "$(ProjectDir)README.md" "$(SolutionDir)..\Release\$(TargetName)\" /Y
 xcopy "$(ProjectDir)changelog.txt" "$(SolutionDir)..\Release\$(TargetName)\" /Y
-xcopy "$(SolutionDir)..\Release\*.*" "C:\Users\Ben\Documents\My Games\Phoenix Point\Mods\" /S /Y</PostBuildEvent>
+xcopy "$(SolutionDir)..\Release\*.*" "C:\Users\Ben\Documents\My Games\Phoenix Point\Mods\" /S /Y
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
