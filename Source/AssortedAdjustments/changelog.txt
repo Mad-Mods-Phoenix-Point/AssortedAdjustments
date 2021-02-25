@@ -4,10 +4,14 @@ All notable changes to this project will be documented in this file.
 
 
 
+## 1.10.0.4
+- Include mod_info.js in the dll as an embedded resource (should harden against incomplete installs)
+- Enable trainig facilities to contribute skillpoints to the global pool on a daily basis
+
+
 ## 1.10.0.3
 - Fix bug with infiltrator decoy dropping its armor
 - Optionally enhance the recruits you get at special occasions (starting squad, event reward, rescue missions)
-
 
 
 ## 1.10.0.2
