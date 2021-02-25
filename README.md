@@ -14,9 +14,8 @@
     - https://www.nexusmods.com/phoenixpoint/mods/53
 3. Follow this guide
     - https://github.com/Sheep-y/Modnix/wiki/Add-Mod
-4. Check your final folder structure, <b>at the very least</b> it should contain:
+4. Check your final folder structure, it should contain:
     - /AssortedAdjustments/AssortedAdjustments.dll
-    - /AssortedAdjustments/mod_info.js
     - /AssortedAdjustments/README.md
     - /AssortedAdjustments/changelog.txt
 5. With the mod installed and selected in Modnix, have a look in the lower left section 
