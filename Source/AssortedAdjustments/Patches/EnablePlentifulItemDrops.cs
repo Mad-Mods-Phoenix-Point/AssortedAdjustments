@@ -136,9 +136,14 @@ namespace AssortedAdjustments.Patches
                     }
                     if (tags.Contains(armor) || tags.Contains(mounted))
                     {
-                        Logger.Info($"[DieAbility_DropItems_POSTFIX] Dropping {def.ViewElementDef.Name}");
-                        item.Drop(sharedData.FallDownItemContainerDef, actor);
-                        count++;
+                        int randomPercent = new Random().Next(0, 101);
+                        bool willDrop = randomPercent > AssortedAdjustments.Settings.FlatArmorDestructionChance;
+                        Logger.Info($"[DieAbility_DropItems_POSTFIX] Dropping {def.ViewElementDef.Name}? {willDrop}! ({randomPercent}/{AssortedAdjustments.Settings.FlatArmorDestructionChance})");
+                        if (willDrop)
+                        {
+                            item.Drop(sharedData.FallDownItemContainerDef, actor);
+                            count++;
+                        }
                     }
                 }
 

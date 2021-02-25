@@ -147,10 +147,12 @@ namespace AssortedAdjustments
         public bool AllowWeaponDrops = true;
         [Annotation("If weapon drops are allowed, this is the chance for them to be destroyed nonetheless.", "30")]
         public int FlatWeaponDestructionChance = 30;
-        [Annotation("If weapon drops are allowed, use a health based percentage to determine if the dropped weapon will be destroyed. Weapons with full health will thus have a 100% chance to drop.", "True")]
+        [Annotation("If weapon drops are allowed, use a health based percentage to determine if the dropped weapon will be destroyed. Weapons with full health will thus have a 100% chance to drop. Overrides the flat chance above.", "True")]
         public bool HealthBasedWeaponDestruction = true;
         [Annotation("Allows for armor to drop too.", "True")]
         public bool AllowArmorDrops = true;
+        [Annotation("If armor drops are allowed, this is the chance for them to be destroyed nonetheless.", "70")]
+        public int FlatArmorDestructionChance = 70;
 
 
 
@@ -178,8 +180,10 @@ namespace AssortedAdjustments
         //Training
         [Annotation("Experience gain rate per hour for soldiers at training facilities, vanilla default is 2", "2")]
         public int TrainingFacilityBaseExperienceAmount = 2;
-        [Annotation("Global skillpoints gain rate per day, vanilla default is 1", "2")]
-        public int TrainingFacilityBaseSkillPointsAmount = 2;
+        [Annotation("Enables training facilities to add skillpoints to the faction pool. This is currently disabled in vanilla.", "True")]
+        public bool TrainingFacilitiesGenerateSkillpoints = true;
+        [Annotation("Global skillpoints gain rate per day per facility, vanilla default is 1. Needs the above flag set to true!", "1")]
+        public int TrainingFacilityBaseSkillPointsAmount = 1;
         // Resource Generators
         [Annotation("Production points generated at fabrication plants, vanilla default is 4", "4")]
         public float FabricationPlantGenerateProductionAmount = 4f;

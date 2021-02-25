@@ -9,6 +9,7 @@ using PhoenixPoint.Common.Entities;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases.FacilityComponents;
 using PhoenixPoint.Geoscape.Entities.Sites;
+using PhoenixPoint.Geoscape.Levels;
 using PhoenixPoint.Geoscape.Levels.Factions;
 using PhoenixPoint.Geoscape.View.ViewControllers.PhoenixBase;
 
@@ -142,6 +143,10 @@ namespace AssortedAdjustments.Patches
             HarmonyHelpers.Patch(harmony, typeof(HealFacilityComponent), "UpdateOutput", typeof(FacilityAdjustments), null, "Postfix_HealFacilityComponent_UpdateOutput");
             HarmonyHelpers.Patch(harmony, typeof(ExperienceFacilityComponent), "UpdateOutput", typeof(FacilityAdjustments), null, "Postfix_ExperienceFacilityComponent_UpdateOutput");
             HarmonyHelpers.Patch(harmony, typeof(VehicleSlotFacilityComponent), "UpdateOutput", typeof(FacilityAdjustments), null, "Postfix_VehicleSlotFacilityComponent_UpdateOutput");
+            if(AssortedAdjustments.Settings.TrainingFacilitiesGenerateSkillpoints && AssortedAdjustments.Settings.TrainingFacilityBaseSkillPointsAmount > 0)
+            {
+                HarmonyHelpers.Patch(harmony, typeof(GeoLevelController), "DailyUpdate", typeof(FacilityAdjustments), null, "Postfix_GeoLevelController_DailyUpdate");
+            }
 
             // UI
             HarmonyHelpers.Patch(harmony, typeof(UIFacilityTooltip), "Show", typeof(FacilityAdjustments), null, "Postfix_UIFacilityTooltip_Show");
@@ -275,6 +280,26 @@ namespace AssortedAdjustments.Patches
 
 
 
+        public static void Postfix_GeoLevelController_DailyUpdate(GeoLevelController __instance)
+        {
+            try
+            {
+                foreach (GeoFaction faction in __instance.Factions)
+                {
+                    if (faction.Def.UpdateFaction && faction is GeoPhoenixFaction geoPhoenixFaction)
+                    {
+                        geoPhoenixFaction.UpdateBasesDaily();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
+
+
         public static void Postfix_UIFacilityTooltip_Show(UIFacilityTooltip __instance, PhoenixFacilityDef facility, GeoPhoenixBase currentBase)
         {
             try
@@ -298,7 +323,14 @@ namespace AssortedAdjustments.Patches
                 }
                 else if (facility.name.Contains("TrainingFacility"))
                 {
-                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will gain {currentExperienceFacilityExperienceOutput} Experience Points per hour for each training facility in the base.";
+                    string s1 = $"All soldiers at the base (even if assigned to an aircraft) will gain {currentExperienceFacilityExperienceOutput} Experience Points per hour for each training facility in the base.";
+                    string s2 = "";
+                    if(AssortedAdjustments.Settings.TrainingFacilitiesGenerateSkillpoints && AssortedAdjustments.Settings.TrainingFacilityBaseSkillPointsAmount > 0)
+                    {
+                        string pluralizeSP = AssortedAdjustments.Settings.TrainingFacilityBaseSkillPointsAmount > 1 ? "skillpoints" : "skillpoint";
+                        s2 = $"Contributes {AssortedAdjustments.Settings.TrainingFacilityBaseSkillPointsAmount} {pluralizeSP} to the global pool every day."; 
+                    }
+                    __instance.Description.text = $"{s1}\n{s2}";
                 }
                 else if (facility.name.Contains("MutationLab"))
                 {
@@ -348,7 +380,14 @@ namespace AssortedAdjustments.Patches
                 }
                 else if (facility.Def.name.Contains("TrainingFacility"))
                 {
-                    __instance.Description.text = $"All soldiers at the base (even if assigned to an aircraft) will gain {currentExperienceFacilityExperienceOutput} Experience Points per hour for each training facility in the base.";
+                    string s1 = $"All soldiers at the base (even if assigned to an aircraft) will gain {currentExperienceFacilityExperienceOutput} Experience Points per hour for each training facility in the base.";
+                    string s2 = "";
+                    if (AssortedAdjustments.Settings.TrainingFacilitiesGenerateSkillpoints && AssortedAdjustments.Settings.TrainingFacilityBaseSkillPointsAmount > 0)
+                    {
+                        string pluralizeSP = AssortedAdjustments.Settings.TrainingFacilityBaseSkillPointsAmount > 1 ? "skillpoints" : "skillpoint";
+                        s2 = $"Contributes {AssortedAdjustments.Settings.TrainingFacilityBaseSkillPointsAmount} {pluralizeSP} to the global pool every day.";
+                    }
+                    __instance.Description.text = $"{s1}\n{s2}";
                 }
                 else if (facility.Def.name.Contains("MutationLab"))
                 {
