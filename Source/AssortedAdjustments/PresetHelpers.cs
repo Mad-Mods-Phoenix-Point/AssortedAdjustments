@@ -86,6 +86,7 @@ namespace AssortedAdjustments
             PresetMad.PersistentClassFilterInitDisabled = true;
             PresetMad.EnhanceSpecialRecruits = true;
             PresetMad.DifficultyOverrideExpConvertedToSkillpoints = 0.03f;
+            PresetMad.DifficultyOverrideMinPopulationThreshold = 10;
             PresetMad.MaxPlayerUnitsAdd = 1;
             PresetMad.MedicalBayBaseHeal = 4; // Vanilla default
             PresetMad.LivingQuartersBaseStaminaHeal = 2; // Vanilla default

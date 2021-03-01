@@ -63,44 +63,6 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
 
 
-        /*
-        [HarmonyPatch(typeof(GeoManufactureItem), "UpdateCostData")]
-        public static class GeoManufactureItem_UpdateCostData_Patch
-        {
-            public static bool Prepare()
-            {
-                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowDetailedResearchAndProduction;
-            }
-
-            public static void Postfix(GeoManufactureItem __instance, GeoFaction ____faction)
-            {
-                try
-                {
-                    ManufacturableItem manufacturableItem = ____faction.Manufacture.GetManufacturableItemByDef(__instance.ItemDef);
-                    if (manufacturableItem == null)
-                    {
-                        return;
-                    }
-
-                    int itemManufactureCost = manufacturableItem.CostInManufacturePoints;
-                    Logger.Debug($"[GeoManufactureItem_UpdateCostData_POSTFIX] itemManufactureCost:  {itemManufactureCost}");
-
-                    if (itemManufactureCost > 0)
-                    {
-                        string org = __instance.ManufactureTimeText.text;
-                        string add = $"{itemManufactureCost} MP";
-
-                        __instance.ManufactureTimeText.text = $"{add} ~ {org}";
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e);
-                }
-            }
-        }
-        */
-
         [HarmonyPatch(typeof(GeoManufactureItem), "Init", new Type[] { typeof(ItemDef), typeof(GeoFaction) , typeof(UIModuleManufacturing.UIMode) , typeof(ItemStorage) , typeof(bool) })]
         public static class GeoManufactureItem_Init_Patch
         {
@@ -159,6 +121,14 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 try
                 {
                     //Logger.Debug($"[UIModuleInfoBar_UpdateResourceInfo_POSTFIX] faction: {faction.Name.LocalizeEnglish()}");
+
+                    // Create a bit more space for the additional text
+                    LayoutElement layoutProduction = __instance.ProductionRoot.GetComponent<LayoutElement>();
+                    layoutProduction.preferredWidth = 150f;
+                    layoutProduction.minWidth = 150f;
+                    LayoutElement layoutResearch = __instance.ResearchRoot.GetComponent<LayoutElement>();
+                    layoutResearch.preferredWidth = 150f;
+                    layoutResearch.minWidth = 150f;
 
                     ResourcePack totalOutput = faction.ResourceIncome.GetTotalOutput();
                     totalResearch = totalOutput.ByResourceType(ResourceType.Research).Value * 24f;

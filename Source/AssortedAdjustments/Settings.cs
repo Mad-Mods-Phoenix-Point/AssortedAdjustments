@@ -56,6 +56,10 @@ namespace AssortedAdjustments
         public bool PersistentClassFilterInitDisabled = false;
         [Annotation("Hides visual addons of havens/bases on the geoscape (ie. mist repeller).", "False")]
         public bool HideSiteAddons = false;
+        [Annotation("Shrinks the population bar to free some space for the resources display.", "True")]
+        public bool CompressPopulationBar = true;
+        [Annotation("Hides the population bar completely leaving only the icon and percentage value.", "False")]
+        public bool HidePopulationBar = false;
 
 
 

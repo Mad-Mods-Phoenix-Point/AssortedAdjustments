@@ -70,6 +70,7 @@
     <Compile Include="AnnotationHelpers.cs" />
     <Compile Include="DataHelpers.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Patches\UIEnhancements\PopulationBar.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Patches\Bugfixes\Replenish.cs" />
     <Compile Include="PresetHelpers.cs" />
