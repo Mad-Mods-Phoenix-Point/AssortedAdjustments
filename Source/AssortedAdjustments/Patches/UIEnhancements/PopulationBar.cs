@@ -1,5 +1,6 @@
 ﻿using System;
 using Harmony;
+using PhoenixPoint.Common.Game;
 using PhoenixPoint.Geoscape.View;
 using PhoenixPoint.Geoscape.View.ViewModules;
 using UnityEngine;
@@ -9,6 +10,8 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 {
     internal static class PopulationBar
     {
+        internal static bool moduleInfoBarAdjustmentsExecuted = false;
+
         internal static Color green = new Color32(93, 153, 106, 255);
         internal static Color yellow = new Color32(251, 191, 31, 255);
         internal static Color red = new Color32(192, 32, 32, 255);
@@ -67,6 +70,14 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             {
                 try
                 {
+                    Logger.Debug($"[UIModuleInfoBar_Init_PREFIX] moduleInfoBarAdjustmentsExecuted: {moduleInfoBarAdjustmentsExecuted}");
+
+                    if (moduleInfoBarAdjustmentsExecuted)
+                    {
+                        return;
+                    }
+
+
                     LayoutElement layoutPopulationBar = __instance.PopulationBarRoot.GetComponent<LayoutElement>();
 
                     if (AssortedAdjustments.Settings.CompressPopulationBar)
@@ -94,7 +105,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     Transform tInfoBar = __instance.PopulationBarRoot.transform.parent?.transform;
                     foreach (Transform t in tInfoBar.GetComponentsInChildren<Transform>())
                     {
-                        Logger.Info(t.name);
+                        //Logger.Debug($"[UIModuleInfoBar_Init_PREFIX] Transform.name: {t.name}");
 
                         // Hide useless icons at production and research
                         if (t.name == "UI_Clock")
@@ -107,6 +118,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         {
                             float populationThreshold = (float)context.View.GameOverWorldPopulation / (float)context.View.StartingWorldPopulation;
                             int populationThresholdPercent = (int)Mathf.Ceil(populationThreshold * 100f);
+                            Logger.Info($"[UIModuleInfoBar_Init_PREFIX] populationThresholdPercent: {populationThresholdPercent}");
 
                             // Put it inside the bar
                             if (populationThresholdPercent >= 8)
@@ -116,7 +128,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                                 t.Translate(new Vector3(-22f, 28f, 0f));
 
                                 //float translateX = -1 * (6 + (populationThresholdPercent * 8 / 5));
-                                //Logger.Info($"[UIModuleInfoBar_Init_PREFIX] populationThresholdPercent: {populationThresholdPercent}, translateX: {translateX}");
+                                //Logger.Info($"[UIModuleInfoBar_Init_PREFIX] translateX: {translateX}");
                                 //t.Translate(new Vector3(translateX, 28f, 0f));
                             }
                             // No space so simply hide it
@@ -142,46 +154,42 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                         // ...and add a new image to fill the space instead
                         if (t.name == "gameover")
                         {
+                            //if(t.gameObject.GetComponents<Image>().Count() > 0)
+                            //{
+                            //    continue;
+                            //}
+
                             Image i = t.gameObject.AddComponent<Image>();
                             i.transform.localScale = new Vector3(1f, 0.99f, 1f);
                             i.color = red;
                         }
                     }
 
-
-
-                    //HorizontalLayoutGroup infoBarLayout = tPopulationBar.parent.GetComponent<HorizontalLayoutGroup>();
-                    //foreach (LayoutElement le in infoBarLayout.GetComponentsInChildren<LayoutElement>())
-                    //{
-                    //    Logger.Info($"{le.name}");
-                    //}
-
-                    //infoBarLayout.childForceExpandWidth = false;
-                    //infoBarLayout.childScaleWidth = true;
-
-                    // Kills tooltips as the childs have no "real" width
-                    //infoBarLayout.childControlWidth = false;
-
-                    //infoBarLayout.childAlignment = TextAnchor.MiddleCenter;
-
-
-
-                    //MethodInfo ___SetChildAlongAxis = typeof(LayoutGroup).GetMethod("SetChildAlongAxis", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(RectTransform), typeof(int), typeof(float), typeof(float)}, null);
-                    //___SetChildAlongAxis.Invoke(layout, new object[] { rtPopulationBar, 0, 0, 100f });
-
-                    //rtPopulationBar.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 20f);
-                    //rtPopulationBar.ForceUpdateRectTransforms();
-
-                    //Rect ___rectPopulationBar = (Rect)AccessTools.Property(typeof(RectTransform), "rect").GetValue(rtPopulationBar, null);
-                    //___rectPopulationBar.width = 30f;
-
-
-
+                    // Set a flag so that this whole stuff is only done ONCE
+                    // Otherwise the visual transformations are repeated everytime leading to weird results
+                    // This is reset on every level change (see below)
+                    moduleInfoBarAdjustmentsExecuted = true;
                 }
                 catch (Exception e)
                 {
                     Logger.Error(e);
                 }
+            }
+        }
+
+
+
+        [HarmonyPatch(typeof(PhoenixGame), "RunGameLevel")]
+        public static class PhoenixGame_RunGameLevel_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableUIEnhancements && (AssortedAdjustments.Settings.CompressPopulationBar || AssortedAdjustments.Settings.HidePopulationBar);
+            }
+
+            public static void Prefix()
+            {
+                moduleInfoBarAdjustmentsExecuted = false;
             }
         }
     }
