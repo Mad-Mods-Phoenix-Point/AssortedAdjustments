@@ -10,6 +10,7 @@ using Base.UI;
 using PhoenixPoint.Geoscape.Entities.Sites;
 using UnityEngine;
 using PhoenixPoint.Common.UI;
+using PhoenixPoint.Geoscape.Levels;
 
 namespace AssortedAdjustments.Patches.UIEnhancements
 {
@@ -37,7 +38,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             {
                 try
                 {
-                    Logger.Debug($"[UIModuleSelectionInfoBox_SetHaven_POSTFIX] Haven: {____site.Name}");
+                    //Logger.Debug($"[UIModuleSelectionInfoBox_SetHaven_POSTFIX] Haven: {____site.Name}");
 
                     if (!showRecruits)
                     {
@@ -69,6 +70,8 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 }
             }
         }
+
+
 
         // Show trading info on haven popup
         [HarmonyPatch(typeof(UIModuleSelectionInfoBox), "SetHaven")]
@@ -109,6 +112,8 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 }
                 return $"<color=#FFFFFF>{quantity}{name}</color>";
             }
+            
+
 
             public static bool Prepare()
             {
@@ -119,7 +124,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             {
                 try
                 {
-                    Logger.Debug($"[UIModuleSelectionInfoBox_SetHaven_POSTFIX] Haven: {____site.Name}");
+                    //Logger.Debug($"[UIModuleSelectionInfoBox_SetHaven_POSTFIX] Haven: {____site.Name}");
 
                     List<HavenTradingEntry> resourcesAvailable = ____site.GetComponent<GeoHaven>()?.GetResourceTrading();
                     Text textAnchor = __instance.SitePopulationText;
@@ -133,6 +138,86 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
                         textAnchor.text += "\n\n" + string.Concat(resourcesAvailable.Select(e => string.Format(format, GetResourceEntry(e.HavenReceiveQuantity, e.HavenWants, 99), GetResourceEntry(e.HavenOfferQuantity, e.HavenOffers, 99), e.ResourceStock)));
                     }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+
+
+
+        // Optimize haven defense visuals
+        [HarmonyPatch(typeof(UIModuleSelectionInfoBox), "SetHaven")]
+        public static class UIModuleSelectionInfoBox_SetHaven_Patch3
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.ShowExtendedHavenInfo;
+            }
+
+            private static string GetColorHexCodeForFaction(GeoFaction faction)
+            {
+                return $"#{ColorUtility.ToHtmlStringRGB(faction.Def.FactionColor)}";
+            }
+
+            public static void Postfix(UIModuleSelectionInfoBox __instance, GeoSite ____site)
+            {
+                try
+                {
+                    if (!(____site.ActiveMission is GeoHavenDefenseMission mission))
+                    {
+                        return;
+                    }
+                    Logger.Info($"[UIModuleSelectionInfoBox_SetHaven_POSTFIX] Mission: {mission.MissionName}, Attacker: {mission.AttackerName}, Zone: {mission.AttackedZone}, Attacking force: {mission.FriendlyAttackerDeploymentPoints},  Defending force: {mission.FriendlyDefenderDeploymentPoints}");
+
+                    GeoFaction defendingFaction = ____site.Owner;
+                    GeoFaction attackingFaction = mission.Site.GeoLevel.GetFaction(mission.AttackerFaction);
+                    string defenderColorHex = GetColorHexCodeForFaction(defendingFaction);
+                    string attackerColorHex = GetColorHexCodeForFaction(attackingFaction);
+
+                    string defender = defendingFaction.Name.Localize();
+                    string attacker = attackingFaction.Name.Localize();
+                    defender = defender.PadLeft(20, ' ');
+                    attacker = attacker.PadRight(20, ' ');
+
+                    Logger.Info(defender.Length.ToString());
+
+
+                    defender = $"<color={defenderColorHex}>{defender}</color>";
+                    attacker = $"<color={attackerColorHex}>{attacker}</color>";
+
+                    Logger.Info(defender.Length.ToString());
+
+                    string defenderStrength = $"{mission.FriendlyDefenderDeploymentPoints}";
+                    string attackerStrength = $"{mission.FriendlyAttackerDeploymentPoints}";
+                    defenderStrength = defenderStrength.PadLeft(2, '0').PadLeft(5, ' ');
+                    attackerStrength = attackerStrength.PadLeft(2, '0').PadRight(5, ' ');
+                    defenderStrength = $"<size=52><color={defenderColorHex}>{defenderStrength}</color></size>";
+                    attackerStrength = $"<size=52><color={attackerColorHex}>{attackerStrength}</color></size>";
+
+                    string attackedZone = mission.AttackedZone.Def.ViewElementDef.DisplayName1.Localize();
+                    //string havenDestructionChance = Mathf.Ceil(mission.MissionProgress * 100).ToString();
+
+                    __instance.SiteAttackedByText.fontSize = 26;
+                    __instance.SiteAttackedByText.lineSpacing = 0.8f;
+                    __instance.SiteAttackedByText.horizontalOverflow = HorizontalWrapMode.Overflow;
+
+                    string battleInfo = "\n";
+                    battleInfo += $"<size=30>{attackedZone} UNDER ATTACK</size>\n";
+                    battleInfo += $"{defender}  vs  {attacker} \n";
+                    battleInfo += $"{defenderStrength}{new string(' ', 15)}{attackerStrength}";
+
+                    // Set
+                    __instance.SiteAttackedByText.text = battleInfo;
+
+
+
+                    // Hide superfluous stuff
+                    __instance.SiteAttackingForceText.gameObject.SetActive(false);
+                    __instance.SiteDefendingForceText.gameObject.SetActive(false);
+                    __instance.AlienBaseOperationRangeText.gameObject.SetActive(false);
                 }
                 catch (Exception e)
                 {
