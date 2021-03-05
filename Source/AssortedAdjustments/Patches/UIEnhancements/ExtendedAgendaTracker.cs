@@ -430,6 +430,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             }
         }
 
+        // Recolor the timer on geoscape sites for base/ancient site attacks
         [HarmonyPatch(typeof(GeoSiteVisualsController), "RefreshSiteVisuals")]
         public static class GeoSiteVisualsController_RefreshSiteVisuals_Patch
         {
@@ -626,7 +627,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
 
 
-                    // Add the timer to the site too
+                    // Add a timer to the site too?
                     //geoSite.ExpiringTimerAt = excavation.ExcavationEndDate;
                 }
                 catch (Exception e)
@@ -710,102 +711,6 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         }
 
 
-
-        /*
-        // ADDs or UPDATEs site-related (excavations or base defenses) items of the tracker
-        [HarmonyPatch(typeof(UIModuleStatusBarMessages), "DisplayTimedEventMessage")]
-        public static class UIModuleStatusBarMessages_DisplayTimedEventMessage_Patch
-        {
-            public static bool Prepare()
-            {
-                return AssortedAdjustments.Settings.EnableExtendedAgendaTracker && AssortedAdjustments.Settings.AgendaTrackerShowExcavations;
-            }
-
-            public static void Postfix(UIModuleStatusBarMessages __instance, StatusBarTimedMessage message)
-            {
-                try
-                {
-                    if (!(message.ChaseActor is GeoSite geoSite))
-                    {
-                        return;
-                    }
-                    Logger.Info($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] geoSite: {geoSite.Name}");
-                    Logger.Debug($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] __instance.Context.View.CurrentViewState: {__instance.Context?.View?.CurrentViewState}");
-
-                    //if (__instance.Context?.View?.CurrentViewState is UIStateVehicleSelected uiStateVehicleSelected)
-                    //{
-                        string siteName = geoSite.LocalizedSiteName;
-                        string siteInfo = "ERR";
-                        if (geoSite.IsArcheologySite)
-                        {
-                           siteInfo = $"{(geoSite.IsOwnedByViewer ? actionAncientSiteAttack : actionExcavating)} {siteName}";
-                        }
-                        else if (geoSite.Type == GeoSiteType.PhoenixBase)
-                        {
-                            siteInfo = $"{actionBaseAttack} {siteName}";
-                        }
-
-                        //UIModuleFactionAgendaTracker ____factionTracker = (UIModuleFactionAgendaTracker)AccessTools.Property(typeof(UIStateVehicleSelected), "_factionTracker").GetValue(uiStateVehicleSelected, null);
-                        List<UIFactionDataTrackerElement> ____currentTrackedElements = (List<UIFactionDataTrackerElement>)AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_currentTrackedElements").GetValue(___factionTracker);
-
-                        foreach (UIFactionDataTrackerElement trackedElement in ____currentTrackedElements)
-                        {
-                            // Update
-                            if (trackedElement.TrackedObject == geoSite)
-                            {
-                                Logger.Debug($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] {geoSite.Name} already tracked. Updating.");
-
-                                trackedElement.TrackedName.text = siteInfo;
-
-                                //AccessTools.Field(typeof(UIModuleFactionAgendaTracker), "_needsRefresh").SetValue(___factionTracker, true);
-                                ___UpdateData.Invoke(___factionTracker, null);
-                                //___OrderElements.Invoke(___factionTracker, null);
-
-                                // Return early as the first match is always the visible one
-                                return;
-                            }
-                        }
-
-                        // Add
-                        Logger.Debug($"[UIModuleStatusBarMessages_DisplayTimedEventMessage_POSTFIX] {geoSite.Name} currently not tracked. Adding to tracker.");
-
-                        ViewElementDef borrowedViewElementDef = null;
-                        if (geoSite.IsArcheologySite)
-                        {
-                            if (geoSite.IsOwnedByViewer) // Attack scheduled
-                            {
-                                borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("Crabman_ActorViewDef")).FirstOrDefault();
-                            }
-                            else // Excavating
-                            {
-                                borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("ArcheologyLab_PhoenixFacilityDef")).FirstOrDefault();
-                            }
-                        }
-                        else if (geoSite.Type == GeoSiteType.PhoenixBase)
-                        {
-                            // ToDo
-                            borrowedViewElementDef = GameUtl.GameComponent<DefRepository>().DefRepositoryDef.AllDefs.OfType<ViewElementDef>().Where(def => def.name.Contains("Crabman_ActorViewDef")).FirstOrDefault();
-                        }
-
-                        UIFactionDataTrackerElement freeElement = (UIFactionDataTrackerElement)___GetFreeElement.Invoke(___factionTracker, null);
-                        freeElement.Init(geoSite, siteInfo, borrowedViewElementDef, false);
-
-                        ___OnAddedElement.Invoke(___factionTracker, new object[] { freeElement });
-
-
-
-
-                        // Add the timer to the site too
-                        geoSite.ExpiringTimerAt = message.TimeEnd;
-                    //}
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e);
-                }
-            }
-        }
-        */
 
         // ADDs or UPDATEs vehicle related items of the tracker
         [HarmonyPatch(typeof(UIStateVehicleSelected), "OnContextualItemSelected")]

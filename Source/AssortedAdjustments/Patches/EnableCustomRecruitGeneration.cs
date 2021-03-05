@@ -587,9 +587,7 @@ namespace AssortedAdjustments.Patches
                     
                     if (__instance.Def.name.Contains("Anu") || __instance.Def.name.Contains("NewJericho") || __instance.Def.name.Contains("Synedrion"))
                     {
-                        Logger.Debug($"[GeoFaction_GenerateRecruits_PREFIX] Faction: {__instance.Name.Localize()}");
-                        Logger.Debug($"[GeoFaction_GenerateRecruits_PREFIX] RecruitIntervalCheckDays: {__instance.Def.RecruitIntervalCheckDays}");
-                        Logger.Debug($"[GeoFaction_GenerateRecruits_PREFIX] GenerateRecruitNextTime: {__instance.GenerateRecruitNextTime}, Now: {timing.Now}");
+                        //Logger.Debug($"[GeoFaction_GenerateRecruits_PREFIX] Faction: {__instance.Name.Localize()}, RecruitIntervalCheckDays: {__instance.Def.RecruitIntervalCheckDays}, GenerateRecruitNextTime: {__instance.GenerateRecruitNextTime}, Now: {timing.Now}");
 
                         // Update now?
                         //__instance.GenerateRecruitNextTime = timing.Now;

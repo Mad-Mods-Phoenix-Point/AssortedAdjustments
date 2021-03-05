@@ -2,10 +2,10 @@
 using System.IO;
 using System.Reflection;
 using Harmony;
-using AssortedAdjustments.Patches;
 using Base.Build;
 using System.Linq;
 using PhoenixPoint.Home.View.ViewModules;
+//using AssortedAdjustments.Patches;
 
 namespace AssortedAdjustments
 {
@@ -46,27 +46,31 @@ namespace AssortedAdjustments
             {
                 PresetHelpers.HandlePresets(ref Settings, api);
             }
+            if (Settings.EnableLimitedWar)
+            {
+                LimitedWar.Config.MergeSettings(Settings);
+            }
 
 
 
             if (Settings.SkipIntroLogos)
             {
-                HarmonyHelpers.Patch(Harmony, typeof(PhoenixPoint.Common.Game.PhoenixGame), "RunGameLevel", typeof(SkipIntro), "Prefix_PhoenixGame_RunGameLevel");
+                HarmonyHelpers.Patch(Harmony, typeof(PhoenixPoint.Common.Game.PhoenixGame), "RunGameLevel", typeof(Patches.SkipIntro), "Prefix_PhoenixGame_RunGameLevel");
             }
             if (Settings.SkipIntroMovie)
             {
-                HarmonyHelpers.Patch(Harmony, typeof(PhoenixPoint.Home.View.ViewStates.UIStateHomeScreenCutscene), "EnterState", typeof(SkipIntro), null, "Postfix_UIStateHomeScreenCutscene_EnterState");
+                HarmonyHelpers.Patch(Harmony, typeof(PhoenixPoint.Home.View.ViewStates.UIStateHomeScreenCutscene), "EnterState", typeof(Patches.SkipIntro), null, "Postfix_UIStateHomeScreenCutscene_EnterState");
             }
             if (Settings.SkipLandingSequences)
             {
-                HarmonyHelpers.Patch(Harmony, typeof(PhoenixPoint.Tactical.View.ViewStates.UIStateTacticalCutscene), "EnterState", typeof(SkipIntro), null, "Postfix_UIStateTacticalCutscene_EnterState");
+                HarmonyHelpers.Patch(Harmony, typeof(PhoenixPoint.Tactical.View.ViewStates.UIStateTacticalCutscene), "EnterState", typeof(Patches.SkipIntro), null, "Postfix_UIStateTacticalCutscene_EnterState");
             }
 
 
 
             Logger.Always($"Modnix Mad.AssortedAdjustments.SplashMod initialised.");
             //Logger.Always($"Settings: {Settings}");
-            
+
 
 
             try
@@ -99,42 +103,42 @@ namespace AssortedAdjustments
         {
             if(Settings.EnableEconomyAdjustments)
             {
-                EconomyAdjustments.Apply();
+                Patches.EconomyAdjustments.Apply();
             }
 
             if (Settings.EnableFacilityAdjustments)
             {
-                FacilityAdjustments.Apply();
+                Patches.FacilityAdjustments.Apply();
             }
 
             if (Settings.EnableSoldierAdjustments)
             {
-                SoldierAdjustments.Apply();
+                Patches.SoldierAdjustments.Apply();
             }
 
             if (Settings.EnableVehicleAdjustments)
             {
-                VehicleAdjustments.Apply();
+                Patches.VehicleAdjustments.Apply();
             }
 
             if (Settings.EnableMissionAdjustments)
             {
-                MissionAdjustments.Apply();
+                Patches.MissionAdjustments.Apply();
             }
 
             if (Settings.EnableCustomRecruitGeneration)
             {
-                CustomRecruitGeneration.Apply();
+                Patches.CustomRecruitGeneration.Apply();
             }
 
             if (Settings.EnableDifficultyOverrides)
             {
-                DifficultyOverrides.Apply();
+                Patches.DifficultyOverrides.Apply();
             }
 
             if (Settings.EnableAbilityAdjustments)
             {
-                AbilityAdjustments.Apply();
+                Patches.AbilityAdjustments.Apply();
             }
         }
 

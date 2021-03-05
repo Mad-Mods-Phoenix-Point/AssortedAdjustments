@@ -70,6 +70,14 @@
     <Compile Include="AnnotationHelpers.cs" />
     <Compile Include="DataHelpers.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Patches\LimitedWar\AttackLimits.cs" />
+    <Compile Include="Patches\LimitedWar\Config.cs" />
+    <Compile Include="Patches\LimitedWar\Alertness.cs" />
+    <Compile Include="Patches\LimitedWar\Defenses.cs" />
+    <Compile Include="Patches\LimitedWar\DisableBaseAttacks.cs" />
+    <Compile Include="Patches\LimitedWar\Resolver.cs" />
+    <Compile Include="Patches\LimitedWar\Store.cs" />
+    <Compile Include="Patches\LimitedWar\ZonedAttacks.cs" />
     <Compile Include="Patches\UIEnhancements\PopulationBar.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Patches\Bugfixes\Replenish.cs" />

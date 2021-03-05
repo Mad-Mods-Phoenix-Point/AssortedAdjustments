@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace AssortedAdjustments
@@ -54,12 +55,37 @@ namespace AssortedAdjustments
         public bool PersistentClassFilter = true;
         [Annotation("Will start the manufacturing screen with all class filters deselected.", "False")]
         public bool PersistentClassFilterInitDisabled = false;
-        [Annotation("Hides visual addons of havens/bases on the geoscape (ie. mist repeller).", "False")]
+        [Annotation("Hides visual addons of havens/bases on the geoscape (ie. mist repeller, fortress, temple, ...).", "False")]
         public bool HideSiteAddons = false;
         [Annotation("Shrinks the population bar to free some space for the resources display.", "True")]
         public bool CompressPopulationBar = true;
         [Annotation("Hides the population bar completely leaving only the icon and percentage value.", "False")]
         public bool HidePopulationBar = false;
+
+
+
+        [Annotation("Enable Limited War.", "True", true, "Limited War")]
+        public bool EnableLimitedWar = true;
+        [Annotation("Factions will focus their attacks on haven zones instead of the haven as a whole. Failing to defend will destroy the zone, not the haven.", "True")]
+        public bool LimitFactionAttacksToZones = true;
+        [Annotation("Pandorans will focus their attacks on haven zones instead of the haven as a whole. Failing to defend will destroy the zone, not the haven.", "False")]
+        public bool LimitPandoranAttacksToZones = false;
+        [Annotation("After failing to defend a zone the attacked haven will raise its alertness level, strengthening it for subsequent attacks.", "True")]
+        public bool AttacksRaiseHavenAlertness = true;
+        [Annotation("After failing to defend a zone the attacked faction will raise their alertness level in all havens, strengthening all of them for subsequent attacks.", "True")]
+        public bool AttacksRaiseFactionAlertness = true;
+        [Annotation("If the last haven attack was already initiated by the very same faction that now considers an additional strike, it will be canceled. Will prevent a faction to overrun another with multiple attacks.", "True")]
+        public bool StopOneSidedWar = true;
+        [Annotation("Pandorans will not assault phoenix project's bases.", "False")]
+        public bool DisablePandoranAttacksOnPhoenixBases = false;
+        [Annotation("A faction will not further attack another if they are currently under attack by pandorans at this number of havens. Set to -1 to disable this restriction.", "1")]
+        public int StopAttacksWhileDefendingPandoransThreshold = 1;
+        [Annotation("A faction will not further attack another if there are already this number of haven defenses going on. Set to -1 to disable this restriction. Set to 0 to disable faction wars.", "3")]
+        public int GlobalAttackLimit = 3;
+        [Annotation("A faction will not further attack another if they are already attacking this number of havens. Set to -1 to disable this restriction. Set to 0 to disable faction wars.", "2")]
+        public int FactionAttackLimit = 2;
+        [Annotation("If set this will override the above limits to be dependent on current difficulty level (Easy: [1,2,1], Veteran: [2,3,2], Hero: [3,4,3], Legendary: [4,5,4]).", "False")]
+        public bool UseDifficultyDrivenLimits = false;
 
 
 
