@@ -11,18 +11,12 @@ using PhoenixPoint.Geoscape.Entities.Sites;
 using UnityEngine;
 using PhoenixPoint.Common.UI;
 using PhoenixPoint.Geoscape.Levels;
+using PhoenixPoint.Geoscape.Levels.Factions;
 
 namespace AssortedAdjustments.Patches.UIEnhancements
 {
     internal static class ExtendedHavenInfo
     {
-        private static string WordToTitleCase(string s)
-        {
-            return String.Concat(s.First().ToString().ToUpper(), s.Remove(0, 1).ToLower());
-        }
-
-
-
         // Show recruit class on haven popup
         [HarmonyPatch(typeof(UIModuleSelectionInfoBox), "SetHaven")]
         public static class UIModuleSelectionInfoBox_SetHaven_Patch
@@ -58,7 +52,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
                     if (String.IsNullOrEmpty(recruitAvailableText))
                     {
-                        recruitAvailableText = WordToTitleCase(__instance.RecruitAvailableText.text.Split((char)32).First() + ":");
+                        recruitAvailableText = Utilities.ToTitleCase(__instance.RecruitAvailableText.text.Split((char)32).First() + ":");
                     }
                     __instance.RecruitAvailableText.fontSize = 24;
                     __instance.RecruitAvailableText.horizontalOverflow = HorizontalWrapMode.Overflow;
@@ -97,7 +91,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 }
                 if (name.Length > 0)
                 {
-                    name = $" {WordToTitleCase(name)}";
+                    name = $" {Utilities.ToTitleCase(name)}";
                 }
                 switch (type)
                 {
@@ -157,9 +151,30 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 return AssortedAdjustments.Settings.ShowExtendedHavenInfo;
             }
 
+            private static string GetColorHexCodeForFaction(object o)
+            {
+                if(o is GeoFaction geoFaction)
+                {
+                    return GetColorHexCodeForFaction(geoFaction);
+                }
+                else if (o is GeoSubFaction geoSubFaction)
+                {
+                    return GetColorHexCodeForFaction(geoSubFaction);
+                }
+                else
+                {
+                    return "#ff0000";
+                }
+            }
+
             private static string GetColorHexCodeForFaction(GeoFaction faction)
             {
                 return $"#{ColorUtility.ToHtmlStringRGB(faction.Def.FactionColor)}";
+            }
+
+            private static string GetColorHexCodeForFaction(GeoSubFaction subFaction)
+            {
+                return $"#{ColorUtility.ToHtmlStringRGB(subFaction.SubFactionDef.ViewDef.FactionColor)}";
             }
 
             public static void Postfix(UIModuleSelectionInfoBox __instance, GeoSite ____site)
@@ -170,25 +185,28 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     {
                         return;
                     }
-                    Logger.Info($"[UIModuleSelectionInfoBox_SetHaven_POSTFIX] Mission: {mission.MissionName}, Attacker: {mission.AttackerName}, Zone: {mission.AttackedZone}, Attacking force: {mission.FriendlyAttackerDeploymentPoints},  Defending force: {mission.FriendlyDefenderDeploymentPoints}");
+                    Logger.Info($"[UIModuleSelectionInfoBox_SetHaven_POSTFIX] Haven: {____site.LocalizedSiteName}, Mission: {mission.MissionName.Localize()}, Zone: {mission.AttackedZone}");
 
                     GeoFaction defendingFaction = ____site.Owner;
-                    GeoFaction attackingFaction = mission.Site.GeoLevel.GetFaction(mission.AttackerFaction);
+                    object attackingFaction = null;
+                    if (mission.Site.GeoLevel.GetFaction(mission.AttackerFaction, true) != null)
+                    {
+                        attackingFaction = mission.Site.GeoLevel.GetFaction(mission.AttackerFaction, false);
+                    }
+                    else if (mission.Site.GeoLevel.GetSubFaction(mission.AttackerFaction, true) != null)
+                    {
+                        attackingFaction = mission.Site.GeoLevel.GetSubFaction(mission.AttackerFaction, false);
+                    }
+
                     string defenderColorHex = GetColorHexCodeForFaction(defendingFaction);
                     string attackerColorHex = GetColorHexCodeForFaction(attackingFaction);
 
                     string defender = defendingFaction.Name.Localize();
-                    string attacker = attackingFaction.Name.Localize();
+                    string attacker = mission.AttackerName;
                     defender = defender.PadLeft(20, ' ');
                     attacker = attacker.PadRight(20, ' ');
-
-                    Logger.Info(defender.Length.ToString());
-
-
                     defender = $"<color={defenderColorHex}>{defender}</color>";
                     attacker = $"<color={attackerColorHex}>{attacker}</color>";
-
-                    Logger.Info(defender.Length.ToString());
 
                     string defenderStrength = $"{mission.FriendlyDefenderDeploymentPoints}";
                     string attackerStrength = $"{mission.FriendlyAttackerDeploymentPoints}";
@@ -218,6 +236,52 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     __instance.SiteAttackingForceText.gameObject.SetActive(false);
                     __instance.SiteDefendingForceText.gameObject.SetActive(false);
                     __instance.AlienBaseOperationRangeText.gameObject.SetActive(false);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+
+
+        // Add alertness
+        [HarmonyPatch(typeof(UIModuleSelectionInfoBox), "SetHaven")]
+        public static class UIModuleSelectionInfoBox_SetHaven_Patch4
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.ShowExtendedHavenInfo;
+            }
+
+            public static void Postfix(UIModuleSelectionInfoBox __instance, GeoSite ____site)
+            {
+                try
+                {
+                    GeoHaven haven = ____site.GetComponent<GeoHaven>();
+                    if (haven == null)
+                    {
+                        return;
+                    }
+
+                    string alertnessLabel = "Alertness";
+                    string alertnessLevel;
+                    switch (haven.AlertLevel)
+                    {
+                        case GeoHaven.HavenAlertLevel.Alert:
+                            alertnessLevel = "High";
+                            break;
+                        case GeoHaven.HavenAlertLevel.HighAlert:
+                            alertnessLevel = "Extreme";
+                            break;
+                        default:
+                            alertnessLevel = "Normal";
+                            break;
+                    }
+                    string alertnessText = "\n";
+                    alertnessText += $"{alertnessLabel}: {alertnessLevel}";
+
+                    __instance.AlienBaseOperationRangeText.text += $"{alertnessText}";
                 }
                 catch (Exception e)
                 {
