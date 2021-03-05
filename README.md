@@ -125,6 +125,13 @@ If you wanna suffer, set "hardcore" and try to make it through.
     * You can reduce (or completely disable) the death rate of havens caused by starvation
     * By default the values are equivalent to vanilla's settings
 * Fresh recruits at havens will spawn every 3 days (Vanilla: 7)
+* Limit faction wars to a configurable intensity (Thanks Sheepy for his excellent blueprint). You can:
+    * Limit haven attacks from factions to a global cap
+    * Limit attacks per faction
+    * Stop one faction overrunning another
+    * Boost haven defenses to make destructions less likely
+    * Convert potential haven destruction to a less severe zone destruction
+    * See settings reference for details
 
 #### Facilities
 * Medical bays and vehicle bays have their base healing/repair rate doubled.

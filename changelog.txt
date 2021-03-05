@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 
 
+## 1.10.1.0
+- Optimize haven tooltip visuals regarding ongoing defense missions
+- Add alertness level to haven tooltips
+- Migrate, fix and extend limited war from Sheepy
+    - Limit haven attacks from factions to a global cap
+    - Limit attacks per faction
+    - Stop one faction overrunning another
+    - Boost haven defenses to make destructions less likely
+    - Convert potential haven destruction to a less severe zone destruction
+
+
 ## 1.10.0.4
 - Include mod_info.js in the dll as an embedded resource (should harden against incomplete installs)
 - Enable trainig facilities to contribute skillpoints to the global pool on a daily basis
