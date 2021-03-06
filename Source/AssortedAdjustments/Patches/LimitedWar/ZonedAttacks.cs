@@ -60,6 +60,8 @@ namespace AssortedAdjustments.LimitedWar
         }
     }
 
+
+
     // Expand haven name with zone name in log
     [HarmonyPatch(typeof(GeoscapeLog), "Map_SiteMissionStarted")]
     public static class GeoscapeLog_Map_SiteMissionStarted_Patch
@@ -97,6 +99,8 @@ namespace AssortedAdjustments.LimitedWar
             }
         }
     }
+
+
 
     // Expand haven name with zone name in log and disable "haven destroyed" sound
     [HarmonyPatch(typeof(GeoscapeLog), "Map_SiteMissionEnded")]

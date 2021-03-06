@@ -6,7 +6,7 @@ namespace AssortedAdjustments.LimitedWar
 {
     internal static class Store
     {
-        internal static int GameDifficulty = 1; // Default to Vet if anything goes wrong
+        internal static int GameDifficulty = 1; // Default to Veteran in case anything goes wrong
         internal static IGeoFactionMissionParticipant LastAttacker = null;
         internal static GeoHavenDefenseMission DefenseMission = null;
     }

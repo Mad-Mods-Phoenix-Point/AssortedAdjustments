@@ -15,10 +15,9 @@ namespace AssortedAdjustments.LimitedWar
         public static KeyValuePair<bool, int> StopAttacksWhileDefendingPandoransThreshold = new KeyValuePair<bool, int>(true, 1);
         public static KeyValuePair<bool, int> GlobalAttackLimit = new KeyValuePair<bool, int>(true, 3);
         public static KeyValuePair<bool, int> FactionAttackLimit = new KeyValuePair<bool, int>(true, 2);
-        public static bool UseDifficultyDrivenLimits = true;
+        public static bool UseDifficultyDrivenLimits = false;
 
         public static DefenseMultipliers DefenseMultipliers = new DefenseMultipliers();
-
         internal static bool HasAttackLimitsActive => StopOneSidedWar || StopAttacksWhileDefendingPandoransThreshold.Key || GlobalAttackLimit.Key || FactionAttackLimit.Key;
         
         public static void MergeSettings(Settings settings)
@@ -60,8 +59,6 @@ namespace AssortedAdjustments.LimitedWar
             }
 
             UseDifficultyDrivenLimits = settings.UseDifficultyDrivenLimits;
-
-            Logger.Info($"HasAttackLimitsActive: {HasAttackLimitsActive}");
         }
     }
 

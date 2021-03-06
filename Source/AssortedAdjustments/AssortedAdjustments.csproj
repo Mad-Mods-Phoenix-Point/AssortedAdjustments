@@ -75,6 +75,7 @@
     <Compile Include="Patches\LimitedWar\Alertness.cs" />
     <Compile Include="Patches\LimitedWar\Defenses.cs" />
     <Compile Include="Patches\LimitedWar\DisableBaseAttacks.cs" />
+    <Compile Include="Patches\UIEnhancements\BetterObjectives.cs" />
     <Compile Include="Patches\LimitedWar\Resolver.cs" />
     <Compile Include="Patches\LimitedWar\Store.cs" />
     <Compile Include="Patches\LimitedWar\ZonedAttacks.cs" />

@@ -9,6 +9,45 @@ using System.Linq;
 namespace AssortedAdjustments.LimitedWar
 {
     // Limit factions attacks on havens
+    [HarmonyPatch(typeof(GeoLevelController), "OnLevelStart")]
+    public static class GeoLevelController_OnLevelStart_Patch
+    {
+        public static bool Prepare()
+        {
+            return Config.Enable && Config.HasAttackLimitsActive;
+        }
+
+        public static void Postfix(GeoLevelController __instance)
+        {
+            try
+            {
+                GameDifficultyLevelDef currentDifficultyLevel = __instance.CurrentDifficultyLevel;
+                Store.GameDifficulty = __instance.DynamicDifficultySystem.DifficultyLevels.ToList().IndexOf(currentDifficultyLevel);
+                Store.LastAttacker = null;
+                Logger.Info($"Last attacker was reset. Game's difficulty level is {Store.GameDifficulty}."); // 0 = Rookie, 1 = Veteran, 2 = Hero, 3 = Legend
+
+                if (Config.UseDifficultyDrivenLimits)
+                {
+                    int d = Store.GameDifficulty;
+                    Config.StopAttacksWhileDefendingPandoransThreshold = new KeyValuePair<bool, int>(true, d + 1);
+                    Config.GlobalAttackLimit = new KeyValuePair<bool, int>(true, d + 2);
+                    Config.FactionAttackLimit = new KeyValuePair<bool, int>(true, d + 1);
+
+                    Logger.Info($"Static limits overridden with difficulty driven values");
+                    Logger.Info($"StopAttacksWhileDefendingPandoransThreshold: {Config.StopAttacksWhileDefendingPandoransThreshold.Key}, {Config.StopAttacksWhileDefendingPandoransThreshold.Value}");
+                    Logger.Info($"GlobalAttackLimit: {Config.GlobalAttackLimit.Key}, {Config.GlobalAttackLimit.Value}");
+                    Logger.Info($"FactionAttackLimit: {Config.FactionAttackLimit.Key}, {Config.FactionAttackLimit.Value}");
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+    }
+
+
+
     [HarmonyPatch(typeof(GeoFaction), "AttackHavenFromVehicle")]
     public static class GeoFaction_AttackHavenFromVehicle_Patch
     {
@@ -39,42 +78,7 @@ namespace AssortedAdjustments.LimitedWar
         }
     }
 
-    [HarmonyPatch(typeof(GeoLevelController), "OnLevelStart")]
-    public static class GeoLevelController_OnLevelStart_Patch
-    {
-        public static bool Prepare()
-        {
-            return Config.Enable && Config.HasAttackLimitsActive;
-        }
 
-        public static void Postfix(GeoLevelController __instance)
-        {
-            try
-            {
-                GameDifficultyLevelDef diff = __instance.CurrentDifficultyLevel;
-                Store.GameDifficulty = __instance.DynamicDifficultySystem.DifficultyLevels.ToList().IndexOf(diff);
-                Store.LastAttacker = null;
-                Logger.Info($"Last attacker was reset. Game's difficulty level is {Store.GameDifficulty}."); // 0 = Rookie, 1 = Veteran, 2 = Hero, 3 = Legend
-
-                if (Config.UseDifficultyDrivenLimits)
-                {
-                    int d = Store.GameDifficulty;
-                    Config.StopAttacksWhileDefendingPandoransThreshold = new KeyValuePair<bool, int>(true, d + 1);
-                    Config.GlobalAttackLimit = new KeyValuePair<bool, int>(true, d + 2);
-                    Config.FactionAttackLimit = new KeyValuePair<bool, int>(true, d + 1);
-
-                    Logger.Info($"Static limits overridden with difficulty driven values");
-                    Logger.Info($"StopAttacksWhileDefendingPandoransThreshold: {Config.StopAttacksWhileDefendingPandoransThreshold.Key}, {Config.StopAttacksWhileDefendingPandoransThreshold.Value}");
-                    Logger.Info($"GlobalAttackLimit: {Config.GlobalAttackLimit.Key}, {Config.GlobalAttackLimit.Value}");
-                    Logger.Info($"FactionAttackLimit: {Config.FactionAttackLimit.Key}, {Config.FactionAttackLimit.Value}");
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-    }
 
     // Formerly VehicleFactionController.UpdateNavigation
     [HarmonyPatch(typeof(VehicleFactionController), "GetSiteVehicleDestinationWeight")]

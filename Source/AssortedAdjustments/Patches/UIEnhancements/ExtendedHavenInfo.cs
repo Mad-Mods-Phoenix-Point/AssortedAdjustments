@@ -25,7 +25,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.ShowExtendedHavenInfo;
+                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowExtendedHavenInfo;
             }
 
             public static void Postfix(UIModuleSelectionInfoBox __instance, GeoSite ____site, bool showRecruits)
@@ -111,7 +111,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.ShowExtendedHavenInfo;
+                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowExtendedHavenInfo;
             }
 
             public static void Postfix(UIModuleSelectionInfoBox __instance, GeoSite ____site)
@@ -148,7 +148,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.ShowExtendedHavenInfo;
+                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowExtendedHavenInfo;
             }
 
             private static string GetColorHexCodeForFaction(object o)
@@ -251,7 +251,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.ShowExtendedHavenInfo;
+                return AssortedAdjustments.Settings.EnableUIEnhancements && AssortedAdjustments.Settings.ShowExtendedHavenInfo;
             }
 
             public static void Postfix(UIModuleSelectionInfoBox __instance, GeoSite ____site)

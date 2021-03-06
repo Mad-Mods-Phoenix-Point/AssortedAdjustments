@@ -5,7 +5,6 @@ using Harmony;
 using Base.Build;
 using System.Linq;
 using PhoenixPoint.Home.View.ViewModules;
-//using AssortedAdjustments.Patches;
 
 namespace AssortedAdjustments
 {
@@ -46,6 +45,7 @@ namespace AssortedAdjustments
             {
                 PresetHelpers.HandlePresets(ref Settings, api);
             }
+
             if (Settings.EnableLimitedWar)
             {
                 LimitedWar.Config.MergeSettings(Settings);

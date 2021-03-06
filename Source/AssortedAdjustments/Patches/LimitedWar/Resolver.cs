@@ -6,6 +6,7 @@ using System;
 
 namespace AssortedAdjustments.LimitedWar
 {
+    // Utility class for deciding things
     internal static class Resolver
     {
         internal static bool IsAlien(IGeoFactionMissionParticipant f) => f is GeoAlienFaction;

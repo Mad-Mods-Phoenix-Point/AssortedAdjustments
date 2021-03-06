@@ -61,6 +61,8 @@ namespace AssortedAdjustments
         public bool CompressPopulationBar = true;
         [Annotation("Hides the population bar completely leaving only the icon and percentage value.", "False")]
         public bool HidePopulationBar = false;
+        [Annotation("Extends the objectives regarding haven defenses with the appropriately colored attacker's name.", "True")]
+        public bool BetterObjectives = true;
 
 
 
