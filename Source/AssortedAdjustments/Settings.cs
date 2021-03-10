@@ -159,6 +159,10 @@ namespace AssortedAdjustments
         public int ReturnFireAngle = 180;
         [Annotation("Limit the ability to return fire to X times per round, vanilla default is unlimited.", "2")]
         public int ReturnFireLimit = 2;
+        [Annotation("Disables return fire when the attacker side-steps from full cover.", "True")]
+        public bool NoReturnFireWhenSteppingOut = true;
+        [Annotation("Enlarges and animates the small return fire icon indicating the target's ability to return fire.", "True")]
+        public bool EmphasizeReturnFireHint = true;
 
 
 
