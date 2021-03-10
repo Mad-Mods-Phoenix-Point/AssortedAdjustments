@@ -11,6 +11,8 @@ using PhoenixPoint.Geoscape.Levels.Factions;
 using PhoenixPoint.Geoscape.Levels;
 using PhoenixPoint.Common.Core;
 using PhoenixPoint.Geoscape.Entities;
+using PhoenixPoint.Geoscape.View;
+using System.Reflection;
 
 namespace AssortedAdjustments.Patches.UIEnhancements
 {
@@ -62,6 +64,44 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             }
         }
         */
+
+        [HarmonyPatch(typeof(GeoSiteVisualsController), "RefreshSiteVisuals")]
+        public static class GeoSiteVisualsController_RefreshSiteVisuals_Patch
+        {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.EnableUIEnhancements;
+            }
+
+            public static void Postfix(GeoSiteVisualsController __instance, GeoSite site)
+            {
+                try
+                {
+                    Logger.Info($"[GeoSiteVisualsController_RefreshSiteVisuals_POSTFIX] Called.");
+
+                    if (!site.IsArcheologySite)
+                    {
+                        return;
+                    }
+
+                    GeoSiteVisualsDefs instance = GeoSiteVisualsDefs.Instance;
+                    if (site.Owner.IsEnvironmentFaction && !site.IsExcavated())
+                    {
+                        Material customMaterial = instance.GetAncientSite(false);
+                        Logger.Info($"[GeoSiteVisualsController_RefreshSiteVisuals_POSTFIX] customMaterial.color: {customMaterial.color}");
+                        customMaterial.color = new Color32(224, 224, 224, 255);
+
+                        //__instance.ReplaceSiteVisuals(customMaterial);
+                        typeof(GeoSiteVisualsController).GetMethod("ReplaceSiteVisuals", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { customMaterial });
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+            }
+        }
+
 
 
 
