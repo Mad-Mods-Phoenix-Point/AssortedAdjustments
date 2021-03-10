@@ -55,7 +55,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     Logger.Debug($"[HavenFacilityItemController_SetRecruitmentGroup_POSTFIX] Haven: {____haven?.name}");
 
                     GeoUnitDescriptor recruit = ____haven?.AvailableRecruit;
-                    if (recruit == null)
+                    if (recruit == null || !recruit.UnitType.IsHuman)
                     {
                         return;
                     }
