@@ -88,13 +88,20 @@ namespace AssortedAdjustments
 
         public static void MainMod(Func<string, object, object> api)
         {
-            DataHelpers.Print();
-            Harmony.PatchAll();
-            ApplyAll();
+            try
+            {
+                DataHelpers.Print();
+                Harmony.PatchAll();
+                ApplyAll();
 
-            Logger.Always($"Modnix Mad.AssortedAdjustments.MainMod initialised.");
-            Logger.Always($"GameVersion: {RuntimeBuildInfo.BuildVersion}");
-            Logger.Always($"ModVersion: {ModVersion}");
+                Logger.Always($"Modnix Mad.AssortedAdjustments.MainMod initialised.");
+                Logger.Always($"GameVersion: {RuntimeBuildInfo.BuildVersion}");
+                Logger.Always($"ModVersion: {ModVersion}");
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
 
 

@@ -71,7 +71,7 @@ namespace AssortedAdjustments
                 Logger.Info($"[DataHelpers_Print] WillPointCost: {def.WillPointCost}");
                 Logger.Info($"[DataHelpers_Print] ---");
             }
-            */   
+            */ 
 
             /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<GameDifficultyLevelDef>())

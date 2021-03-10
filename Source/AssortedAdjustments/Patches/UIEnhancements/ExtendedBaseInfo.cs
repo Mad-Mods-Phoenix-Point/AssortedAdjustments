@@ -306,10 +306,16 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
                         GeoPhoenixBase geoPhoenixBase = site.GetComponent<GeoPhoenixBase>();
                         geoPhoenixBase.UpdateStats();
-                        PhoenixBaseExtendedInfoData.HealOutput = $"Healing: {geoPhoenixBase.Stats.HealSoldiersHP} ({geoPhoenixBase.Stats.HealMutogHP}) HP/h";
-                        PhoenixBaseExtendedInfoData.StaminaOutput = $"Recreation: {geoPhoenixBase.Stats.HealSoldiersStamina} ST/h";
-                        PhoenixBaseExtendedInfoData.ExperienceOutput = $"Training: {geoPhoenixBase.Stats.TrainSoldiersXP} XP/h";
-                        PhoenixBaseExtendedInfoData.SkillpointOutput = $"Skill: {geoPhoenixBase.Stats.GainSP} SP/h";
+
+                        ////PhoenixBaseExtendedInfoData.HealOutput = $"<color=#16aceb>HEALING: {geoPhoenixBase.Stats.HealSoldiersHP} ({geoPhoenixBase.Stats.HealMutogHP}) HP/h</color>";
+                        //PhoenixBaseExtendedInfoData.HealOutput = $"<color=#16aceb>HEALING: {geoPhoenixBase.Stats.HealSoldiersHP} HP/h</color>";
+                        //PhoenixBaseExtendedInfoData.StaminaOutput = $"<color=#ffffff>RECREATION: {geoPhoenixBase.Stats.HealSoldiersStamina} ST/h</color>";
+                        //PhoenixBaseExtendedInfoData.ExperienceOutput = $"<color=#ecba62>TRAINING: {geoPhoenixBase.Stats.TrainSoldiersXP} XP/h</color>";
+                        //PhoenixBaseExtendedInfoData.SkillpointOutput = $"<color=#ffa800>SKILL: {geoPhoenixBase.Stats.GainSP} SP/d</color>";
+
+                        PhoenixBaseExtendedInfoData.HealOutput = $"HEALING: {geoPhoenixBase.Stats.HealSoldiersHP} HP/h";
+                        PhoenixBaseExtendedInfoData.StaminaOutput = $"RECREATION: {geoPhoenixBase.Stats.HealSoldiersStamina} ST/h";
+                        PhoenixBaseExtendedInfoData.ExperienceOutput = $"TRAINING: {geoPhoenixBase.Stats.TrainSoldiersXP} XP/h";
 
                         Logger.Info($"[UIStateVehicleSelected_OnSiteMouseHover_PREFIX] {PhoenixBaseExtendedInfoData.ToString()}");
                     }    
@@ -333,9 +339,9 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             {
                 try
                 {
-                    string tab = "   ";
-                    __instance.AvailableSlotsText.fontSize = 32;
-                    __instance.AvailableSlotsText.lineSpacing = 1f;
+                    string tab = "    ";
+                    __instance.AvailableSlotsText.fontSize = 26;
+                    __instance.AvailableSlotsText.lineSpacing = 0.9f;
                     //__instance.AvailableSlotsText.color = Color.white;
                     __instance.AvailableSlotsText.alignment = TextAnchor.UpperLeft;
                     __instance.AvailableSlotsText.resizeTextForBestFit = false;
@@ -350,11 +356,12 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     {
                         Logger.Debug($"[UIModuleShortPhoenixBaseTooltip_SetTooltipData_POSTFIX] baseData.BaseName: {baseData.BaseName.Localize()}");
 
-                        string org = __instance.AvailableSlotsText.text;
+                        string org = __instance.AvailableSlotsText.text.ToUpper();
                         string postfix = "";
                         postfix += $"{tab}{PhoenixBaseExtendedInfoData.HealOutput}\n";
                         postfix += $"{tab}{PhoenixBaseExtendedInfoData.StaminaOutput}\n";
                         postfix += $"{tab}{PhoenixBaseExtendedInfoData.ExperienceOutput}";
+                        //postfix += $"{tab}{PhoenixBaseExtendedInfoData.SkillpointOutput}";
 
                         __instance.AvailableSlotsText.text = $"{org}\n{postfix}";
                     }
