@@ -1,26 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Harmony;
 using Base;
 using Base.Core;
 using Base.Defs;
+using Base.Platforms;
+using Base.UI;
 using Base.Entities.Effects;
 using Base.Entities.Statuses;
-using Base.UI;
-using Harmony;
 using PhoenixPoint.Common.Core;
 using PhoenixPoint.Common.Entities;
 using PhoenixPoint.Common.Entities.Items;
+using PhoenixPoint.Common.Entities.RedeemableCodes;
 using PhoenixPoint.Common.Levels.Missions;
 using PhoenixPoint.Common.UI;
 using PhoenixPoint.Geoscape.Entities;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases;
 using PhoenixPoint.Geoscape.Entities.PhoenixBases.FacilityComponents;
+using PhoenixPoint.Geoscape.Entities.Research;
+using PhoenixPoint.Geoscape.Entities.Research.Requirement;
 using PhoenixPoint.Geoscape.Entities.Research.Reward;
 using PhoenixPoint.Geoscape.View.ViewControllers.PhoenixBase;
 using PhoenixPoint.Tactical.Entities;
 using PhoenixPoint.Tactical.Entities.Abilities;
+using PhoenixPoint.Tactical.Entities.DamageKeywords;
 using PhoenixPoint.Tactical.Entities.Equipments;
+using PhoenixPoint.Tactical.Entities.Statuses;
 using PhoenixPoint.Tactical.Entities.Weapons;
 
 namespace AssortedAdjustments
@@ -30,6 +36,92 @@ namespace AssortedAdjustments
         public static void Print()
         {
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<ResearchDef>())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                Logger.Info($"[DataHelpers_Print] Name: {def.ViewElementDef?.DisplayName1.Localize()}");
+                Logger.Info($"[DataHelpers_Print] RevealText: {def.ViewElementDef?.RevealText.Localize()}");
+                Logger.Info($"[DataHelpers_Print] UnlockText: {def.ViewElementDef?.UnlockText.Localize()}");
+                Logger.Info($"[DataHelpers_Print] CompleteText: {def.ViewElementDef?.CompleteText.Localize()}");
+                Logger.Info($"[DataHelpers_Print] BenefitsText: {def.ViewElementDef?.BenefitsText.Localize()}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<DamageKeywordDef>())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<RedeemableCodeDef>())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                Logger.Info($"[DataHelpers_Print] Allowed: {def.Allowed}");
+                Logger.Info($"[DataHelpers_Print] PlatformLimitation: {def.PlatformLimitation}");
+
+                Logger.Info($"[DataHelpers_Print] GiftedItems: {def.GiftedItems.Select(i => i.name).Join()}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TacticalItemDef>())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                Logger.Info($"[DataHelpers_Print] Armor: {def.Armor}");
+
+                Logger.Info($"[DataHelpers_Print] Name: {def.ViewElementDef?.DisplayName1.Localize()}");
+                Logger.Info($"[DataHelpers_Print] Description: {def.ViewElementDef?.Description.Localize()}");
+                Logger.Info($"[DataHelpers_Print] Tags: {def.Tags.Join()}");
+
+                Logger.Info($"[DataHelpers_Print] ---"); 
+            }
+            */
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<FrenzyStatusDef>())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                Logger.Info($"[DataHelpers_Print] WillpowerCoefficient: {def.WillpowerCoefficient}");
+                Logger.Info($"[DataHelpers_Print] SpeedCoefficient: {def.SpeedCoefficient}");
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<WeaponDef>())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+                Logger.Info($"[DataHelpers_Print] Name: {def.ViewElementDef?.DisplayName1.Localize()}");
+
+                Logger.Info($"[DataHelpers_Print] IsMountedToBody: {def.IsMountedToBody}");
+
+                Logger.Info($"[DataHelpers_Print] SpreadDegrees: {def.SpreadDegrees}");
+                Logger.Info($"[DataHelpers_Print] SpreadRadius: {def.SpreadRadius}");
+                Logger.Info($"[DataHelpers_Print] AccurateSpreadPerc: {def.AccurateSpreadPerc}");
+                Logger.Info($"[DataHelpers_Print] ReturnFirePerc: {def.ReturnFirePerc}");
+                Logger.Info($"[DataHelpers_Print] OverwatchFirePerc: {def.OverwatchFirePerc}");
+                Logger.Info($"[DataHelpers_Print] NoReturnFireFromTargets: {def.NoReturnFireFromTargets}");
+                Logger.Info($"[DataHelpers_Print] Tags: {def.Tags.Join()}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
 
             /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<TacCharacterDef>().Where(d => d.IsHuman))
@@ -71,7 +163,7 @@ namespace AssortedAdjustments
                 Logger.Info($"[DataHelpers_Print] WillPointCost: {def.WillPointCost}");
                 Logger.Info($"[DataHelpers_Print] ---");
             }
-            */ 
+            */
 
             /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<GameDifficultyLevelDef>())
