@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 
 
 ## 1.10.1.0
+- Bugfix for a vanilla problem with removing items from a manufacturing queue with more than eight items
+- Saving of loadouts optimized (now also checks for the order of items)
+- Enable item unlocks
+	- Phoenix Elite Gear (the "golden" items with adjusted stats and added manufacturing values)
+	- Independent Ammo/Weapons/Armor
+	- Living Weapons (with added manufacturing values)
+- Added some optional item adjustments
+- Added the option to cancel potential return fire when the shooter steps out of full cover
+- Support non-human recruits in extended haven tooltips
+- Ancient sites that are not yet excavated will display in light gray (instead of green).
+	- Color will change once excavated 
+- Optimize objectives for haven defenses (will now show attacking faction)
+
+
+## 1.10.1.0
 - Optimize haven tooltip visuals regarding ongoing defense missions
 - Add alertness level to haven tooltips
 - Migrate, fix and extend limited war from Sheepy
