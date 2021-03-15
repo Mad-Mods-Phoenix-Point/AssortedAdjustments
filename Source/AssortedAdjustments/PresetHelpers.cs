@@ -101,6 +101,7 @@ namespace AssortedAdjustments
             PresetMad.CostMultiplier = 0.75f;
             PresetMad.MaxWill = 25;
             PresetMad.EnableAbilityAdjustments = true;
+            PresetMad.EnableItemAdjustments = true;
             PresetMad.PauseOnExplorationSet = true;
 
             Dictionary<string, Settings> Presets = new Dictionary<string, Settings>();
