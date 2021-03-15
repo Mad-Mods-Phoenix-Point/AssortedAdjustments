@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Base.Core;
+using Base.Defs;
 using I2.Loc;
+using PhoenixPoint.Geoscape.Entities.Research;
 using PhoenixPoint.Tactical.Entities;
+using PhoenixPoint.Tactical.Entities.Equipments;
 
 namespace AssortedAdjustments
 {
@@ -40,6 +44,11 @@ namespace AssortedAdjustments
 
     internal static class Utilities
     {
+        public static bool ContainsAllItems<T>(this IEnumerable<T> a, IEnumerable<T> b)
+        {
+            return !b.Except(a).Any();
+        }
+
         public static string ToTitleCase(string s)
         {
             if (string.IsNullOrWhiteSpace(s))
@@ -48,6 +57,20 @@ namespace AssortedAdjustments
             }
             TextInfo textInfo = new CultureInfo(LocalizationManager.CurrentLanguageCode).TextInfo;
             return textInfo.ToTitleCase(textInfo.ToLower(s));
+        }
+
+        public static ResearchDef GetResearchDef(string key)
+        {
+            DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
+
+            return defRepository.GetDef(key) as ResearchDef ?? defRepository.GetAllDefs<ResearchDef>().FirstOrDefault(e => e.name == key);
+        }
+
+        public static TacticalItemDef GetTacticalItemDef(string key)
+        {
+            DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
+
+            return defRepository.GetDef(key) as TacticalItemDef ?? defRepository.GetAllDefs<TacticalItemDef>().FirstOrDefault(e => e.name == key);
         }
 
         public static bool GetKeyByTemplate(TacCharacterDef template, out string key)
