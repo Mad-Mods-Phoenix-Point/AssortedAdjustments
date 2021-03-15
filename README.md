@@ -77,6 +77,7 @@ If you wanna suffer, set "hardcore" and try to make it through.
     * Added popup in base overview to show the accumulated healing/resources output, soldiers in treatment and vehicle details.
     * Added popup in recruitment screen for the selected base with extended info too.
 * Added trade information to haven popups along with the recruits class (if any).
+* Objectives for haven defenses will now show attacking faction
 
 ### Bugfixes
 * Vanillas broken ability generation sometimes caused soldiers to have less than the expected number of personal skills
@@ -91,6 +92,8 @@ If you wanna suffer, set "hardcore" and try to make it through.
 * Maxed out soldiers now gain additional SP for their wasted XP (Rebuilds Sheepy's "Spill Exp to Skill").
     * The converted skillpoints can be assigned to the soldier's pool and/or the global pool (default: global pool).
 * Return Fire has a (configurable, default: 180) maximum reaction angle and a (configurable, default: 2) shot limit per turn (Thx pantolomin for the inspiration).
+    * Return Fire will be canceled if the shooter steps out of full cover
+    * Emphasized visuals of return fire indicator icons
 * Squad limit in missions can be configured (Vanilla: 8, Default: 10 (+2)).
 * All missions can be set to always collect any dropped items (Default: off).
 * Adjust item drop rate (lower destruction chance) and allow weapons to drop (Thx RealityMachina for the inspiration). All configurable.
@@ -159,6 +162,7 @@ If you wanna suffer, set "hardcore" and try to make it through.
 
 ### QOL
 * Intro logos and introductary movie will get skipped (Sheepy's "Skip Intro" can do even more, if you want to use that, please disable these via settings).
+* Saving of soldiers loadouts is optimized to also respect the order of items
 
 ## Settings (again)
 Everything is configurable. I tried to be very clear in naming the settings so everything should be more or less self-explanatory.  
