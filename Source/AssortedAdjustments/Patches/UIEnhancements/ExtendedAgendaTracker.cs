@@ -104,7 +104,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
             }
 
             travelTime = distance / vehicle.Stats.Speed.Value;
-            //Logger.Info($"[TravelAgenda_GetTravelTime] travelTime: {travelTime}");
+            //Logger.Info($"[ExtendedAgendaTracker_GetTravelTime] travelTime: {travelTime}");
 
             return true;
         }
