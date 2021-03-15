@@ -2,6 +2,7 @@
 using Base.Defs;
 using Base.UI;
 using PhoenixPoint.Tactical.Entities.Abilities;
+using PhoenixPoint.Tactical.Entities.Statuses;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -50,6 +51,35 @@ namespace AssortedAdjustments.Patches
                 for (int i = 0; i < pmaDef.StatModifications.Length; i++)
                 {
                     Logger.Info($"[AbilityAdjustments_Apply] StatModifications[{i}] => TargetStat: {pmaDef.StatModifications[i].TargetStat}, Modification: {pmaDef.StatModifications[i].Modification}, Value: {pmaDef.StatModifications[i].Value}");
+                }
+            }
+
+
+
+            // Frenzy
+            foreach (FrenzyStatusDef def in defRepository.DefRepositoryDef.AllDefs.OfType<FrenzyStatusDef>())
+            {
+                if (def.name.Contains("Frenzy")) // This is needed as there are are than one
+                {
+                    def.SpeedCoefficient = 0.33f;
+                    def.Visuals.Description = new LocalizedTextBind("Speed increase of 33% and panic immunity", true);
+
+                    Logger.Info($"[AbilityAdjustments_Apply] ({def.name}), SpeedCoefficient: {def.SpeedCoefficient}, Description: {def.Visuals.Description.Localize()}");
+                }
+            }
+            foreach (InstilFrenzyAbilityDef def in defRepository.DefRepositoryDef.AllDefs.OfType<InstilFrenzyAbilityDef>())
+            {
+                def.ViewElementDef.Description = new LocalizedTextBind("Instills Frenzy in allies within 20 tiles for two turns, increasing their speed by 33% and granting them panic immunity", true);
+
+                Logger.Info($"[AbilityAdjustments_Apply] ({def.name}), Description: {def.ViewElementDef.Description.Localize()}");
+            }
+            foreach (HealAbilityDef def in defRepository.DefRepositoryDef.AllDefs.OfType<HealAbilityDef>())
+            {
+                if (def.name.Contains("Stimpack"))
+                {
+                    def.ViewElementDef.Description = new LocalizedTextBind("Instills Frenzy for two turns, increasing speed by 33% and granting panic immunity", true);
+
+                    Logger.Info($"[AbilityAdjustments_Apply] ({def.name}), Description: {def.ViewElementDef.Description.Localize()}");
                 }
             }
         }
