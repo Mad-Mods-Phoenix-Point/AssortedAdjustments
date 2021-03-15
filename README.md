@@ -85,6 +85,7 @@ If you wanna suffer, set "hardcore" and try to make it through.
 * Vanillas post-mission replenishment module potentially shows items of dismissed/dead characters
     * Happens for example when you dismiss soldiers while their loadout is incomplete
     * This is fixed.
+* Removing items from the manufacturing queue now works properly all the time
 
 ### Gameplay
 * Maxed out soldiers now gain additional SP for their wasted XP (Rebuilds Sheepy's "Spill Exp to Skill").
@@ -115,12 +116,6 @@ If you wanna suffer, set "hardcore" and try to make it through.
     * You can't scrap your last aircraft because the game bugs out totally in geoscape without any vehicle to select.
 * Starting resources and general skillpoint gains are adjustable now, by default they resemble the game's easy setting.
 * You can set the size of groundehicles and mutogs (space occupied in aircraft, default: 2)
-* You can enable some minor adjustments to a few tactical abilities (Default: off).
-    * "RetrieveTurret" will cost only 1AP
-    * "BigBooms" will cost only 4WP
-    * "Cautious" will only lose 5% damage
-    * "Reckless" will only lose 5% accuracy
-    * "Strongman" will only lose 10 perception
 * Exposed some diffculty settings regarding population census (the "doom meter").
     * You can reduce (or completely disable) the death rate of havens caused by starvation
     * By default the values are equivalent to vanilla's settings
@@ -132,6 +127,12 @@ If you wanna suffer, set "hardcore" and try to make it through.
     * Boost haven defenses to make destructions less likely
     * Convert potential haven destruction to a less severe zone destruction
     * See settings reference for details
+* Certain items will be available for production after their (custom) research requirements are met
+    * Phoenix "Elite" Gear (the "golden" items with adjusted stats)
+	* Independent Ammo
+    * Independent Weapons (Default: off)
+    * Independent Armor (Default: off)
+	* Living Weapons (Default: off)
 
 #### Facilities
 * Medical bays and vehicle bays have their base healing/repair rate doubled.
@@ -140,6 +141,21 @@ If you wanna suffer, set "hardcore" and try to make it through.
 * Research labs generate 1(one) Tech per day.
 * Prepared several other values to be changed via settings.
 * All values configurable.
+
+#### Abilities
+* You can enable some minor adjustments to a few tactical abilities (Default: off).
+    * "RetrieveTurret" will cost only 1AP (Vanilla: 2AP)
+    * "BigBooms" will cost only 4WP (Vanilla: 5WP)
+    * "Cautious" will only lose 5% damage (Vanilla: 10%)
+    * "Reckless" will only lose 5% accuracy (Vanilla: 10%)
+    * "Strongman" will only lose 10 perception (Vanilla: 15)
+    * "Frenzy" will only boost speed by 33% (Vanilla: 50%)
+
+#### Items
+* You can enable some minor adjustments to a few tactical items (Default: off).
+    * "Subjector" will do slightly more effective
+    * "HeavyRocketLauncher" will have some weapon spread
+    * "ShotgunRifle" (Mercy SG) will be slightly more accurate
 
 ### QOL
 * Intro logos and introductary movie will get skipped (Sheepy's "Skip Intro" can do even more, if you want to use that, please disable these via settings).
