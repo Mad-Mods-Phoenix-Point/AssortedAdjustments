@@ -91,6 +91,20 @@ namespace AssortedAdjustments
 
 
 
+        [Annotation("General switch to enable the related subfeatures.", "True", true, "Item Unlocks")]
+        public bool UnlockItemsByResearch = true;
+        [Annotation("Unlocks phoenix elite gear created from the redeemable 'gold' items by adjusting their stats, adding damage types and add manufacturing costs. These will show up once certain research requirements are met.", "True")]
+        public bool UnlockPhoenixEliteGear = true;
+        [Annotation("Unlocks living weapons for manufacturing. These will show up once certain research requirements are met. Will NOT check for the completion of the related missions.", "False")]
+        public bool UnlockLivingWeapons = false;
+        [Annotation("Unlocks independent ammunition items after basic research is completed. QOL for the early game.", "True")]
+        public bool UnlockIndependentAmmunition = true;
+        [Annotation("Unlocks independent weapons items after basic research is completed. If you wish to clutter up your manufacturing list.", "False")]
+        public bool UnlockIndependentWeapons = false;
+        [Annotation("Unlocks independent armor items after basic research is completed. If you wish to clutter up your manufacturing list.", "False")]
+        public bool UnlockIndependentArmor = false;
+
+
         [Annotation("General switch to enable the related subfeatures.", "True", true, "Recruit Generation")]
         public bool EnableCustomRecruitGeneration = true;
         [Annotation("Fixed amount of recruits that get generated for phoenix faction. Note that more than 3 looks like shit because of the broken UI. Note that the UI cannot handle more than 4 at all.", "3")]
@@ -263,6 +277,9 @@ namespace AssortedAdjustments
 
         [Annotation("Enable minor adjustments to some abilities, see readme for details", "False", true, "Abilities")]
         public bool EnableAbilityAdjustments = false;
+
+        [Annotation("Enable minor adjustments to some items, see readme for details", "False", true, "Items")]
+        public bool EnableItemAdjustments = false;
 
 
 

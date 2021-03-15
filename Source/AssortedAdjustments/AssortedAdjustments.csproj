@@ -70,6 +70,9 @@
     <Compile Include="AnnotationHelpers.cs" />
     <Compile Include="DataHelpers.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Patches\Bugfixes\CancelManufacture.cs" />
+    <Compile Include="Patches\UnlockItemsByResearch.cs" />
+    <Compile Include="Patches\EnableItemAdjustments.cs" />
     <Compile Include="Patches\LimitedWar\AttackLimits.cs" />
     <Compile Include="Patches\LimitedWar\Config.cs" />
     <Compile Include="Patches\LimitedWar\Alertness.cs" />

@@ -147,6 +147,16 @@ namespace AssortedAdjustments
             {
                 Patches.AbilityAdjustments.Apply();
             }
+
+            if (Settings.EnableItemAdjustments)
+            {
+                Patches.ItemAdjustments.Apply();
+            }
+
+            if (Settings.UnlockItemsByResearch)
+            {
+                Patches.UnlockItemsByResearch.Init();
+            }
         }
 
 
