@@ -73,12 +73,13 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 return AssortedAdjustments.Settings.EnableUIEnhancements;
             }
 
+
+
+            // Uncovered, but not yet excavated ancient sites will be displayed in light gray
             public static void Postfix(GeoSiteVisualsController __instance, GeoSite site)
             {
                 try
                 {
-                    Logger.Info($"[GeoSiteVisualsController_RefreshSiteVisuals_POSTFIX] Called.");
-
                     if (!site.IsArcheologySite)
                     {
                         return;
@@ -88,7 +89,6 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     if (site.Owner.IsEnvironmentFaction && !site.IsExcavated())
                     {
                         Material customMaterial = instance.GetAncientSite(false);
-                        Logger.Info($"[GeoSiteVisualsController_RefreshSiteVisuals_POSTFIX] customMaterial.color: {customMaterial.color}");
                         customMaterial.color = new Color32(224, 224, 224, 255);
 
                         //__instance.ReplaceSiteVisuals(customMaterial);
