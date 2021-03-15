@@ -57,20 +57,20 @@ namespace AssortedAdjustments.Patches
                 bool isStandAloneItem = tiDef.Tags.ToString().Contains("StandaloneItem_TagDef");
                 if (isStandAloneItem)
                 {
-                    Logger.Info($"[ItemAdjustments_Apply] tiDef: {tiDef.name}");
+                    Logger.Info($"[UnlockItemsByResearch_Init] tiDef: {tiDef.name}");
 
                     string baseItemKey = tiDef.name.Replace("_Gold", "");
                     TacticalItemDef baseItemDef = Utilities.GetTacticalItemDef(baseItemKey);
 
-                    tiDef.ManufactureTech = baseItemDef.ManufactureTech * 1.5f;
-                    tiDef.ManufactureMaterials = baseItemDef.ManufactureMaterials * 1.3f;
-                    tiDef.ManufactureMutagen = baseItemDef.ManufactureMutagen * 1.2f;
-                    tiDef.ManufactureLivingCrystals = baseItemDef.ManufactureLivingCrystals * 1.2f;
-                    tiDef.ManufactureOricalcum = baseItemDef.ManufactureOricalcum * 1.2f;
-                    tiDef.ManufactureProteanMutane = baseItemDef.ManufactureProteanMutane * 1.2f;
-                    tiDef.ManufacturePointsCost = baseItemDef.ManufacturePointsCost * 1.4f;
+                    tiDef.ManufactureTech = baseItemDef.ManufactureTech * 1.8f;
+                    tiDef.ManufactureMaterials = baseItemDef.ManufactureMaterials * 1.5f;
+                    tiDef.ManufactureMutagen = baseItemDef.ManufactureMutagen * 1.5f;
+                    tiDef.ManufactureLivingCrystals = baseItemDef.ManufactureLivingCrystals * 1.5f;
+                    tiDef.ManufactureOricalcum = baseItemDef.ManufactureOricalcum * 1.5f;
+                    tiDef.ManufactureProteanMutane = baseItemDef.ManufactureProteanMutane * 1.5f;
+                    tiDef.ManufacturePointsCost = baseItemDef.ManufacturePointsCost * 1.6f;
 
-                    tiDef.ViewElementDef.DisplayPriority = baseItemDef.ViewElementDef.DisplayPriority + 3;
+                    tiDef.ViewElementDef.DisplayPriority = baseItemDef.ViewElementDef.DisplayPriority + 10;
 
                     if (tiDef.name.Contains("Assault_Helmet"))
                     {
@@ -190,7 +190,7 @@ namespace AssortedAdjustments.Patches
                             wDef.DamagePayload.DamageKeywords[1].Value = 25;  // Shred, default: 20
                             wDef.DamagePayload.DamageKeywords[2].Value = 300;  // Shock, default: 280
 
-                            tiDef.ViewElementDef.DisplayPriority = baseItemDef.ViewElementDef.DisplayPriority;
+                            tiDef.ViewElementDef.DisplayPriority = baseItemDef.ViewElementDef.DisplayPriority + 1;
 
                             string newName = "Hel III Cannon";
                             wDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
@@ -658,7 +658,7 @@ namespace AssortedAdjustments.Patches
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.EnableItemAdjustments;
+                return AssortedAdjustments.Settings.UnlockItemsByResearch;
             }
 
             public static void Postfix(bool __result, string Term, ref string Translation)

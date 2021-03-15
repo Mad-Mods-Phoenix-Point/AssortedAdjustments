@@ -110,6 +110,7 @@ namespace AssortedAdjustments
                 Logger.Info($"[DataHelpers_Print] Name: {def.ViewElementDef?.DisplayName1.Localize()}");
 
                 Logger.Info($"[DataHelpers_Print] IsMountedToBody: {def.IsMountedToBody}");
+                Logger.Info($"[DataHelpers_Print] UseAimIK: {def.UseAimIK}");
 
                 Logger.Info($"[DataHelpers_Print] SpreadDegrees: {def.SpreadDegrees}");
                 Logger.Info($"[DataHelpers_Print] SpreadRadius: {def.SpreadRadius}");

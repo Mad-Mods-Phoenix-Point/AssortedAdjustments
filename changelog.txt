@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 
 
+## 1.10.1.2
+- Hotfix for some minor localization issues with UnlockItemsByResearch
+
+
 ## 1.10.1.1
 - Bugfix for a vanilla problem with removing items from a manufacturing queue with more than eight items
 - Saving of loadouts optimized (now also checks for the order of items)

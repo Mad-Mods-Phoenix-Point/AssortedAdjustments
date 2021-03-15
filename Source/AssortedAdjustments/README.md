@@ -156,7 +156,7 @@ If you wanna suffer, set "hardcore" and try to make it through.
 
 #### Items
 * You can enable some minor adjustments to a few tactical items (Default: off).
-    * "Subjector" will do slightly more effective
+    * "Subjector" (Subjugator) will do slightly more effective
     * "HeavyRocketLauncher" will have some weapon spread
     * "ShotgunRifle" (Mercy SG) will be slightly more accurate
 

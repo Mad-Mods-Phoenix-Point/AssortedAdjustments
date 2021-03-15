@@ -5,6 +5,7 @@ using System.Linq;
 using Base.Core;
 using Base.Defs;
 using I2.Loc;
+using PhoenixPoint.Common.Entities.GameTags;
 using PhoenixPoint.Geoscape.Entities.Research;
 using PhoenixPoint.Tactical.Entities;
 using PhoenixPoint.Tactical.Entities.Equipments;
@@ -71,6 +72,13 @@ namespace AssortedAdjustments
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
 
             return defRepository.GetDef(key) as TacticalItemDef ?? defRepository.GetAllDefs<TacticalItemDef>().FirstOrDefault(e => e.name == key);
+        }
+
+        public static GameTagDef GetGameTagDef(string key)
+        {
+            DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
+
+            return defRepository.GetDef(key) as GameTagDef ?? defRepository.GetAllDefs<GameTagDef>().FirstOrDefault(e => e.name == key);
         }
 
         public static bool GetKeyByTemplate(TacCharacterDef template, out string key)

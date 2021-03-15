@@ -1,5 +1,7 @@
 ﻿using Base.Core;
 using Base.Defs;
+using Harmony;
+using PhoenixPoint.Common.Entities.GameTags;
 using PhoenixPoint.Tactical.Entities.Weapons;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +14,7 @@ namespace AssortedAdjustments.Patches
         {
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
 
-            List<string> weaponsToChange = new List<string> { "Subjector", "HeavyRocketLauncher", "ShotgunRifle" };
+            List<string> weaponsToChange = new List<string> { "Subjector", "HeavyRocketLauncher", "ShotgunRifle", "LaserArrayPack" };
             foreach (WeaponDef wDef in defRepository.DefRepositoryDef.AllDefs.OfType<WeaponDef>().Where(d => weaponsToChange.Any(s => d.name.Contains(s))))
             {
                 if (wDef.name.Contains("Subjector"))
@@ -35,6 +37,14 @@ namespace AssortedAdjustments.Patches
                     wDef.SpreadDegrees = 3f; // Default: 4
 
                     Logger.Info($"[ItemAdjustments_Apply] wDef: {wDef.name}, SpreadDegrees: {wDef.SpreadDegrees}");
+                }
+                else if (wDef.name.Contains("LaserArrayPack"))
+                {
+                    wDef.SpreadDegrees = 0.1f; // Default: 0
+                    wDef.Tags.Remove(Utilities.GetGameTagDef("ExplosiveWeapon_TagDef"));
+                    wDef.DamagePayload.DamageKeywords[0].Value = 60f;
+
+                    Logger.Info($"[ItemAdjustments_Apply] wDef: {wDef.name}, SpreadDegrees: {wDef.SpreadDegrees}, Damage: {wDef.DamagePayload.DamageKeywords[0].Value}, Tags: {wDef.Tags.Join()}");
                 }
             }
         }
