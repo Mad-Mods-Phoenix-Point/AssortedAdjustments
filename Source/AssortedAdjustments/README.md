@@ -103,6 +103,7 @@ If you wanna suffer, set "hardcore" and try to make it through.
     * Personal abilities limit raised to 5 (configurable). Note that this in <b>not</b> applied retroactively but only affects freshly generated characters.
     * Stamina is raised to 50 by default, soldiers are tired/exhausted at 15/5.
 * Aircraft speeds and space slightly raised. You can configure that too.
+* Available ammunition for ground vehicles raised.
 * Reduced manufacturing times and resource costs for all items. Raised their scrap values.
 * Disable ambushes but retained them if inside the mist (Thx Sheepy).
 * Disable the "Nothing found" event.
@@ -136,6 +137,7 @@ If you wanna suffer, set "hardcore" and try to make it through.
     * Independent Weapons (Default: off)
     * Independent Armor (Default: off)
 	* Living Weapons (Default: off)
+    * Living Armor (Default: off)
 
 #### Facilities
 * Medical bays and vehicle bays have their base healing/repair rate doubled.
