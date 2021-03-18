@@ -57,18 +57,16 @@ namespace AssortedAdjustments.Patches
                 bool isStandAloneItem = tiDef.Tags.ToString().Contains("StandaloneItem_TagDef");
                 if (isStandAloneItem)
                 {
-                    Logger.Info($"[UnlockItemsByResearch_Init] tiDef: {tiDef.name}");
-
                     string baseItemKey = tiDef.name.Replace("_Gold", "");
                     TacticalItemDef baseItemDef = Utilities.GetTacticalItemDef(baseItemKey);
 
                     tiDef.ManufactureTech = baseItemDef.ManufactureTech * 1.8f;
-                    tiDef.ManufactureMaterials = baseItemDef.ManufactureMaterials * 1.5f;
+                    tiDef.ManufactureMaterials = baseItemDef.ManufactureMaterials * 1.6f;
                     tiDef.ManufactureMutagen = baseItemDef.ManufactureMutagen * 1.5f;
                     tiDef.ManufactureLivingCrystals = baseItemDef.ManufactureLivingCrystals * 1.5f;
                     tiDef.ManufactureOricalcum = baseItemDef.ManufactureOricalcum * 1.5f;
                     tiDef.ManufactureProteanMutane = baseItemDef.ManufactureProteanMutane * 1.5f;
-                    tiDef.ManufacturePointsCost = baseItemDef.ManufacturePointsCost * 1.6f;
+                    tiDef.ManufacturePointsCost = baseItemDef.ManufacturePointsCost * 1.7f;
 
                     tiDef.ViewElementDef.DisplayPriority = baseItemDef.ViewElementDef.DisplayPriority + 10;
 
@@ -79,6 +77,7 @@ namespace AssortedAdjustments.Patches
                         tiDef.BodyPartAspectDef.Accuracy = 0.06f;
 
                         string newName = "Odin-2 Helmet";
+                        tiDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                         tiDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                         ModifiedLocalizationTerms.Add(newName);
                     }
@@ -89,6 +88,7 @@ namespace AssortedAdjustments.Patches
                         tiDef.BodyPartAspectDef.Accuracy = 0.03f;
 
                         string newName = "Odin-2 Body Armor";
+                        tiDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                         tiDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                         ModifiedLocalizationTerms.Add(newName);
                     }
@@ -99,6 +99,7 @@ namespace AssortedAdjustments.Patches
                         tiDef.BodyPartAspectDef.Accuracy = 0.02f;
 
                         string newName = "Odin-2 Leg Armor";
+                        tiDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                         tiDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                         ModifiedLocalizationTerms.Add(newName);
                     }
@@ -111,6 +112,7 @@ namespace AssortedAdjustments.Patches
                         tiDef.BodyPartAspectDef.Accuracy = -0.04f;
 
                         string newName = "Golem-C Helmet";
+                        tiDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                         tiDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                         ModifiedLocalizationTerms.Add(newName);
                     }
@@ -121,6 +123,7 @@ namespace AssortedAdjustments.Patches
                         tiDef.BodyPartAspectDef.Accuracy = -0.06f;
 
                         string newName = "Golem-C Body Armor";
+                        tiDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                         tiDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                         ModifiedLocalizationTerms.Add(newName);
                     }
@@ -131,6 +134,7 @@ namespace AssortedAdjustments.Patches
                         tiDef.BodyPartAspectDef.Accuracy = -0.03f;
 
                         string newName = "Golem-C Leg Armor";
+                        tiDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                         tiDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                         ModifiedLocalizationTerms.Add(newName);
                     }
@@ -143,6 +147,7 @@ namespace AssortedAdjustments.Patches
                         tiDef.BodyPartAspectDef.Accuracy = 0.1f;
 
                         string newName = "Banshee-2 Helmet";
+                        tiDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                         tiDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                         ModifiedLocalizationTerms.Add(newName);
 
@@ -154,6 +159,7 @@ namespace AssortedAdjustments.Patches
                         tiDef.BodyPartAspectDef.Accuracy = 0.05f;
 
                         string newName = "Banshee-2 Body Armor";
+                        tiDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                         tiDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                         ModifiedLocalizationTerms.Add(newName);
                     }
@@ -164,6 +170,7 @@ namespace AssortedAdjustments.Patches
                         tiDef.BodyPartAspectDef.Accuracy = 0.05f;
 
                         string newName = "Banshee-2 Leg Armor";
+                        tiDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                         tiDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                         ModifiedLocalizationTerms.Add(newName);
                     }
@@ -172,20 +179,21 @@ namespace AssortedAdjustments.Patches
                     {
                         if (wDef.name.Contains("AssaultRifle"))
                         {
-                            wDef.SpreadDegrees -= 0.1f;
+                            wDef.SpreadDegrees -= 0.2f;
                             wDef.DamagePayload.DamageKeywords[0].Value = 35; // Damage, default: 30
                             wDef.DamagePayload.DamageKeywords[1].Value = 2;  // Shred, default: 1
 
                             tiDef.ViewElementDef.DisplayPriority = baseItemDef.ViewElementDef.DisplayPriority;
 
                             string newName = "Ares AR-2";
+                            wDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                             wDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                             ModifiedLocalizationTerms.Add(newName);
                         }
 
                         if (wDef.name.Contains("HeavyCannon"))
                         {
-                            wDef.SpreadDegrees -= 0.3f;
+                            wDef.SpreadDegrees -= 0.5f;
                             wDef.DamagePayload.DamageKeywords[0].Value = 220; // Damage, default: 200
                             wDef.DamagePayload.DamageKeywords[1].Value = 25;  // Shred, default: 20
                             wDef.DamagePayload.DamageKeywords[2].Value = 300;  // Shock, default: 280
@@ -193,13 +201,14 @@ namespace AssortedAdjustments.Patches
                             tiDef.ViewElementDef.DisplayPriority = baseItemDef.ViewElementDef.DisplayPriority + 1;
 
                             string newName = "Hel III Cannon";
+                            wDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                             wDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                             ModifiedLocalizationTerms.Add(newName);
                         }
 
                         if (wDef.name.Contains("SniperRifle"))
                         {
-                            wDef.SpreadDegrees -= 0.05f;
+                            wDef.SpreadDegrees -= 0.1f;
                             wDef.DamagePayload.DamageKeywords[0].Value = 120; // Damage, default: 110
 
                             DamageKeywordDef piercingDamageDef = defRepository.GetAllDefs<DamageKeywordDef>().FirstOrDefault(e => e.name == "Piercing_DamageKeywordDataDef");
@@ -211,6 +220,7 @@ namespace AssortedAdjustments.Patches
                             tiDef.ViewElementDef.DisplayPriority = baseItemDef.ViewElementDef.DisplayPriority;
 
                             string newName = "Firebird SR-1";
+                            wDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                             wDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                             ModifiedLocalizationTerms.Add(newName);
                         }
@@ -224,6 +234,7 @@ namespace AssortedAdjustments.Patches
                 if (tiDef.name.Contains("AssaultRifle"))
                 {
                     string newName = "Ares AR Magazine";
+                    tiDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                     tiDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                     ModifiedLocalizationTerms.Add(newName);
                 }
@@ -231,6 +242,7 @@ namespace AssortedAdjustments.Patches
                 if (tiDef.name.Contains("HeavyCannon"))
                 {
                     string newName = "Hel Cannon Magazine";
+                    tiDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                     tiDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                     ModifiedLocalizationTerms.Add(newName);
                 }
@@ -239,12 +251,13 @@ namespace AssortedAdjustments.Patches
                 //if (tiDef.name.Contains("SniperRifle"))
                 //{                 
                 //      string newName = "Firebird SR Magazine";
+                //      tiDef.ViewElementDef.DisplayName1 = new LocalizedTextBind(newName, true);
                 //      tiDef.ViewElementDef.DisplayName2 = new LocalizedTextBind(newName, true);
                 //      ModifiedLocalizationTerms.Add(newName);                
                 //}
             }
 
-            // Add manufacturing costs to living weapons
+            // Add manufacturing costs to living weapons/armor
             foreach (var wDef in defRepository.DefRepositoryDef.AllDefs.OfType<WeaponDef>().Where(d => d.name.Contains("AcidAssaultRifle") || d.name.Contains("PoisonMachineGun")))
             {
                 wDef.ManufactureMutagen = 150f;
@@ -262,6 +275,37 @@ namespace AssortedAdjustments.Patches
                     wDef.ManufactureTech = 76f;
                     wDef.ManufactureMaterials = 142f;
                     wDef.ManufacturePointsCost = 218f;
+                }
+            }
+            foreach (var tiDef in defRepository.DefRepositoryDef.AllDefs.OfType<TacticalItemDef>().Where(d => d.name.Contains("Chitin")))
+            {
+                bool isStandAloneItem = tiDef.Tags.ToString().Contains("StandaloneItem_TagDef");
+                if (isStandAloneItem)
+                {
+                    tiDef.ViewElementDef.DisplayPriority = 2342;
+
+                    if (tiDef.name.Contains("Helmet"))
+                    {
+                        tiDef.ManufactureTech = 48f;
+                        tiDef.ManufactureMaterials = 109f;
+                        tiDef.ManufactureMutagen = 210f;
+                        tiDef.ManufacturePointsCost = 251f;
+
+                    }
+                    else if (tiDef.name.Contains("Torso"))
+                    {
+                        tiDef.ManufactureTech = 73f;
+                        tiDef.ManufactureMaterials = 138f;
+                        tiDef.ManufactureMutagen = 240f;
+                        tiDef.ManufacturePointsCost = 307f;
+                    }
+                    else if (tiDef.name.Contains("Legs"))
+                    {
+                        tiDef.ManufactureTech = 67f;
+                        tiDef.ManufactureMaterials = 127f;
+                        tiDef.ManufactureMutagen = 225f;
+                        tiDef.ManufacturePointsCost = 276f;
+                    }
                 }
             }
 
@@ -283,10 +327,12 @@ namespace AssortedAdjustments.Patches
                 },
                 RequiredResearchDefs = new List<string>()
                 {
-                    "PX_PhoenixProject_ResearchDef"
+                    "PX_AtmosphericAnalysis_ResearchDef",
+                    "PX_PhoenixProject_ResearchDef",
+                    "PX_HavenRecruits_ResearchDef"
                 },
-                AppendCompleteText = "",
-                AppendBenefitsText = "\nNew gear is available for production"
+                AppendCompleteText = "\n\nWith the combined knowledge about {0} we can now build specialized, beautiful new gear.",
+                AppendBenefitsText = "\nNew gear is available for production."
             };
 
             UnlockConfiguration LivingWeapons = new UnlockConfiguration("LivingWeapons")
@@ -303,7 +349,25 @@ namespace AssortedAdjustments.Patches
                     "PX_MutagenHarvesting_ResearchDef"
                 },
                 AppendCompleteText = "\n\nWith the combined knowledge about {0} we can now build specialized, organic weapons.",
-                AppendBenefitsText = "\nNew weapons are available for production"
+                AppendBenefitsText = "\nNew weapons are available for production."
+            };
+
+            UnlockConfiguration LivingArmor = new UnlockConfiguration("LivingArmor")
+            {
+                UnlockableItemDefs = new List<string>()
+                {
+                    "PX_Chitin_Helmet_ItemDef",
+                    "PX_Chitin_Torso_ItemDef",
+                    "PX_Chitin_Legs_ItemDef"
+                },
+                RequiredResearchDefs = new List<string>()
+                {
+                    "PX_MutagenHarvesting_ResearchDef",
+                    "ANU_MutationTech3_ResearchDef",
+                    "SYN_Bionics3_ResearchDef"
+                },
+                AppendCompleteText = "\n\nWith the combined knowledge about {0} we can now build specialized, organic armor.",
+                AppendBenefitsText = "\nNew armor is available for production."
             };
 
             UnlockConfiguration PhoenixEliteGear = new UnlockConfiguration("PhoenixEliteGear")
@@ -400,6 +464,10 @@ namespace AssortedAdjustments.Patches
             if (AssortedAdjustments.Settings.UnlockLivingWeapons)
             {
                 UnlockConfigurations.Add(LivingWeapons);
+            }
+            if (AssortedAdjustments.Settings.UnlockLivingArmor)
+            {
+                UnlockConfigurations.Add(LivingArmor);
             }
             if (AssortedAdjustments.Settings.UnlockIndependentAmmunition)
             {

@@ -543,7 +543,7 @@ namespace AssortedAdjustments.Patches
             {
                 try
                 {
-                    Logger.Debug($"[GeoHaven_CheckShouldSpawnRecruit_PREFIX] Ignoring unit limits and rng factors for haven recruit generation");
+                    //Logger.Debug($"[GeoHaven_CheckShouldSpawnRecruit_PREFIX] Ignoring unit limits and rng factors for haven recruit generation");
 
                     if (!__instance.IsRecruitmentEnabled || !__instance.ZonesStats.CanGenerateRecruit)
                     {

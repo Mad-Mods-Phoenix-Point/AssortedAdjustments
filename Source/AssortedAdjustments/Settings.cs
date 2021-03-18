@@ -97,6 +97,8 @@ namespace AssortedAdjustments
         public bool UnlockPhoenixEliteGear = true;
         [Annotation("Unlocks living weapons for manufacturing. These will show up once certain research requirements are met. Will NOT check for the completion of the related missions.", "False")]
         public bool UnlockLivingWeapons = false;
+        [Annotation("Unlocks living armor for manufacturing. These will show up once certain research requirements are met. Will NOT check for the completion of the related missions.", "False")]
+        public bool UnlockLivingArmor = false;
         [Annotation("Unlocks independent ammunition items after basic research is completed. QOL for the early game.", "True")]
         public bool UnlockIndependentAmmunition = true;
         [Annotation("Unlocks independent weapons items after basic research is completed. If you wish to clutter up your manufacturing list.", "False")]
@@ -152,7 +154,9 @@ namespace AssortedAdjustments
         public int DifficultyOverrideStarvationMistDeathsFlat = 15;
         [Annotation("Completely disable population reduction by starvation. Only haven destructions will drop the bar.", "False")]
         public bool DifficultyOverrideDisableDeathByStarvation = false;
-
+        [Annotation("Mist expansion rate in kilometres per hour, vanilla default is 30", "30")]
+        public int DifficultyOverrideMistExpansionRate = 30;
+        
 
 
         [Annotation("Fully leveled soldiers will convert some experience to skill points. Base rate is dependent on difficulty setting, somewhere between 1 and 2 percent.", "True", true, "Progression")]
@@ -320,6 +324,12 @@ namespace AssortedAdjustments
         public int OccupyingSpaceScarab = 2;
         [Annotation("Size of Aspida for squad/space calculations, vanilla default is 3", "2")]
         public int OccupyingSpaceAspida = 2;
+        [Annotation("Ammunition for Armadillo's turret, vanilla default is 64", "96")]
+        public int AmmoArmadillo = 96;
+        [Annotation("Ammunition for Scarab's turret, vanilla default is 8", "16")]
+        public int AmmoScarab = 16;
+        [Annotation("Ammunition for Aspida's arms, vanilla default is 12", "18")]
+        public int AmmoAspida = 18;
 
 
 

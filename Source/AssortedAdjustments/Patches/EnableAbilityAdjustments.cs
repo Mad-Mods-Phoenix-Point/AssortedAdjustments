@@ -14,7 +14,7 @@ namespace AssortedAdjustments.Patches
         {
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
 
-            List<string> tacticalAbilitiesToChange = new List<string> { "RetrieveTurret", "BigBooms" };
+            List<string> tacticalAbilitiesToChange = new List<string> { "RetrieveTurret", "BigBooms", "RemoveFacehugger" };
             foreach (TacticalAbilityDef taDef in defRepository.DefRepositoryDef.AllDefs.OfType<TacticalAbilityDef>().Where(d => tacticalAbilitiesToChange.Any(s => d.name.Contains(s))))
             {
                 if (taDef.name.Contains("RetrieveTurret"))
@@ -24,6 +24,10 @@ namespace AssortedAdjustments.Patches
                 else if (taDef.name.Contains("BigBooms"))
                 {
                     taDef.WillPointCost = 4f;
+                }
+                else if (taDef.name.Contains("RemoveFacehugger"))
+                {
+                    taDef.ActionPointCost = 0.25f;
                 }
                 Logger.Info($"[AbilityAdjustments_Apply] taDef: {taDef.name}, GUID: {taDef.Guid}, ActionPointCost: {taDef.ActionPointCost}, WillPointCost: {taDef.WillPointCost}, Description: {taDef.ViewElementDef?.Description.Localize()}");
             }

@@ -5,6 +5,7 @@ using Base.Defs;
 using PhoenixPoint.Geoscape.Entities;
 using PhoenixPoint.Geoscape.Entities.Research.Reward;
 using PhoenixPoint.Tactical.Entities;
+using PhoenixPoint.Tactical.Entities.Weapons;
 
 namespace AssortedAdjustments.Patches
 {
@@ -68,6 +69,26 @@ namespace AssortedAdjustments.Patches
 
                     Logger.Info($"[VehicleAdjustments_Apply] tcDef: {tcDef.name}, GUID: {tcDef.Guid}, Volume: {tcDef.Volume}");
                 }
+            }
+
+            List<string> turretsToChange = new List<string>() { "Armadillo_Gauss_Turret", "Scarab_Missile_Turret", "Aspida_Arms" };
+            foreach (WeaponDef wDef in defRepository.DefRepositoryDef.AllDefs.OfType<WeaponDef>().Where(d => turretsToChange.Any(s => d.name.Contains(s))))
+            {
+
+                if (wDef.name.Contains("Armadillo"))
+                {
+                    wDef.ChargesMax = AssortedAdjustments.Settings.AmmoArmadillo;
+                }
+                else if (wDef.name.Contains("Scarab"))
+                {
+                    wDef.ChargesMax = AssortedAdjustments.Settings.AmmoScarab;
+                }
+                else if (wDef.name.Contains("Aspida"))
+                {
+                    wDef.ChargesMax = AssortedAdjustments.Settings.AmmoAspida;
+                }
+
+                Logger.Info($"[VehicleAdjustments_Apply] wDef: {wDef.name}, GUID: {wDef.Guid}, ChargesMax: {wDef.ChargesMax}");
             }
 
 

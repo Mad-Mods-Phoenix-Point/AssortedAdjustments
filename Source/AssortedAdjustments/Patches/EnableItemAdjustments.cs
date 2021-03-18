@@ -42,7 +42,7 @@ namespace AssortedAdjustments.Patches
                 {
                     wDef.SpreadDegrees = 0.1f; // Default: 0
                     wDef.Tags.Remove(Utilities.GetGameTagDef("ExplosiveWeapon_TagDef"));
-                    wDef.DamagePayload.DamageKeywords[0].Value = 60f;
+                    wDef.DamagePayload.DamageKeywords[0].Value = 55f;
 
                     Logger.Info($"[ItemAdjustments_Apply] wDef: {wDef.name}, SpreadDegrees: {wDef.SpreadDegrees}, Damage: {wDef.DamagePayload.DamageKeywords[0].Value}, Tags: {wDef.Tags.Join()}");
                 }

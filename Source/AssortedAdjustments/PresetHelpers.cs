@@ -14,6 +14,7 @@ namespace AssortedAdjustments
             // Vanilla
             Settings PresetVanilla = api("config", null) as Settings;
             PresetVanilla.DisableRocksAtBases = false;
+            PresetVanilla.EnableLimitedWar = false;
             PresetVanilla.EnableCustomRecruitGeneration = false;
             PresetVanilla.EnableDifficultyOverrides = false;
             PresetVanilla.EnableExperienceToSkillpointConversion = false;
@@ -23,6 +24,7 @@ namespace AssortedAdjustments
             PresetVanilla.EnableSoldierAdjustments = false;
             PresetVanilla.EnableVehicleAdjustments = false;
             PresetVanilla.EnableEconomyAdjustments = false;
+            PresetVanilla.DisableAmbushes = false;
 
             // Hardcore
             Settings PresetHardcore = api("config", null) as Settings;
@@ -46,6 +48,7 @@ namespace AssortedAdjustments
             PresetHardcore.DifficultyOverrideStarvationMistDeathsPart = 0.04f;
             PresetHardcore.DifficultyOverrideStarvationDeathsFlat = 10;
             PresetHardcore.DifficultyOverrideStarvationMistDeathsFlat = 20;
+            PresetHardcore.DifficultyOverrideMistExpansionRate = 35;
             PresetHardcore.EnableExperienceToSkillpointConversion = false;
             PresetHardcore.EnableMissionAdjustments = false;
             PresetHardcore.EnablePlentifulItemDrops = false;

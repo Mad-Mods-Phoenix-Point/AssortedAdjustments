@@ -153,12 +153,14 @@ If you wanna suffer, set "hardcore" and try to make it through.
     * "Reckless" will only lose 5% accuracy (Vanilla: 10%)
     * "Strongman" will only lose 10 perception (Vanilla: 15)
     * "Frenzy" will only boost speed by 33% (Vanilla: 50%)
+    * "RemoveFacehugger" will cost only 1AP (Vanilla: 2AP)
 
 #### Items
 * You can enable some minor adjustments to a few tactical items (Default: off).
-    * "Subjector" (Subjugator) will do slightly more effective
+    * "Subjector" (Subjugator) is slightly more effective
     * "HeavyRocketLauncher" will have some weapon spread
     * "ShotgunRifle" (Mercy SG) will be slightly more accurate
+    * "LaserArrayPack" (Destiny III) does less damage and has the "ExplosiveWeapon"-Tag removed
 
 ### QOL
 * Intro logos and introductary movie will get skipped (Sheepy's "Skip Intro" can do even more, if you want to use that, please disable these via settings).

@@ -38,6 +38,24 @@ namespace AssortedAdjustments
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
 
             /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<GeoMistGeneratorDef>())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+
+                Logger.Info($"[DataHelpers_Print] Resolution: {def.Resolution.x}, {def.Resolution.y}");
+                Logger.Info($"[DataHelpers_Print] SpreadExponent: {def.SpreadExponent}");
+                Logger.Info($"[DataHelpers_Print] KmPerHour: {def.KmPerHour}");
+
+                Logger.Info($"[DataHelpers_Print] InitialMistExpansionRateKm: {def.InitialMistExpansionRateKm.Min}, {def.InitialMistExpansionRateKm.Max}");
+                Logger.Info($"[DataHelpers_Print] MistExpansionDecelerationKm: {def.MistExpansionDecelerationKm.Min}, {def.MistExpansionDecelerationKm.Max}");
+                Logger.Info($"[DataHelpers_Print] MaximumMistExpansionKm: {def.MaximumMistExpansionKm.Min}, {def.MaximumMistExpansionKm.Max}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
+            /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<ResearchDef>())
             {
                 Logger.Info($"[DataHelpers_Print] Def: {def.name}");
@@ -82,6 +100,7 @@ namespace AssortedAdjustments
                 Logger.Info($"[DataHelpers_Print] Def: {def.name}");
                 Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
                 Logger.Info($"[DataHelpers_Print] Armor: {def.Armor}");
+                Logger.Info($"[DataHelpers_Print] ChargesMax: {def.ChargesMax}");
 
                 Logger.Info($"[DataHelpers_Print] Name: {def.ViewElementDef?.DisplayName1.Localize()}");
                 Logger.Info($"[DataHelpers_Print] Description: {def.ViewElementDef?.Description.Localize()}");

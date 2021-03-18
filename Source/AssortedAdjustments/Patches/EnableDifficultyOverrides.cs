@@ -36,6 +36,13 @@ namespace AssortedAdjustments.Patches
 
                 Logger.Info($"[DifficultyOverrides_Apply] def: {def.name}, GUID: {def.Guid}, StarvationDeathsPart: {def.StarvationDeathsPart}, StarvationMistDeathsPart: {def.StarvationMistDeathsPart}, StarvationDeathsFlat: {def.StarvationDeathsFlat}, StarvationMistDeathsFlat: {def.StarvationMistDeathsFlat}");
             }
+
+            foreach (GeoMistGeneratorDef def in defRepository.DefRepositoryDef.AllDefs.OfType<GeoMistGeneratorDef>())
+            {
+                def.KmPerHour = AssortedAdjustments.Settings.DifficultyOverrideMistExpansionRate;
+
+                Logger.Info($"[DifficultyOverrides_Apply] def: {def.name}, GUID: {def.Guid}, KmPerHour: {def.KmPerHour}");
+            }
         }
 
 
