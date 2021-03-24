@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 
 
+## 1.10.1.4
+- Fix minor bug with the display of ancient sites
+- Removing items from manufacturing queue will now properly refund resources
+
+
 ## 1.10.1.3
 - Add option to adjust the expansion rate of the mist
 - Add option to modify the amount of ammunition of ground vehicles
