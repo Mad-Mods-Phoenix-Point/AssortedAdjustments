@@ -1,4 +1,7 @@
-﻿using PhoenixPoint.Common.Entities.Items;
+﻿using Harmony;
+using PhoenixPoint.Common.Core;
+using PhoenixPoint.Common.Entities.Items;
+using PhoenixPoint.Geoscape.Levels;
 using System;
 
 namespace AssortedAdjustments
@@ -15,7 +18,14 @@ namespace AssortedAdjustments
     {
         public static void Cancel(this ItemManufacturing itemManufacturing, ItemManufacturing.ManufactureQueueItem item)
         {
-            itemManufacturing.Queue.Remove(item);
-        }
+			ManufacturableItem manufacturableItem = item.ManufacturableItem;
+			itemManufacturing.Queue.Remove(item);
+
+			if (!itemManufacturing.UseFactoryManufacturing)
+			{
+                GeoFaction ___faction = (GeoFaction)AccessTools.Field(typeof(ItemManufacturing), "_faction").GetValue(itemManufacturing);
+                ___faction.Wallet.Give(manufacturableItem.ManufacturePrice, OperationReason.Scrap);
+			}
+		}
     }
 }
