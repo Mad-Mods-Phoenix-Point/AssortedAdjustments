@@ -7,54 +7,41 @@ using PhoenixPoint.Geoscape.View.ViewControllers.BaseRecruits;
 using PhoenixPoint.Geoscape.View.DataObjects;
 using System.Collections.Generic;
 using System.Linq;
-using PhoenixPoint.Geoscape.Levels.Factions;
-using PhoenixPoint.Geoscape.Levels;
-using PhoenixPoint.Common.Core;
 using PhoenixPoint.Geoscape.Entities;
 using PhoenixPoint.Geoscape.View;
 using System.Reflection;
+using Base.UI;
 
 namespace AssortedAdjustments.Patches.UIEnhancements
 {
     internal static class Shared
     {
-        /*
-        // Reset exploration sites
-        [HarmonyPatch(typeof(GeoLevelController), "DisableEmptyRevealedExplorationSites")]
-        public static class GeoLevelController_DisableEmptyRevealedExplorationSites_Patch
+        // Don't display [+ 0] in resources area of the info bar for the LOTA resources as it doesn't make any sense.
+        [HarmonyPatch(typeof(UIAnimatedResourceController), "DisplayValue")]
+        public static class UIAnimatedResourceController_DisplayValue_Patch
         {
-            public static void Postfix(GeoLevelController __instance)
+            public static void Postfix(UIAnimatedResourceController __instance, Text ____text)
             {
                 try
                 {
-                    Logger.Info($"[GeoLevelController_DisableEmptyRevealedExplorationSites_POSTFIX] Called.");
+                    Transform resourceTransform = __instance.transform.parent?.transform;
 
-                    IList<GeoSite> explorationSites = __instance.Map.SitesByType[GeoSiteType.Exploration];
-
-                    foreach (GeoSite gs in explorationSites.Where(s => !s.GetInspected(__instance.PhoenixFaction)))
+                    if (resourceTransform == null)
                     {
-                        Logger.Info($"[GeoLevelController_DisableEmptyRevealedExplorationSites_POSTFIX] NOT INSPECTED Site: {gs.Type}, State: {gs.State}, CanBeRevealed: {gs.CanBeRevealed}, Visible: {gs.GetVisible(__instance.PhoenixFaction)}, HasActiveEncounter: {gs.HasActiveEncounter}({gs.EncounterID}) ");
+                        return;
                     }
 
-                    
-                    foreach (GeoSite gs in explorationSites)
+                    if (resourceTransform.name.Contains("LivingCrystalsRes") || resourceTransform.name.Contains("OrichalcumRes") || resourceTransform.name.Contains("ProteanMutaneRes"))
                     {
-                        Logger.Info($"[GeoLevelController_DisableEmptyRevealedExplorationSites_POSTFIX] ALL Site: {gs.Type}, State: {gs.State}, CanBeRevealed: {gs.CanBeRevealed}, Visible: {gs.GetVisible(__instance.PhoenixFaction)}, Inspected: {gs.GetInspected(__instance.PhoenixFaction)}, HasActiveEncounter: {gs.HasActiveEncounter}({gs.EncounterID})");
+                        Logger.Debug($"[UIAnimatedResourceController_DisplayValue_POSTFIX] Adjust display for LOTA resource: {resourceTransform.name}");
+                        
+                        // Set text without value in brackets
+                        ____text.text = __instance.DisplayedValue.ToString();
 
-                        if (gs.ActiveMission != null)
-                        {
-                            continue;
-                        }
-
-                        if (gs.CanBeRevealed && gs.GetInspected(__instance.PhoenixFaction) && !String.IsNullOrEmpty(gs.EncounterID) && gs.EncounterID.Contains("EX"))
-                        {
-                            gs.SetVisited(__instance.PhoenixFaction, false);
-                            gs.SetInspected(__instance.PhoenixFaction, false);
-                            gs.ActivateSite();
-                            gs.RefreshVisuals();
-
-                            __instance.EventSystem.EnableGeoscapeEvent(gs.EncounterID);
-                        }
+                        // Shrink required space
+                        LayoutElement layout = resourceTransform.GetComponent<LayoutElement>();
+                        layout.preferredWidth = 100f;
+                        layout.minWidth = 85f;
                     }
                 }
                 catch (Exception e)
@@ -63,8 +50,10 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 }
             }
         }
-        */
 
+
+
+        // Uncovered, but not yet excavated ancient sites will be displayed in light gray
         [HarmonyPatch(typeof(GeoSiteVisualsController), "RefreshSiteVisuals")]
         public static class GeoSiteVisualsController_RefreshSiteVisuals_Patch
         {
@@ -73,9 +62,6 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 return AssortedAdjustments.Settings.EnableUIEnhancements;
             }
 
-
-
-            // Uncovered, but not yet excavated ancient sites will be displayed in light gray
             public static void Postfix(GeoSiteVisualsController __instance, GeoSite site)
             {
                 try
@@ -86,7 +72,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                     }
 
                     GeoSiteVisualsDefs instance = GeoSiteVisualsDefs.Instance;
-                    if (site.Owner.IsEnvironmentFaction && !site.IsExcavated())
+                    if (site.Owner.IsEnvironmentFaction && site.GetVisible(__instance.Viewer) && !site.IsExcavated())
                     {
                         Material customMaterial = instance.GetAncientSite(false);
                         customMaterial.color = new Color32(224, 224, 224, 255);
@@ -101,7 +87,6 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                 }
             }
         }
-
 
 
 
