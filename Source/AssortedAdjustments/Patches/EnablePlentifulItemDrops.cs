@@ -128,7 +128,7 @@ namespace AssortedAdjustments.Patches
                 int count = 0;
                 foreach (TacticalItem item in items)
                 {
-                    TacticalItemDef def = item.ItemDef as TacticalItemDef;
+                    TacticalItemDef def = item.TacticalItemDef;
                     GameTagsList tags = def?.Tags;
                     if (tags == null || tags.Count == 0 || !tags.Contains(manufacturable) || def.IsPermanentAugment)
                     {
