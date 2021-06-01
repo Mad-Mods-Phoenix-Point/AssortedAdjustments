@@ -547,7 +547,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
                             info += $"<size=36><color=#FFFFFF>{aircraft.Name}</color></size>";
                             info += "\n";
                             info += "<size=30>";
-                            info += $"Health: {(aircraft.VehicleDef.BaseStats.MaxMaintenancePoints - aircraft.VehicleDef.BaseStats.MaintenancePoints)}/{aircraft.VehicleDef.BaseStats.MaxMaintenancePoints}";
+                            info += $"Health: {(aircraft.VehicleDef.BaseStats.HitPoints)}/{aircraft.VehicleDef.BaseStats.MaxHitPoints}";
                             info += ", ";
                             info += $"Space: {aircraft.UsedCharacterSpace}/{aircraft.MaxCharacterSpace}";
                             info += "</size>";

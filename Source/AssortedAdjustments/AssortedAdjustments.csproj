@@ -142,7 +142,7 @@ xcopy "$(ProjectDir)changelog.txt" "$(SolutionDir)..\" /Y
 xcopy "$(TargetPath)" "$(SolutionDir)..\Release\$(TargetName)\" /Y
 xcopy "$(ProjectDir)README.md" "$(SolutionDir)..\Release\$(TargetName)\" /Y
 xcopy "$(ProjectDir)changelog.txt" "$(SolutionDir)..\Release\$(TargetName)\" /Y
-xcopy "$(SolutionDir)..\Release\*.*" "C:\Users\Ben\Documents\My Games\Phoenix Point\Mods\" /S /Y
+xcopy "$(SolutionDir)..\Release\*.*" "C:\Users\Mad\Documents\My Games\Phoenix Point\Mods\" /S /Y
     </PostBuildEvent>
   </PropertyGroup>
 </Project>

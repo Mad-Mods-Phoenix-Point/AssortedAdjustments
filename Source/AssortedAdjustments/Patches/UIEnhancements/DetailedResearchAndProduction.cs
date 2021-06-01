@@ -63,7 +63,7 @@ namespace AssortedAdjustments.Patches.UIEnhancements
 
 
 
-        [HarmonyPatch(typeof(GeoManufactureItem), "Init", new Type[] { typeof(ItemDef), typeof(GeoFaction) , typeof(UIModuleManufacturing.UIMode) , typeof(ItemStorage) , typeof(bool) })]
+        [HarmonyPatch(typeof(GeoManufactureItem), "Init", new Type[] { typeof(ItemDef), typeof(GeoFaction) , typeof(UIModuleManufacturing.UIMode) , typeof(ItemStorage), typeof(VehicleEquipmentStorage) , typeof(bool) })]
         public static class GeoManufactureItem_Init_Patch
         {
             public static bool Prepare()
