@@ -127,7 +127,7 @@ namespace AssortedAdjustments.Patches
             {
                 try
                 {
-                    if (template == null)
+                    if (template == null || template.CheckIsVehicle() || template.CheckIsMutog())
                     {
                         return;
                     }
