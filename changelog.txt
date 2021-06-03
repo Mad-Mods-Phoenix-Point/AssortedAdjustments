@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 
 
+## 1.11.0.0
+- Fix some obvious problems with new major game version (!dlc)
+
+
 ## 1.10.1.4
 - Fix minor bug with the display of ancient sites
 - Removing items from manufacturing queue will now properly refund resources
