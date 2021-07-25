@@ -37,6 +37,24 @@ namespace AssortedAdjustments
         {
             DefRepository defRepository = GameUtl.GameComponent<DefRepository>();
 
+
+            /*
+            foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<VehicleSlotFacilityComponentDef>())
+            {
+                Logger.Info($"[DataHelpers_Print] Def: {def.name}");
+                Logger.Info($"[DataHelpers_Print] Type: {def.GetType().Name}");
+
+                Logger.Info($"[DataHelpers_Print] GroundVehicleSlots: {def.GroundVehicleSlots}");
+                Logger.Info($"[DataHelpers_Print] AircraftSlots: {def.AircraftSlots}");
+                Logger.Info($"[DataHelpers_Print] AircraftHealAmount: {def.AircraftHealAmount}");
+                Logger.Info($"[DataHelpers_Print] VehicleHealAmount: {def.VehicleHealAmount}");
+
+                Logger.Info($"[DataHelpers_Print] ---");
+            }
+            */
+
+
+
             /*
             foreach (var def in defRepository.DefRepositoryDef.AllDefs.OfType<GeoMistGeneratorDef>())
             {

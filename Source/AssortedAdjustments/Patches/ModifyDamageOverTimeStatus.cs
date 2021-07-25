@@ -9,6 +9,11 @@ namespace AssortedAdjustments.Patches
         [HarmonyPatch(typeof(DamageOverTimeStatus), "LowerDamageOverTimeLevel")]
         public static class DamageOverTimeStatus_LowerDamageOverTimeLevel_Patch
         {
+            public static bool Prepare()
+            {
+                return AssortedAdjustments.Settings.FastMetabolism;
+            }
+
             public static void Prefix(DamageOverTimeStatus __instance, ref float amount)
             {
                 try

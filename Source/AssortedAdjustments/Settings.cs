@@ -225,8 +225,8 @@ namespace AssortedAdjustments
         public float MedicalBayBaseHeal = 8f;
         [Annotation("Stamina regeneration rate for living quarters, vanilla default is 2", "4")]
         public float LivingQuartersBaseStaminaHeal = 4f;
-        [Annotation("Healing rate for aircraft at vehicle bays, vanilla default is 2. NOTE that this seems to be obsolete by now, vanilla also uses healing rate of vehicles for aircraft.", "4")]
-        public int VehicleBayAircraftHealAmount = 4;
+        [Annotation("Healing rate for aircraft at vehicle bays, vanilla default is 48", "60")]
+        public int VehicleBayAircraftHealAmount = 60;
         [Annotation("Healing rate for vehicles at vehicle bays, vanilla default is 20", "40")]
         public int VehicleBayVehicleHealAmount = 40;
         [Annotation("Healing rate for mutogs at mutation labs, vanilla default is 20", "40")]
@@ -276,6 +276,8 @@ namespace AssortedAdjustments
         public int TiredStatusStaminaBelow = 30;
         [Annotation("Soldiers will get the status 'Exhausted' when their stamina falls be below this value (percentage), vanilla default is 0%", "10")]
         public int ExhaustedStatusStaminaBelow = 10;
+        [Annotation("Soldiers will recover from beeing paralysed or infected much faster", "true")]
+        public bool FastMetabolism = true;
 
 
 

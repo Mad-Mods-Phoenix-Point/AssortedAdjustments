@@ -205,4 +205,5 @@ If the original mods work for you and/or you just like them better, please disab
 * Sheepy (again, because once is not enough)
 
 ## Support
+If you like this mod you can support me on Ko-fi!  
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/P5P85EYOJ)
