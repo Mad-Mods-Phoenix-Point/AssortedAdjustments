@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 
 
+## 1.12.0.0
+- Ensure compat with game version 1.12
+- Change default for soldier strength to match current vanilla value
+
+
 ## 1.11.1.0
 - Added a setting for a long forgotten hidden feature that makes soldiers recover faster from paralysis and infection (FastMetabolism)
 - Changed default value for VehicleBayAircraftHealAmount as the vanilla values changed due to Festering Skies

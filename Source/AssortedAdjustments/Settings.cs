@@ -264,8 +264,8 @@ namespace AssortedAdjustments
         public int MaxAugmentations = 3;
         [Annotation("Personal skill limit, vanilla default is 3", "5")]
         public int PersonalAbilitiesCount = 5;
-        [Annotation("Maximum strength, vanilla default is 30", "30")]
-        public int MaxStrength = 30;
+        [Annotation("Maximum strength, vanilla default is 35", "35")]
+        public int MaxStrength = 35;
         [Annotation("Maximum willpower, vanilla default is 20", "20")]
         public int MaxWill = 20;
         [Annotation("Maximum speed, vanilla default is 20", "20")]
