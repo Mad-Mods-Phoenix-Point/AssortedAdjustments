@@ -108,7 +108,7 @@ namespace AssortedAdjustments.Patches
 
 
         // Patches
-        [HarmonyPatch(typeof(FactionCharacterGenerator), "GenerateUnit")]
+        [HarmonyPatch(typeof(FactionCharacterGenerator), "GenerateUnit", new Type[] { typeof(GeoFaction), typeof(TacCharacterDef) })]
         public static class FactionCharacterGenerator_GenerateUnit_Patch
         {
             private static bool customizationEnabled = false;
