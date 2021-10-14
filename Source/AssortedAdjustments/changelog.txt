@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 
 
+## 1.13.0.0
+- Ensure compat with game version 1.13
+- Fix ambigous match for unit genearation patches
+
+
 ## 1.12.0.0
 - Ensure compat with game version 1.12
 - Change default for soldier strength to match current vanilla value
