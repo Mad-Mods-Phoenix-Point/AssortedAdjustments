@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 
 
+## 1.13.0.1
+- Enable up to seven recruits for recruit generation (made possible by the otherwise worse new recruitment UI)
+
+
 ## 1.13.0.0
 - Ensure compat with game version 1.13
 - Fix ambigous match for unit genearation patches

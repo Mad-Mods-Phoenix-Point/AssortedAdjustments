@@ -497,7 +497,7 @@ namespace AssortedAdjustments.Patches
 
                     // MAD:
                     //int num = __instance.FactionDef.MaxNakedRecruitsAvailability.RandomValue();
-                    int num = Mathf.Clamp(AssortedAdjustments.Settings.RecruitGenerationCount, 1, 4); // UI cannot handle more than four
+                    int num = Mathf.Clamp(AssortedAdjustments.Settings.RecruitGenerationCount, 1, 7); // UI cannot handle more than four (seven for PP > 1.13)
                     //:DAM
 
                     CharacterGenerationContext context = ____level.CharacterGenerator.GenerateCharacterGeneratorContext(__instance);

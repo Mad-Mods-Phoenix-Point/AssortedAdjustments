@@ -109,7 +109,7 @@ namespace AssortedAdjustments
 
         [Annotation("General switch to enable the related subfeatures.", "True", true, "Recruit Generation")]
         public bool EnableCustomRecruitGeneration = true;
-        [Annotation("Fixed amount of recruits that get generated for phoenix faction. Note that more than 3 looks like shit because of the broken UI. Note that the UI cannot handle more than 4 at all.", "3")]
+        [Annotation("Fixed amount of recruits that get generated for phoenix faction. Note that the UI cannot handle more than 3 (7 for PP > 1.13) properly.", "3")]
         public int RecruitGenerationCount = 3;
         [Annotation("Havens will update their recruits more consistently.", "True")]
         public bool IgnoreRngFactorsForHavenRecruitGeneration = true;
