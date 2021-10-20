@@ -276,7 +276,7 @@ namespace AssortedAdjustments
         public int TiredStatusStaminaBelow = 30;
         [Annotation("Soldiers will get the status 'Exhausted' when their stamina falls be below this value (percentage), vanilla default is 0%", "10")]
         public int ExhaustedStatusStaminaBelow = 10;
-        [Annotation("Soldiers will recover from beeing paralysed or infected much faster", "true")]
+        [Annotation("Soldiers will recover from beeing paralysed or infected much faster", "True")]
         public bool FastMetabolism = true;
 
 

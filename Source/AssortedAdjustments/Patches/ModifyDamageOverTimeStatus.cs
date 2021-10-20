@@ -11,7 +11,7 @@ namespace AssortedAdjustments.Patches
         {
             public static bool Prepare()
             {
-                return AssortedAdjustments.Settings.FastMetabolism;
+                return AssortedAdjustments.Settings.EnableSoldierAdjustments && AssortedAdjustments.Settings.FastMetabolism;
             }
 
             public static void Prefix(DamageOverTimeStatus __instance, ref float amount)

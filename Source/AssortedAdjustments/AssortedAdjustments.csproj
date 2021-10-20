@@ -135,14 +135,13 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-rd /s /q "$(SolutionDir)..\Release\"
+    <PostBuildEvent>rd /s /q "$(SolutionDir)..\Release\"
 xcopy "$(ProjectDir)README.md" "$(SolutionDir)..\" /Y
 xcopy "$(ProjectDir)changelog.txt" "$(SolutionDir)..\" /Y
 xcopy "$(TargetPath)" "$(SolutionDir)..\Release\$(TargetName)\" /Y
 xcopy "$(ProjectDir)README.md" "$(SolutionDir)..\Release\$(TargetName)\" /Y
 xcopy "$(ProjectDir)changelog.txt" "$(SolutionDir)..\Release\$(TargetName)\" /Y
-xcopy "$(SolutionDir)..\Release\*.*" "C:\Users\Mad\Documents\My Games\Phoenix Point\Mods\" /S /Y
-    </PostBuildEvent>
+xcopy "$(SolutionDir)..\Release\*.*" "%25USERPROFILE%25\Documents\My Games\Phoenix Point\Mods\" /S /Y
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
